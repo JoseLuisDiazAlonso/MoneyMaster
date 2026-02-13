@@ -45,6 +45,8 @@ dependencies {
 
     // Room - Base de datos local
     implementation("androidx.room:room-runtime:2.6.1")
+    implementation(libs.navigation.fragment)
+    implementation(libs.navigation.ui)
     annotationProcessor("androidx.room:room-compiler:2.6.1")
 
     // Lifecycle & LiveData (MVVM)

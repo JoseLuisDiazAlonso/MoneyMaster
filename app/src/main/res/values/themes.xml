@@ -24,5 +24,11 @@
         <!--Status bar-->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
     </style>
-    <style name="Theme.MoneyMaster" parent="Base.Theme.MoneyMaster"/>
+
+    <style name="Theme.MoneyMaster" parent="Base.Theme.MoneyMaster" />
+    <!-- Base application theme. -->
+    <style name="Base.Theme.MoneyMaster" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
 </resources>

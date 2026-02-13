@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <!-- PERMISOS PARA LAS CÁMARAS -->
+    <uses-permission android:name="android.permission.CAMERA" />
 
-    <!--PERMISOS PARA LAS CÁMARAS-->
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-feature android:name="android.hardware.camera" android:required="false"/>
-    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
-
-   <!--Permisos de almacenamiento para Android 12 y anteriores-->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" tools:ignore="ScopedStorage"/>
-
-    <!--Permisos de almacenamiento para Android 13+-->
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
-
-    <!--Permiso de Internet (pra compartir por WhatsApp-->
-    <uses-permission android:name="android.permission.INTERNET"/>
-
-    <!--Permiso para biometría (huella dactilar/Face ID)-->
-    <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" /> <!-- Permisos de almacenamiento para Android 12 y anteriores -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"
+        tools:ignore="ScopedStorage" /> <!-- Permisos de almacenamiento para Android 13+ -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" /> <!-- Permiso de Internet (pra compartir por WhatsApp -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- Permiso para biometría (huella dactilar/Face ID) -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
 
     <application
         android:allowBackup="true"
@@ -31,6 +32,16 @@
         android:theme="@style/Theme.MoneyMaster"
         tools:targetApi="31">
         <activity
+            android:name=".Splash"
+            android:exported="false" />
+        <activity
+            android:name=".SplashActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MoneyMaster" />
+        <activity
+            android:name=".activity_splash"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -38,9 +49,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!--Necesario para compartir imágenes, PDFs y Excel-->
+        </activity> <!-- Necesario para compartir imágenes, PDFs y Excel -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -48,7 +57,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"/>
+                android:resource="@xml/file_paths" />
         </provider>
     </application>
 
