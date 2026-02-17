@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -8,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.moneymaster"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -30,46 +31,50 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-
-    buildFeatures {
-        viewBinding = true
-    }
 }
 
 dependencies {
-    // AndroidX básicas
-    implementation(libs.appcompat)
+    // Core Android
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation(libs.activity)
-    implementation(libs.constraintlayout)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
 
-    // Room - Base de datos local
-    implementation("androidx.room:room-runtime:2.6.1")
-    implementation(libs.navigation.fragment)
-    implementation(libs.navigation.ui)
-    annotationProcessor("androidx.room:room-compiler:2.6.1")
+    // Room Database
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
+    annotationProcessor(libs.androidx.room.compiler)
 
-    // Lifecycle & LiveData (MVVM)
-    implementation("androidx.lifecycle:lifecycle-viewmodel:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-livedata:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-common-java8:2.7.0")
+    // Lifecycle
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.livedata)
 
-    // MPAndroidChart - Gráficos y estadísticas
-    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    // Gráficos
+    implementation(libs.mpandroidchart)
 
-    // Glide - Manejo de imágenes
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+    // Imágenes
+    implementation(libs.glide)
+    annotationProcessor(libs.glide.compiler)
 
-    // Apache POI - Exportar Excel
-    implementation("org.apache.poi:poi:5.2.5")
-    implementation("org.apache.poi:poi-ooxml:5.2.5")
+    // Excel (con exclusión de log4j)
+    implementation(libs.poi) {
+        exclude(group = "org.apache.logging.log4j", module = "log4j-api")
+    }
+    implementation(libs.poi.ooxml) {
+        exclude(group = "org.apache.logging.log4j", module = "log4j-api")
+    }
 
-    // iText - Generar PDFs
-    implementation("com.itextpdf:itext7-core:7.2.5")
+    //ViewPager2
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
+
+    //DotsIndicator
+    implementation("com.tbuonomo:dotsindicator:5.0")
+
 
     // Testing
     testImplementation(libs.junit)
-    androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 }
