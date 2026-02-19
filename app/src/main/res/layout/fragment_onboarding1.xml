@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment_onboarding1">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_gradient_onboarding">
+
+        <!--Imagen Ilustrativa-->
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="238dp"
+            android:layout_height="182dp"
+            android:layout_marginTop="104dp"
+            android:src="@drawable/iv_Illustration"
+            android:background="@drawable/bg_rounded_shadow"
+            android:elevation="8dp"
+            android:padding="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <!--Texto de Título-->
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="369dp"
+            android:layout_height="49dp"
+            android:layout_marginTop="44dp"
+            android:gravity="center"
+            android:text="Controla tus finanzas"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+        <!--Texto Descriptivo-->
+        <TextView
+            android:id="@+id/tvDescription"
+            android:layout_width="288dp"
+            android:layout_height="92dp"
+            android:layout_marginTop="28dp"
+            android:gravity="center"
+            android:lineSpacingExtra="4dp"
+            android:text="Lleva un registro completo de tus gastos e ingresos en un solo lugar"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.495"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

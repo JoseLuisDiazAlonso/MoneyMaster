@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment_onboarding2">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_gradient_onboarding">
+
+        <!--Imagen Ilustrativa para el Onboarding-->
+
+        <ImageView
+            android:id="@+id/imageOnboarding"
+            android:layout_width="238dp"
+            android:layout_height="182dp"
+            android:layout_marginTop="124dp"
+            android:src="@drawable/finance"
+            android:contentDescription="Onboarding Image"
+            android:background="@drawable/bg_rounded_shadow"
+            android:elevation="8dp"
+            android:padding="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!--Texto para el Título-->
+
+        <TextView
+            android:id="@+id/tvTitle2"
+            android:layout_width="319dp"
+            android:layout_height="58dp"
+            android:layout_marginTop="64dp"
+            android:text="Visualiza tus finanzas"
+            android:textColor="?attr/colorOnSurface"
+            android:gravity="center"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageOnboarding" />
+
+        <!--Texto Descriptivo-->
+        <TextView
+            android:id="@+id/tvDescription2"
+            android:layout_width="337dp"
+            android:layout_height="43dp"
+            android:layout_marginTop="68dp"
+            android:gravity="center"
+            android:text="Accede a gráficos y estadísticas detalladas de tus movimientos"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textSize="16sp"
+            android:lineSpacingExtra="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle2" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
