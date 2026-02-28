@@ -13,9 +13,11 @@
         android:theme="@style/Theme.MoneyMaster"
         tools:targetApi="31">
         <activity
-            android:name=".activity_onboarding"
+            android:name=".ActivityRegister"
             android:exported="false" />
-        <!-- SPLASH SCREEN como actividad principal -->
+        <activity
+            android:name=".activity_onboarding"
+            android:exported="false" /> <!-- SPLASH SCREEN como actividad principal -->
         <activity
             android:name=".ui.onboarding.Splash"
             android:exported="true"
