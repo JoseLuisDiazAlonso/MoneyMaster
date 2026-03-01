@@ -19,7 +19,7 @@
             android:layout_width="238dp"
             android:layout_height="182dp"
             android:layout_marginTop="104dp"
-            android:src="@drawable/iv_Illustration"
+            android:src="@drawable/iv_illustration"
             android:background="@drawable/bg_rounded_shadow"
             android:elevation="8dp"
             android:padding="20dp"

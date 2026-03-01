@@ -10,10 +10,178 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="409dp"
         android:layout_height="729dp"
+        android:background="@drawable/bg_gradient_onboarding"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+        <!--Logo de la aplicación-->
+
+        <!--Título-->
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/bg_rounded_shadow"
+            android:elevation="8dp"
+            android:padding="20dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.535"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/icono" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="313dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="32dp"
+            android:fontFamily="sans-serif"
+            android:text="MONEY MASTER"
+            android:textAlignment="center"
+            android:textSize="32dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.593"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+        <!--Texto Crear Cuenta-->
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="173dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="32dp"
+            android:fontFamily="sans-serif"
+            android:text="Crear cuenta"
+            android:textAlignment="center"
+            android:textSize="24dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/tilNombre"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.542"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <!--Input para introducir el nombre, email, Contraseña y repetir contraseña-->
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilNombre"
+            android:layout_width="325dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="336dp"
+            android:background="@drawable/bg_rounded_shadow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.535"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilEmail"
+            android:layout_width="325dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_rounded_shadow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.535"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tilNombre">
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etNombre"
+            android:layout_width="325dp"
+            android:layout_height="58dp"
+            android:backgroundTint="@android:color/transparent"
+            android:hint="Nombre"
+            android:paddingLeft="20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tilNombre"
+            app:layout_constraintStart_toStartOf="@+id/tilNombre"
+            app:layout_constraintTop_toTopOf="@+id/tilNombre" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etEmail"
+            android:layout_width="339dp"
+            android:layout_height="58dp"
+            android:backgroundTint="@android:color/transparent"
+            android:hint="Email"
+            android:paddingLeft="30dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tilEmail"
+            app:layout_constraintEnd_toEndOf="@+id/tilEmail"
+            app:layout_constraintStart_toStartOf="@+id/tilEmail"
+            app:layout_constraintTop_toTopOf="@+id/tilEmail" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilPassword"
+            android:layout_width="325dp"
+            android:layout_height="58dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_rounded_shadow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.535"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tilEmail">
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etPassword"
+            android:layout_width="316dp"
+            android:layout_height="53dp"
+            android:backgroundTint="@android:color/transparent"
+            android:hint="Contraseña"
+            android:paddingLeft="20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tilPassword"
+            app:layout_constraintEnd_toEndOf="@+id/tilPassword"
+            app:layout_constraintStart_toStartOf="@+id/tilPassword"
+            app:layout_constraintTop_toTopOf="@+id/tilPassword" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tisPasswordConfirm"
+            android:layout_width="325dp"
+            android:layout_height="58dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_rounded_shadow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tilPassword"
+            app:layout_constraintHorizontal_bias="0.535">
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!--Botón Registrar-->
+
+        <Button
+            android:id="@+id/btnRegistrar"
+            android:layout_width="211dp"
+            android:layout_height="53dp"
+            android:layout_marginTop="32dp"
+            android:text="Registrarse"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tisPasswordConfirm" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etPasswordConfirm"
+            android:layout_width="330dp"
+            android:layout_height="48dp"
+            android:backgroundTint="@android:color/transparent"
+            android:hint="Repetir Contraseña"
+            android:paddingLeft="24dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tisPasswordConfirm"
+            app:layout_constraintEnd_toEndOf="@+id/tisPasswordConfirm"
+            app:layout_constraintStart_toStartOf="@+id/tisPasswordConfirm"
+            app:layout_constraintTop_toTopOf="@+id/tisPasswordConfirm" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -30,7 +30,7 @@
         app:dotsSpacing="8dp"
         app:dotsWidthFactor="2.5"
         app:selectedDotColor="?attr/colorPrimary"
-        app:proessMode="true"
+        app:progressMode="true"
         app:layout_constraintBottom_toTopOf="@+id/buttonContainer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

@@ -12,31 +12,44 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MoneyMaster"
         tools:targetApi="31">
+
+        <!-- Registro de usuario -->
         <activity
             android:name=".ActivityRegister"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Onboarding -->
         <activity
             android:name=".activity_onboarding"
-            android:exported="false" /> <!-- SPLASH SCREEN como actividad principal -->
+            android:exported="false" />
+
+        <!-- Splash Screen — punto de entrada de la app -->
         <activity
             android:name=".ui.onboarding.Splash"
             android:exported="true"
             android:theme="@style/Theme.MoneyMaster">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Otras activities (comentadas hasta que las crees) -->
+        </activity>
+
+        <!-- Onboarding slides -->
         <activity
             android:name=".ui.onboarding.OnboardingActivity"
             android:exported="false" />
+
+        <!-- Login -->
         <activity
             android:name=".ui.auth.LoginActivity"
             android:exported="false" />
+
+        <!-- Pantalla principal -->
         <activity
             android:name=".MainActivity"
             android:exported="false" />
+
     </application>
 
 </manifest>
