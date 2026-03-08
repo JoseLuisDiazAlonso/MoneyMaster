@@ -13,7 +13,6 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -34,6 +33,13 @@ android {
 
     buildFeatures {
         viewBinding = true
+    }
+
+    packagingOptions {
+        resources.excludes += "META-INF/NOTICE.md"
+        resources.excludes += "META-INF/LICENSE.md"
+        resources.excludes += "META-INF/NOTICE"
+        resources.excludes += "META-INF/LICENSE"
     }
 }
 
@@ -62,7 +68,7 @@ dependencies {
     implementation(libs.glide)
     annotationProcessor(libs.glide.compiler)
 
-    // Excel (con exclusión de log4j)
+    // Excel
     implementation(libs.poi) {
         exclude(group = "org.apache.logging.log4j", module = "log4j-api")
     }
@@ -70,12 +76,15 @@ dependencies {
         exclude(group = "org.apache.logging.log4j", module = "log4j-api")
     }
 
-    //ViewPager2
+    // ViewPager2
     implementation("androidx.viewpager2:viewpager2:1.0.0")
 
-    //DotsIndicator
+    // DotsIndicator
     implementation("com.tbuonomo:dotsindicator:5.0")
 
+    // JavaMail API
+    implementation("com.sun.mail:android-mail:1.6.7")
+    implementation("com.sun.mail:android-activation:1.6.7")
 
     // Testing
     testImplementation(libs.junit)

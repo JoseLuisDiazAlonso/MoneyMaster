@@ -43,7 +43,8 @@
         <!-- Login -->
         <activity
             android:name=".ui.auth.LoginActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"/>
 
         <!-- Pantalla principal -->
         <activity
