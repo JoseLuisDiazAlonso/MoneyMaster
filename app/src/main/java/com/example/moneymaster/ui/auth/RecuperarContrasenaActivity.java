@@ -11,8 +11,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.moneymaster.databinding.ActivityRecuperarContrasenaBinding;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.concurrent.TimeUnit;
-
 public class RecuperarContrasenaActivity extends AppCompatActivity {
 
     private ActivityRecuperarContrasenaBinding binding;
@@ -82,7 +80,7 @@ public class RecuperarContrasenaActivity extends AppCompatActivity {
             binding.btnActualizarContrasena.setEnabled(!cargando);
         });
     }
-    
+
     //Click Listener
     private void setupClickListeners() {
         //Botón: Enviar código al email
@@ -172,9 +170,10 @@ public class RecuperarContrasenaActivity extends AppCompatActivity {
         Snackbar snackbar = Snackbar.make(binding.getRoot(), s, Snackbar.LENGTH_LONG);
     }
 
+    //Correcto
     private void mostrarError(String error) {
         Snackbar snackbar = Snackbar.make(binding.getRoot(), "⚠️ " + error, Snackbar.LENGTH_LONG);
-        snackbar.setBackgroundTint(getResources().getColor(com.google.android.material.R.color.design_default_color_error, getTheme()));
+        snackbar.setBackgroundTint(0xFFB00020); // Rojo Material Design en hexadecimal
         snackbar.show();
     }
 

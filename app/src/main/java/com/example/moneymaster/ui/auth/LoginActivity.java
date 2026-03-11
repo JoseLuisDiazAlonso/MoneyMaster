@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(this, ActivityRegister.class)));
 
         tvForgotPassword.setOnClickListener(v ->
-                startActivity(new Intent(this, RecuperarContrasenaViewModel.class)));
+                startActivity(new Intent(this, RecuperarContrasenaActivity.class)));
 
         etEmail.addTextChangedListener(new SimpleTextWatcher() {
             @Override
