@@ -8,4 +8,25 @@
     <string name="version">v1.0.0</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- BottomNavigation labels -->
+    <string name="nav_home">Inicio</string>
+    <string name="nav_groups">Grupos</string>
+    <string name="nav_stats">Estadísticas</string>
+    <string name="nav_profile">Perfil</string>
+
+    <!-- Toolbar menu -->
+    <string name="action_notifications">Notificaciones</string>
+    <string name="action_settings">Ajustes</string>
+    <string name="action_logout">Cerrar sesión</string>
+
+    <!-- FAB -->
+    <string name="fab_add_expense">Añadir gasto</string>
+
+    <!-- Fragment placeholders (se eliminan cuando el fragment esté implementado) -->
+    <string name="fragment_home_placeholder">Inicio — próximamente</string>
+    <string name="fragment_groups_placeholder">Grupos — próximamente</string>
+    <string name="fragment_stats_placeholder">Estadísticas — próximamente</string>
+    <string name="fragment_profile_placeholder">Perfil — próximamente</string>
+
 </resources>

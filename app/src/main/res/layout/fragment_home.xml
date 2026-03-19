@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface">
+
+    <!--
+        Contenido del Dashboard de Inicio.
+        Se completará en cards del Sprint 2 (resumen de balance,
+        transacciones recientes, acceso rápido a categorías…).
+    -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/fragment_home_placeholder"
+        android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+</FrameLayout>
