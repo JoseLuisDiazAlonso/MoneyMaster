@@ -63,4 +63,7 @@ public interface CategoriaGastoDao {
     /** Comprueba si ya existe una categoría de sistema (para seed idempotente). */
     @Query("SELECT COUNT(*) FROM categorias_gasto WHERE es_sistema = 1")
     int countCategoriasDelSistema();
+
+    @Query("SELECT * FROM categorias_gasto WHERE id = :id LIMIT 1")
+    CategoriaGasto getByIdSync(int id);
 }

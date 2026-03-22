@@ -4,10 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.moneymaster.fragment_onboarding1;
-import com.example.moneymaster.fragment_onboarding2;
-import com.example.moneymaster.fragment_onboarding3;
-
 public class OnboardingAdapter extends FragmentStateAdapter {
 
     public OnboardingAdapter (@NonNull OnboardingActivity OnboardingActivity) {

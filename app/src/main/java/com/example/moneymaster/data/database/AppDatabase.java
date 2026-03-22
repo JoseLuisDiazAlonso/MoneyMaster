@@ -11,6 +11,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.example.moneymaster.data.dao.BalanceGrupoDao;
 import com.example.moneymaster.data.dao.CategoriaGastoDao;
 import com.example.moneymaster.data.dao.CategoriaIngresoDao;
+import com.example.moneymaster.data.dao.FotoReciboDao;
 import com.example.moneymaster.data.dao.GastoGrupoDao;
 import com.example.moneymaster.data.dao.GastoPersonalDao;
 import com.example.moneymaster.data.dao.GrupoDao;
@@ -53,12 +54,12 @@ import java.util.concurrent.Executors;
                 FotoRecibo.class,
                 BalanceGrupo.class
         },
-        version = 2,
+        version = 3,
         exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {
     public static AppDatabase getInstance(Context context) {
-        return null;
+        return getDatabase(context);
     }
 
     // ─── DAOs ─────────────────────────────────────────────────────────────────

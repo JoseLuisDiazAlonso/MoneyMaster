@@ -121,7 +121,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Consultar DB en hilo de fondo
         executor.execute(() -> {
-            User user = db.userDao().getUserByEmail(email);
+            User user = db.userDao().getByEmail(email);
 
             runOnUiThread(() -> {
                 if (user == null) {

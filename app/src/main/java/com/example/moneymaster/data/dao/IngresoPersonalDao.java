@@ -8,6 +8,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.example.moneymaster.data.model.IngresoConCategoria;
 import com.example.moneymaster.data.model.IngresoPersonal;
 import com.example.moneymaster.data.model.ResumenMensual;
 import com.example.moneymaster.data.model.TotalPorCategoria;
@@ -101,4 +102,28 @@ public interface IngresoPersonalDao {
 
     @Query("SELECT COUNT(*) FROM ingresos_personales WHERE usuario_id = :usuarioId")
     int countIngresos(long usuarioId);
+
+    @Query("SELECT " +
+            "  ip.id              AS id, " +
+            "  ip.descripcion     AS descripcion, " +
+            "  ip.monto           AS importe, " +
+            "  ip.fecha           AS fecha, " +
+            "  COALESCE(ci.nombre, 'Sin categoría') AS nombreCategoria, " +
+            "  COALESCE(ci.icono, 'ic_category')    AS iconoNombre, " +
+            "  COALESCE(ci.color, '#4CAF50')         AS colorCategoria " +
+            "FROM ingresos_personales ip " +
+            "LEFT JOIN categorias_ingreso ci ON ip.categoria_id = ci.id " +
+            "WHERE ip.usuario_id = :userId " +
+            "  AND ip.fecha >= :inicio " +
+            "  AND ip.fecha <  :fin " +
+            "ORDER BY ip.fecha DESC")
+    LiveData<List<IngresoConCategoria>> getIngresosConCategoriaDelMes(
+            int userId, long inicio, long fin);
+
+    @Query("SELECT COALESCE(SUM(monto), 0.0) " +
+            "FROM ingresos_personales " +
+            "WHERE usuario_id = :userId " +
+            "  AND fecha >= :inicio " +
+            "  AND fecha <  :fin")
+    LiveData<Double> getTotalIngresosMesRango(int userId, long inicio, long fin);
 }

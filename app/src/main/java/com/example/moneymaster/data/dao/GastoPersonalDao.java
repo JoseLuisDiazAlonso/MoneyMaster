@@ -8,6 +8,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.example.moneymaster.data.model.GastoConCategoria;
 import com.example.moneymaster.data.model.GastoPersonal;
 import com.example.moneymaster.data.model.ResumenMensual;
 import com.example.moneymaster.data.model.TotalPorCategoria;
@@ -33,10 +34,6 @@ public interface GastoPersonalDao {
     @Query("SELECT * FROM gastos_personales WHERE usuario_id = :usuarioId ORDER BY fecha DESC")
     LiveData<List<GastoPersonal>> getGastosByUsuario(long usuarioId);
 
-    /**
-     * Gastos de un mes/año concretos derivando mes y año del timestamp Unix
-     * mediante strftime, ya que la entidad no tiene columnas 'mes'/'anio'.
-     */
     @Query("SELECT * FROM gastos_personales " +
             "WHERE usuario_id = :usuarioId " +
             "  AND CAST(strftime('%m', datetime(fecha / 1000, 'unixepoch')) AS INTEGER) = :mes " +
@@ -105,4 +102,45 @@ public interface GastoPersonalDao {
 
     @Query("SELECT COUNT(*) FROM gastos_personales WHERE usuario_id = :usuarioId")
     int countGastos(long usuarioId);
+
+    // ─── Gastos del mes con Categoría ─────────────────────────────────────────
+
+    @Query("SELECT " +
+            "  gp.id              AS id, " +
+            "  gp.descripcion     AS descripcion, " +
+            "  gp.monto           AS importe, " +
+            "  gp.fecha           AS fecha, " +
+            "  COALESCE(cg.nombre, 'Sin categoría') AS nombreCategoria, " +
+            "  COALESCE(cg.icono, 'ic_category')    AS iconoNombre, " +
+            "  COALESCE(cg.color, '#6200EE')         AS colorCategoria " +
+            "FROM gastos_personales gp " +
+            "LEFT JOIN categorias_gasto cg ON gp.categoria_id = cg.id " +
+            "WHERE gp.usuario_id = :userId " +
+            "  AND gp.fecha >= :inicio " +
+            "  AND gp.fecha <  :fin " +
+            "ORDER BY gp.fecha DESC")
+    LiveData<List<GastoConCategoria>> getGastosConCategoriaDelMes(
+            int userId, long inicio, long fin);
+
+    @Query("SELECT COALESCE(SUM(monto), 0.0) " +
+            "FROM gastos_personales " +
+            "WHERE usuario_id = :userId " +
+            "  AND fecha >= :inicio " +
+            "  AND fecha <  :fin")
+    LiveData<Double> getTotalGastosMesRango(int userId, long inicio, long fin);
+
+    // ─── Card #35 ─────────────────────────────────────────────────────────────
+
+    /**
+     * Busca el gasto personal asociado a una foto.
+     * Síncrono para llamar desde background thread en ImageViewerViewModel.
+     */
+    @Query("SELECT * FROM gastos_personales WHERE foto_recibo_id = :fotoId LIMIT 1")
+    GastoPersonal getByFotoReciboId(int fotoId);
+
+    /**
+     * Desvincula foto de gastos personales poniendo foto_recibo_id = NULL.
+     */
+    @Query("UPDATE gastos_personales SET foto_recibo_id = NULL WHERE foto_recibo_id = :fotoId")
+    void desvincularFoto(int fotoId);
 }

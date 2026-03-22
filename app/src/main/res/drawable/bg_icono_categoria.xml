@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Fondo circular para el icono de categoría en cada ítem de la lista.
+    Su color se tinta dinámicamente en MovimientoAdapter usando setColorFilter().
+    El color base es blanco para que el tint sea fiel al hex almacenado en BD.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="#FFFFFFFF" />
+</shape>

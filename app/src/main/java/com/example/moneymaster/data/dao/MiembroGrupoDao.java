@@ -24,19 +24,21 @@ public interface MiembroGrupoDao {
     @Delete
     void eliminar(MiembroGrupo miembro);
 
-    /** Todos los miembros de un grupo, ordenados por fecha de unión. */
-    @Query("SELECT * FROM miembro_grupo WHERE grupoId = :grupoId ORDER BY fechaUnion ASC")
+    /** Miembros activos de un grupo — LiveData para la UI. */
+    @Query("SELECT * FROM miembros_grupo WHERE grupoId = :grupoId AND activo = 1")
     LiveData<List<MiembroGrupo>> getMiembrosByGrupo(long grupoId);
 
-    /** Versión síncrona para cálculos de balance en hilo de fondo. */
-    @Query("SELECT * FROM miembro_grupo WHERE grupoId = :grupoId ORDER BY fechaUnion ASC")
+    /** Versión síncrona para cálculo de balances en background thread. */
+    @Query("SELECT * FROM miembros_grupo WHERE grupoId = :grupoId AND activo = 1")
     List<MiembroGrupo> getMiembrosByGrupoSync(long grupoId);
 
-    /** Número de miembros de un grupo (necesario para dividir gastos). */
-    @Query("SELECT COUNT(*) FROM miembro_grupo WHERE grupoId = :grupoId")
-    int countMiembros(long grupoId);
+    /** Comprueba si un usuario ya pertenece al grupo. */
+    @Query("SELECT COUNT(*) FROM miembros_grupo " +
+            "WHERE grupoId = :grupoId AND usuarioId= :usuarioId AND activo = 1")
+    int esMiembro(long grupoId, long usuarioId);
 
-    /** Busca si un usuario ya es miembro del grupo. */
-    @Query("SELECT * FROM miembro_grupo WHERE grupoId = :grupoId AND usuarioId = :usuarioId LIMIT 1")
-    MiembroGrupo getMiembroByUsuario(long grupoId, long usuarioId);
+    /** Rol del usuario en el grupo (admin / miembro). */
+    @Query("SELECT rol FROM miembros_grupo " +
+            "WHERE grupoId = :grupoId AND usuarioId = :usuarioId LIMIT 1")
+    String getRolEnGrupo(long grupoId, long usuarioId);
 }

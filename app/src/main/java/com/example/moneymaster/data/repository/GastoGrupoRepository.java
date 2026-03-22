@@ -10,15 +10,6 @@ import com.example.moneymaster.data.model.GastoGrupo;
 
 import java.util.List;
 
-/**
- * Repositorio de gastos grupales.
- *
- * Gestiona el CRUD de GastoGrupo.
- *
- * Importante: al insertar un gasto grupal, el ViewModel o la capa de negocio
- * debe encargarse de actualizar BalanceGrupo usando BalanceGrupoRepository.
- * Este repositorio solo gestiona los gastos, no los balances derivados.
- */
 public class GastoGrupoRepository {
 
     private final GastoGrupoDao gastoGrupoDao;
@@ -28,48 +19,64 @@ public class GastoGrupoRepository {
         gastoGrupoDao = db.gastoGrupoDao();
     }
 
-    // ---- ESCRITURAS (background thread) ----
+    // ── ESCRITURAS ────────────────────────────────────────────────────────────
 
-    public void insertGasto(GastoGrupo gasto) {
+    public void insertarGasto(GastoGrupo gasto) {
         AppDatabase.databaseWriteExecutor.execute(() ->
-                gastoGrupoDao.insertGasto(gasto));
+                gastoGrupoDao.insertar(gasto));
     }
 
-    public void updateGasto(GastoGrupo gasto) {
+    /** Inserta y devuelve el ID generado vía callback (necesario para asignar balances). */
+    public void insertarGastoYObtenerId(GastoGrupo gasto, SaveCallback<Long> callback) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            long id = gastoGrupoDao.insertar(gasto);
+            new android.os.Handler(android.os.Looper.getMainLooper())
+                    .post(() -> callback.onSaved(id));
+        });
+    }
+
+    public void actualizarGasto(GastoGrupo gasto) {
         AppDatabase.databaseWriteExecutor.execute(() ->
-                gastoGrupoDao.updateGasto(gasto));
+                gastoGrupoDao.actualizar(gasto));
     }
 
-    public void deleteGasto(GastoGrupo gasto) {
+    public void eliminarGasto(GastoGrupo gasto) {
         AppDatabase.databaseWriteExecutor.execute(() ->
-                gastoGrupoDao.deleteGasto(gasto));
+                gastoGrupoDao.eliminar(gasto));
     }
 
-    // ---- LECTURAS REACTIVAS (LiveData) ----
+    // ── LECTURAS REACTIVAS (LiveData) ─────────────────────────────────────────
 
-    /** Todos los gastos de un grupo, más recientes primero. */
-    public LiveData<List<GastoGrupo>> getGastosDeGrupo(int grupoId) {
-        return gastoGrupoDao.getGastosDeGrupo(grupoId);
+    /** Todos los gastos del grupo, ordenados por fecha descendente. */
+    public LiveData<List<GastoGrupo>> getGastosByGrupo(long grupoId) {
+        return gastoGrupoDao.getGastosByGrupo(grupoId);
     }
 
-    /** Gastos de un grupo en un rango de fechas. */
-    public LiveData<List<GastoGrupo>> getGastosDeGrupoPorFecha(int grupoId, long inicio, long fin) {
-        return gastoGrupoDao.getGastosDeGrupoPorFecha(grupoId, inicio, fin);
+    /** Total acumulado de gastos del grupo como LiveData. */
+    public LiveData<Double> getTotalGastosGrupo(long grupoId) {
+        return gastoGrupoDao.getTotalGastosGrupo(grupoId);
     }
 
-    // ---- LECTURAS SINCRÓNICAS (llamar desde background thread) ----
-
-    /** Suma total de gastos del grupo. */
-    public double getTotalGrupo(int grupoId) {
-        return gastoGrupoDao.getTotalGrupo(grupoId);
+    /** Un gasto concreto por ID como LiveData. */
+    public LiveData<GastoGrupo> getGastoById(long gastoId) {
+        return gastoGrupoDao.getGastoById(gastoId);
     }
 
-    /** Suma de lo que ha pagado un miembro específico en el grupo. */
-    public double getTotalPagadoPor(int grupoId, int usuarioId) {
-        return gastoGrupoDao.getTotalPagadoPor(grupoId, usuarioId);
+    // ── LECTURAS SÍNCRONAS (llamar desde background thread) ───────────────────
+
+    /** Lista de gastos del grupo sin LiveData. Para cálculos de balance. */
+    public List<GastoGrupo> getGastosByGrupoSync(long grupoId) {
+        return gastoGrupoDao.getGastosByGrupoSync(grupoId);
     }
 
-    public GastoGrupo getById(int id) {
-        return gastoGrupoDao.getById(id);
+    /** Total pagado por un usuario concreto en el grupo. Para cálculos de balance. */
+    public double getTotalPagadoPorUsuarioSync(long grupoId, long usuarioId) {
+        return gastoGrupoDao.getTotalPagadoPorUsuarioSync(grupoId, usuarioId);
+    }
+
+    // ── CALLBACK ──────────────────────────────────────────────────────────────
+
+    public interface SaveCallback<T> {
+        void onSaved(T result);
     }
 }

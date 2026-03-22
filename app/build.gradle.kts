@@ -55,6 +55,8 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.navigation.ui)
     annotationProcessor(libs.androidx.room.compiler)
 
     // Lifecycle
@@ -93,4 +95,9 @@ dependencies {
 
     //Coordinator Layout
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
+
+    //ExifInterface
+    implementation("androidx.exifinterface:exifinterface:1.3.7")
+    //PhotoView
+    implementation("com.github.chrisbanes:PhotoView:2.3.0")
 }

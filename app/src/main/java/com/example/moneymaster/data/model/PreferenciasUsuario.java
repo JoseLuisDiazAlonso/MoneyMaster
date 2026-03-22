@@ -18,11 +18,11 @@ import androidx.room.PrimaryKey;
                 @ForeignKey(
                         entity = User.class,
                         parentColumns = "id",
-                        childColumns = "usuario_id",
+                        childColumns = "usuarioId",
                         onDelete = ForeignKey.CASCADE
                 )
         },
-        indices = { @Index(value = "usuario_id", unique = true) }
+        indices = { @Index(value = "usuarioId", unique = true) }
 )
 public class PreferenciasUsuario {
 
@@ -31,7 +31,7 @@ public class PreferenciasUsuario {
     public int id;
 
     /** FK → users.id. Propietario de estas preferencias. */
-    @ColumnInfo(name = "usuario_id")
+    @ColumnInfo(name = "usuarioId")
     public int usuarioId;
 
     /** Código de moneda ISO 4217. Ej: "MXN", "USD", "EUR". */

@@ -55,6 +55,7 @@ public class CategoriaGasto {
     /** 1 = activa, 0 = desactivada (borrado suave). */
     @ColumnInfo(name = "activo", defaultValue = "1")
     public int activo = 1;
+    public int esPredefinida;
 
     /** Factory method para categorías del sistema (usuario_id = null). */
     public static CategoriaGasto crearSistema(String nombre, String icono, String color) {

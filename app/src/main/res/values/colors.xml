@@ -19,7 +19,15 @@
     <color name="md_theme_onSurface">#191C1A</color>
 
     <!--Colores funcionales-->
-    <color name="error">#BA1A1A</color>
+    <color name="md_theme_error">#BA1A1A</color>
     <color name="success">#006C4C</color>
     <color name="warning">#FFA500</color>
+    <color name="income_green">#2E7D32</color>
+    <color name="expense_red">#C62828</color>
+    <color name="balance_positive_bg">#E8F5E9</color>
+    <color name="balance_negative_bg">#FFEBEE</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- Variante más oscura para estados pressed -->
+    <color name="income_green_dark">#388E3C</color>
 </resources>

@@ -12,18 +12,9 @@ import com.example.moneymaster.data.model.CategoriaIngreso;
 
 import java.util.List;
 
-/**
- * Repositorio de categorías (gastos e ingresos en un solo lugar).
- *
- * Unifica ambos DAOs porque desde la UI casi siempre se necesitan
- * las dos listas juntas (al crear un gasto o un ingreso).
- *
- * Las categorías del sistema ya existen desde el seed de AppDatabase.
- * Este repositorio gestiona principalmente las categorías personalizadas.
- */
 public class CategoriaRepository {
 
-    private final CategoriaGastoDao categoriaGastoDao;
+    private final CategoriaGastoDao   categoriaGastoDao;
     private final CategoriaIngresoDao categoriaIngresoDao;
 
     public CategoriaRepository(Context context) {
@@ -32,55 +23,63 @@ public class CategoriaRepository {
         categoriaIngresoDao = db.categoriaIngresoDao();
     }
 
-    // ---- CATEGORÍAS DE GASTO ----
+    // ── GASTOS ────────────────────────────────────────────────────────────────
 
-    public void insertCategoriaGasto(CategoriaGasto categoria) {
+    public void insertarCategoriaGasto(CategoriaGasto categoria) {
         AppDatabase.databaseWriteExecutor.execute(() ->
-                categoriaGastoDao.insertCategoria(categoria));
+                categoriaGastoDao.insertar(categoria));
     }
 
-    public void updateCategoriaGasto(CategoriaGasto categoria) {
+    public void actualizarCategoriaGasto(CategoriaGasto categoria) {
         AppDatabase.databaseWriteExecutor.execute(() ->
-                categoriaGastoDao.updateCategoria(categoria));
+                categoriaGastoDao.actualizar(categoria));
     }
 
-    public void desactivarCategoriaGasto(int id) {
+    public void eliminarCategoriaGasto(CategoriaGasto categoria) {
         AppDatabase.databaseWriteExecutor.execute(() ->
-                categoriaGastoDao.desactivarCategoria(id));
+                categoriaGastoDao.eliminar(categoria));
     }
 
-    /** LiveData con categorías del sistema + personalizadas del usuario. */
-    public LiveData<List<CategoriaGasto>> getCategoriasGastoParaUsuario(int usuarioId) {
-        return categoriaGastoDao.getCategoriasParaUsuario(usuarioId);
+    /** Sistema + personalizadas del usuario, activas. */
+    public LiveData<List<CategoriaGasto>> getCategoriasGasto(long usuarioId) {
+        return categoriaGastoDao.getCategorias(usuarioId);
     }
 
-    public CategoriaGasto getCategoriaGastoById(int id) {
-        return categoriaGastoDao.getById(id);
+    public LiveData<List<CategoriaGasto>> getCategoriasByUsuarioGasto(long usuarioId) {
+        return categoriaGastoDao.getCategoriasByUsuario(usuarioId);
     }
 
-    // ---- CATEGORÍAS DE INGRESO ----
+    public LiveData<CategoriaGasto> getCategoriaGastoById(long id) {
+        return categoriaGastoDao.getCategoriaById(id);
+    }
 
-    public void insertCategoriaIngreso(CategoriaIngreso categoria) {
+    // ── INGRESOS ──────────────────────────────────────────────────────────────
+
+    public void insertarCategoriaIngreso(CategoriaIngreso categoria) {
         AppDatabase.databaseWriteExecutor.execute(() ->
-                categoriaIngresoDao.insertCategoria(categoria));
+                categoriaIngresoDao.insertar(categoria));
     }
 
-    public void updateCategoriaIngreso(CategoriaIngreso categoria) {
+    public void actualizarCategoriaIngreso(CategoriaIngreso categoria) {
         AppDatabase.databaseWriteExecutor.execute(() ->
-                categoriaIngresoDao.updateCategoria(categoria));
+                categoriaIngresoDao.actualizar(categoria));
     }
 
-    public void desactivarCategoriaIngreso(int id) {
+    public void eliminarCategoriaIngreso(CategoriaIngreso categoria) {
         AppDatabase.databaseWriteExecutor.execute(() ->
-                categoriaIngresoDao.desactivarCategoria(id));
+                categoriaIngresoDao.eliminar(categoria));
     }
 
-    /** LiveData con categorías del sistema + personalizadas del usuario. */
-    public LiveData<List<CategoriaIngreso>> getCategoriasIngresoParaUsuario(int usuarioId) {
-        return categoriaIngresoDao.getCategoriasParaUsuario(usuarioId);
+    /** Sistema + personalizadas del usuario, activas. */
+    public LiveData<List<CategoriaIngreso>> getCategoriasIngreso(long usuarioId) {
+        return categoriaIngresoDao.getCategorias(usuarioId);
     }
 
-    public CategoriaIngreso getCategoriaIngresoById(int id) {
-        return categoriaIngresoDao.getById(id);
+    public LiveData<List<CategoriaIngreso>> getCategoriasByUsuarioIngreso(long usuarioId) {
+        return categoriaIngresoDao.getCategoriasByUsuario(usuarioId);
+    }
+
+    public LiveData<CategoriaIngreso> getCategoriaIngresoById(long id) {
+        return categoriaIngresoDao.getCategoriaById(id);
     }
 }

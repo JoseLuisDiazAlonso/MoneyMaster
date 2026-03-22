@@ -56,7 +56,7 @@ public class RecuperarContrasenaViewModel extends AndroidViewModel {
 
         executor.execute(() -> {
             // 1. Verificar que el email existe en la DB
-            User user = db.userDao().getUserByEmail(email.trim().toLowerCase());
+            User user = db.userDao().getByEmail(email.trim().toLowerCase());
 
             if (user == null) {
                 errorMessage.postValue("No existe una cuenta con ese email");

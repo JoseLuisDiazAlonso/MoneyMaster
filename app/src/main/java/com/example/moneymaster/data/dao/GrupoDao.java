@@ -9,34 +9,51 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.example.moneymaster.data.model.Grupo;
+import com.example.moneymaster.data.model.GroupWithDetails;
 
 import java.util.List;
 
 @Dao
 public interface GrupoDao {
 
+    // ─── CRUD básico ────────────────────────────────────────────────────────
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insertar(Grupo grupo);
+    long insertGrupo(Grupo grupo);
 
     @Update
-    void actualizar(Grupo grupo);
+    void updateGrupo(Grupo grupo);
 
     @Delete
-    void eliminar(Grupo grupo);
+    void deleteGrupo(Grupo grupo);
+
+    @Query("SELECT * FROM grupos WHERE id = :id")
+    LiveData<Grupo> getGrupoById(int id);
+
+    @Query("SELECT * FROM grupos ORDER BY fecha_creacion DESC")
+    LiveData<List<Grupo>> getAllGrupos();
+
+    // ─── Consulta enriquecida para el Fragment Lista de Grupos ─────────────
 
     /**
-     * Grupos donde el usuario es creador O es miembro registrado.
-     * JOIN con miembros_grupo para incluir grupos en los que fue invitado.
+     * Devuelve todos los grupos con:
+     *  - numMiembros : número de filas en miembros_grupo para ese grupo
+     *  - balanceTotal: suma de los importes de gastos_grupo para ese grupo
+     *                  (NULL si no hay gastos → COALESCE → 0.0)
+     *
+     * Se usa LEFT JOIN para incluir grupos sin miembros ni gastos.
      */
-    @Query("SELECT DISTINCT g.* FROM grupos g " +
-            "LEFT JOIN miembros_grupo m ON g.id = m.grupo_id " +
-            "WHERE g.creador_id = :usuarioId OR m.usuario_id = :usuarioId " +
+    @Query("SELECT " +
+            "  g.id              AS id, " +
+            "  g.nombre          AS nombre, " +
+            "  g.descripcion     AS descripcion, " +
+            "  g.fecha_creacion  AS fechaCreacion, " +
+            "  COUNT(DISTINCT m.id)          AS numMiembros, " +
+            "  COALESCE(SUM(gg.monto), 0)  AS balanceTotal " +
+            "FROM grupos g " +
+            "LEFT JOIN miembros_grupo m  ON m.grupoId = g.id " +
+            "LEFT JOIN gastos_grupo gg   ON gg.grupo_id = g.id " +
+            "GROUP BY g.id " +
             "ORDER BY g.fecha_creacion DESC")
-    LiveData<List<Grupo>> getGruposByUsuario(long usuarioId);
-
-    @Query("SELECT * FROM grupos WHERE id = :grupoId LIMIT 1")
-    LiveData<Grupo> getGrupoById(long grupoId);
-
-    @Query("SELECT COUNT(*) FROM grupos WHERE creador_id = :usuarioId")
-    int countGruposCreados(long usuarioId);
+    LiveData<List<GroupWithDetails>> getAllGroupsWithDetails();
 }

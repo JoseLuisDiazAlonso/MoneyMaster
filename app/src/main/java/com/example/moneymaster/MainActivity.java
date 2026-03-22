@@ -1,34 +1,33 @@
 package com.example.moneymaster;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import androidx.fragment.app.Fragment;
 
 import com.example.moneymaster.databinding.ActivityMainBinding;
-
+import com.example.moneymaster.ui.categories.CategoriesFragment;
+import com.example.moneymaster.ui.expenses.AddExpenseActivity;
+import com.example.moneymaster.ui.groups.GroupsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
 
-    //Fragment actualmente visible
     private Fragment currentFragment;
 
-    //Tags para identificar cada fragment en el back stack
-    private static final String TAG_HOME = "HOME";
-    private static final String TAG_GROUPS = "GROUPS";
-    private static final String TAG_STATS = "STATS";
-    private static final String TAG_PROFILE = "PROFILE";
+    private static final String TAG_HOME       = "HOME";
+    private static final String TAG_CATEGORIES = "CATEGORIES";
+    private static final String TAG_GROUPS     = "GROUPS";
+    private static final String TAG_STATS      = "STATS";
+    private static final String TAG_PROFILE    = "PROFILE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //ViewBinding
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -36,31 +35,26 @@ public class MainActivity extends AppCompatActivity {
         setupBottomNavigation();
         setupFab();
 
-        //Cargamos el fragmento de inicio por defecto
         if (savedInstanceState == null) {
             loadFragment(new HomeFragment(), TAG_HOME);
             binding.bottomNavigationView.setSelectedItemId(R.id.nav_home);
         }
     }
 
-    //Toolbar
+    // ── Toolbar ──────────────────────────────────────────────────────────────
 
     private void setupToolbar() {
         setSupportActionBar(binding.toolbar);
-        /**El título se establece desde el XML (app:title) o se puede cambiar dinamicamente
-         * desde cada fragment llamando a (MainActivity) getActivity().setToolbarTitle("...")*/
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(true);
         }
-
     }
 
-    //Permite que los fragments actualicen el título del toolbar
     public void setToolbarTitle(String title) {
         binding.toolbar.setTitle(title);
     }
 
-    //BottomNavigation
+    // ── BottomNavigation ─────────────────────────────────────────────────────
 
     private void setupBottomNavigation() {
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -69,6 +63,11 @@ public class MainActivity extends AppCompatActivity {
             if (id == R.id.nav_home) {
                 loadFragment(new HomeFragment(), TAG_HOME);
                 showFab();
+                return true;
+
+            } else if (id == R.id.nav_categories) {
+                loadFragment(new CategoriesFragment(), TAG_CATEGORIES);
+                hideFab();
                 return true;
 
             } else if (id == R.id.nav_groups) {
@@ -95,53 +94,50 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            //Abrir pantalla de configuración
             return true;
-
         } else if (id == R.id.action_logout) {
-            //Cerrar sesión
             return true;
         } else if (id == R.id.action_notifications) {
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
-    /**Cargamos un fragmente en el contenedor principal.**/
+
+    // ── Fragment loader ──────────────────────────────────────────────────────
 
     private void loadFragment(Fragment fragment, String tag) {
-        //Comprobamos si ya existe una instancia en el back stack
         Fragment existingFragment = getSupportFragmentManager().findFragmentByTag(tag);
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragmentContainer, existingFragment != null ? existingFragment : fragment, tag)
+                .replace(R.id.fragmentContainer,
+                        existingFragment != null ? existingFragment : fragment, tag)
                 .commit();
 
         currentFragment = fragment;
-
     }
-    //FAB
+
+    // ── FAB ──────────────────────────────────────────────────────────────────
 
     private void setupFab() {
         binding.fabAddExpense.setOnClickListener(view -> {
-            //Abrir pantalla para agregar nuevo gasto
-            //Ejemplo: startActivity(new Intent(this, AddExpenseActivity.class));
+            startActivity(new Intent(this, AddExpenseActivity.class));
         });
     }
 
-    private void showFab() {
+    public void showFab() {
         binding.fabAddExpense.show();
     }
 
-    /*Ocultamos el fab con animación**/
     public void hideFab() {
         binding.fabAddExpense.hide();
     }
-    //Ciclo de vida
+
+    // ── Ciclo de vida ────────────────────────────────────────────────────────
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        binding = null; //Liberamos la referencia al binding para evitar fugas de memoria
+        binding = null;
     }
 }

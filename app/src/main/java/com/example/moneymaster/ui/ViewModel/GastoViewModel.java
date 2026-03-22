@@ -1,4 +1,4 @@
-package com.example.moneymaster.ui.viewmodel;
+package com.example.moneymaster.ui.ViewModel;
 
 import android.app.Application;
 

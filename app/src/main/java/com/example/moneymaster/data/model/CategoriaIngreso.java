@@ -54,6 +54,7 @@ public class CategoriaIngreso {
     /** 1 = activa, 0 = desactivada (borrado suave). */
     @ColumnInfo(name = "activo", defaultValue = "1")
     public int activo = 1;
+    public int esPredefinida;
 
     /** Factory method para crear categorías del sistema con usuario_id = null. */
     public static CategoriaIngreso crearSistema(String nombre, String icono, String color) {

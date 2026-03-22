@@ -5,6 +5,7 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.example.moneymaster.data.model.BalanceGrupo;
 
@@ -14,33 +15,63 @@ import java.util.List;
 public interface BalanceGrupoDao {
 
     /**
-     * Inserta o reemplaza el balance de un miembro en un grupo.
-     * Funciona como UPSERT gracias a la clave primaria compuesta (grupoId, usuarioId)
-     * definida en la entidad con @Entity(primaryKeys = {"grupoId", "usuarioId"}).
+     * Inserta o reemplaza un balance por su clave única
+     * (grupo_id, usuario_deudor_id, usuario_acreedor_id).
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void upsert(BalanceGrupo balance);
+    long upsertBalance(BalanceGrupo balance);
 
+    /** Inserta o reemplaza una lista completa de balances de una vez. */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void upsertVarios(List<BalanceGrupo> balances);
 
-    /** Balances de todos los miembros en un grupo. */
-    @Query("SELECT * FROM balance_grupo WHERE grupo_id = :grupoId")
-    LiveData<List<BalanceGrupo>> getBalancesByGrupo(long grupoId);
+    @Update
+    int updateBalance(BalanceGrupo balance);
 
-    /** Versión síncrona para el recalculo en hilo de fondo. */
-    @Query("SELECT * FROM balance_grupo WHERE grupo_id = :grupoId")
-    List<BalanceGrupo> getBalancesByGrupoSync(long grupoId);
+    /**
+     * Acumula un monto al balance existente entre deudor y acreedor.
+     * También reactiva la deuda si estaba marcada como liquidada.
+     */
+    @Query("UPDATE balance_grupo " +
+            "SET monto_pendiente = monto_pendiente + :monto, " +
+            "    ultima_actualizacion = :timestamp, " +
+            "    liquidado = 0 " +
+            "WHERE grupo_id = :grupoId " +
+            "  AND usuario_deudor_id = :deudorId " +
+            "  AND usuario_acreedor_id = :acreedorId")
+    int acumularBalance(long grupoId, long deudorId, long acreedorId,
+                        double monto, long timestamp);
 
-    /** Balance individual de un usuario en un grupo. */
-    @Query("SELECT * FROM balance_grupo WHERE grupo_id = :grupoId AND usuarioId = :usuarioId LIMIT 1")
-    LiveData<BalanceGrupo> getBalanceUsuario(long grupoId, long usuarioId);
+    /** Marca la deuda como saldada. La fila se conserva como historial. */
+    @Query("UPDATE balance_grupo " +
+            "SET monto_pendiente = 0, liquidado = 1, " +
+            "    ultima_actualizacion = :timestamp " +
+            "WHERE grupo_id = :grupoId " +
+            "  AND usuario_deudor_id = :deudorId " +
+            "  AND usuario_acreedor_id = :acreedorId")
+    int liquidarDeuda(long grupoId, long deudorId, long acreedorId, long timestamp);
 
-    /** Versión síncrona del balance individual. */
-    @Query("SELECT * FROM balance_grupo WHERE grupo_id = :grupoId AND usuarioId = :usuarioId LIMIT 1")
-    BalanceGrupo getBalanceUsuarioSync(long grupoId, long usuarioId);
-
-    /** Elimina todos los balances de un grupo (usar al eliminar el grupo). */
+    /** Elimina todos los balances de un grupo (para recalcular desde cero). */
     @Query("DELETE FROM balance_grupo WHERE grupo_id = :grupoId")
     void eliminarBalancesByGrupo(long grupoId);
+
+    /** Todos los balances de un grupo — LiveData para la UI. */
+    @Query("SELECT * FROM balance_grupo WHERE grupo_id = :grupoId " +
+            "ORDER BY monto_pendiente DESC")
+    LiveData<List<BalanceGrupo>> getBalancesByGrupo(long grupoId);
+
+    /** Solo deudas pendientes (monto > 0 y no liquidadas). */
+    @Query("SELECT * FROM balance_grupo " +
+            "WHERE grupo_id = :grupoId AND liquidado = 0 AND monto_pendiente > 0")
+    LiveData<List<BalanceGrupo>> getBalancesPendientes(long grupoId);
+
+    /** Lo que YO debo a otros miembros del grupo. */
+    @Query("SELECT * FROM balance_grupo " +
+            "WHERE grupo_id = :grupoId AND usuario_deudor_id = :usuarioId AND liquidado = 0")
+    LiveData<List<BalanceGrupo>> getMisDeudas(long grupoId, long usuarioId);
+
+    /** Lo que otros miembros me deben a MÍ en el grupo. */
+    @Query("SELECT * FROM balance_grupo " +
+            "WHERE grupo_id = :grupoId AND usuario_acreedor_id = :usuarioId AND liquidado = 0")
+    LiveData<List<BalanceGrupo>> getLoqueMeDeben(long grupoId, long usuarioId);
 }

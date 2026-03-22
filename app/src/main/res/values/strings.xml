@@ -29,4 +29,70 @@
     <string name="fragment_stats_placeholder">Estadísticas — próximamente</string>
     <string name="fragment_profile_placeholder">Perfil — próximamente</string>
 
+
+    <!-- Títulos -->
+    <string name="title_add_expense">Añadir Gasto</string>
+
+    <!-- Hints de campos -->
+    <string name="hint_cantidad">Cantidad (€)</string>
+    <string name="hint_categoria">Categoría</string>
+    <string name="hint_descripcion">Descripción (opcional)</string>
+    <string name="hint_fecha">Fecha</string>
+
+    <!-- Etiquetas -->
+    <string name="label_foto_recibo">Foto del recibo</string>
+
+    <!-- Botones -->
+    <string name="btn_anadir_foto">Añadir foto del recibo</string>
+    <string name="btn_cambiar_foto">Cambiar foto</string>
+    <string name="btn_guardar_gasto">Guardar gasto</string>
+
+    <!-- Opciones del diálogo de foto -->
+    <string name="option_camara">Cámara</string>
+    <string name="option_galeria">Galería</string>
+    <string name="dialog_fuente_foto">Seleccionar foto</string>
+
+    <!-- Accesibilidad -->
+    <string name="cd_foto_recibo">Foto del recibo</string>
+    <string name="cd_eliminar_foto">Eliminar foto</string>
+
+    <!-- Errores de validación -->
+    <string name="error_cantidad_requerida">La cantidad es obligatoria</string>
+    <string name="error_cantidad_positiva">La cantidad debe ser mayor que 0</string>
+    <string name="error_cantidad_invalida">Formato de cantidad no válido</string>
+    <string name="error_categoria_requerida">Selecciona una categoría</string>
+
+    <!-- Errores de sistema -->
+    <string name="error_permiso_camara">Se necesita permiso para usar la cámara</string>
+    <string name="error_crear_foto">No se pudo crear el archivo de foto</string>
+    <string name="error_guardar_gasto">Error al guardar el gasto</string>
+
+    <!-- Mensajes de éxito -->
+    <string name="msg_gasto_guardado">Gasto guardado correctamente</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <!-- ── Pantalla Añadir Ingreso ────────────────────────────────────────────── -->
+    <string name="add_income_title">Añadir Ingreso</string>
+    <string name="hint_amount">Importe (€)</string>
+    <string name="hint_category">Categoría</string>
+    <string name="hint_description_optional">Descripción (opcional)</string>
+    <string name="hint_date">Fecha</string>
+    <string name="btn_save_income">Guardar Ingreso</string>
+    <string name="select_date">Seleccionar fecha</string>
+
+    <!-- ── Errores de validación ─────────────────────────────────────────────── -->
+    <string name="error_amount_required">El importe es obligatorio</string>
+    <string name="error_amount_positive">El importe debe ser mayor que 0</string>
+    <string name="error_amount_invalid">Introduce un número válido</string>
+    <string name="error_category_required">Selecciona una categoría</string>
+    <string name="error_date_required">Selecciona una fecha</string>
+    <string name="error_save_income">Error al guardar el ingreso. Inténtalo de nuevo.</string>
+
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</string>
+    <string name="icono_categoria">Icono de categoría</string>
+
 </resources>

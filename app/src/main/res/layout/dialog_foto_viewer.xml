@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <!-- Foto ampliada -->
+    <ImageView
+        android:id="@+id/ivFotoAmpliada"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/cd_foto_recibo" />
+
+    <!-- Botón cerrar (esquina superior derecha) -->
+    <ImageButton
+        android:id="@+id/btnCerrarViewer"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="16dp"
+        android:background="@drawable/bg_boton_viewer"
+        android:src="@drawable/ic_close"
+        android:tint="@android:color/white"
+        android:contentDescription="Cerrar" />
+
+    <!-- Botón eliminar foto (esquina inferior derecha) -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnEliminarFotoViewer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="24dp"
+        android:src="@drawable/ic_delete"
+        android:contentDescription="Eliminar foto"
+        app:backgroundTint="#CC0000"
+        app:tint="@android:color/white"
+        xmlns:app="http://schemas.android.com/apk/res-auto"/>
+
+</FrameLayout>

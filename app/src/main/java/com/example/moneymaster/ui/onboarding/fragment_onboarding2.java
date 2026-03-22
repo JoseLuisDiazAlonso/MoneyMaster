@@ -1,4 +1,4 @@
-package com.example.moneymaster;
+package com.example.moneymaster.ui.onboarding;
 
 import android.os.Bundle;
 
@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.moneymaster.R;
 
 public class fragment_onboarding2 extends Fragment {
 

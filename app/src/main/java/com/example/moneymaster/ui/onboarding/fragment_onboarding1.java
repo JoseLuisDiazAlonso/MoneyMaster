@@ -1,4 +1,4 @@
-package com.example.moneymaster;
+package com.example.moneymaster.ui.onboarding;
 
 import android.os.Bundle;
 
@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.material.card.MaterialCardView;
+import com.example.moneymaster.R;
 
 /*Fragment que muestar la primera pantalla del onboarding.**/
 

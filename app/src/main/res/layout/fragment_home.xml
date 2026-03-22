@@ -1,21 +1,326 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<!--
+    ╔══════════════════════════════════════════════════════════════════╗
+    ║  fragment_home.xml                                               ║
+    ║  Ruta: res/layout/fragment_home.xml                              ║
+    ╠══════════════════════════════════════════════════════════════════╣
+    ║  Layout del Dashboard personal (Card #19).                       ║
+    ║                                                                  ║
+    ║  Estructura visual:                                              ║
+    ║  ┌────────────────────────────────────────────────┐             ║
+    ║  │  ← [  Marzo 2026  ] →                          │  Selector   ║
+    ║  ├────────────────────────────────────────────────┤             ║
+    ║  │  ┌──────────────────────────────────────────┐  │             ║
+    ║  │  │  Balance del mes                         │  │  Card       ║
+    ║  │  │  ▲ +1.250,00 €                           │  │  Balance    ║
+    ║  │  │  [Ingresos: 2.000 €] [Gastos: 750 €]     │  │             ║
+    ║  │  └──────────────────────────────────────────┘  │             ║
+    ║  ├────────────────────────────────────────────────┤             ║
+    ║  │  Últimos movimientos                           │  Header     ║
+    ║  ├────────────────────────────────────────────────┤             ║
+    ║  │  [ícono] Alimentación     -18,50 €  15 mar     │  Items      ║
+    ║  │  [ícono] Salario        +2.000,00 €  1 mar     │             ║
+    ║  │  ...                                           │             ║
+    ║  ├────────────────────────────────────────────────┤             ║
+    ║  │              [ VER TODOS ]                     │  Botón      ║
+    ║  └────────────────────────────────────────────────┘             ║
+    ╚══════════════════════════════════════════════════════════════════╝
+-->
+<androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface">
+    android:background="?attr/colorSurface"
+    android:fillViewport="true">
 
-    <!--
-        Contenido del Dashboard de Inicio.
-        Se completará en cards del Sprint 2 (resumen de balance,
-        transacciones recientes, acceso rápido a categorías…).
-    -->
-
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/fragment_home_placeholder"
-        android:textAppearance="?attr/textAppearanceBodyLarge" />
+        android:orientation="vertical"
+        android:paddingBottom="88dp">
+        <!-- paddingBottom = altura de BottomNavigationView (56dp) + margen extra (32dp) -->
 
-</FrameLayout>
+        <!-- ══════════════════════════════════════════════════════════
+             SELECTOR DE MES
+             Fila: [←] [Marzo 2026] [→]
+             ══════════════════════════════════════════════════════════ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="8dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnMesAnterior"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="Mes anterior"
+                app:icon="@drawable/ic_chevron_left" />
+
+            <TextView
+                android:id="@+id/tvMesActual"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                android:textStyle="bold"
+                tools:text="Marzo 2026" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnMesSiguiente"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="Mes siguiente"
+                app:icon="@drawable/ic_chevron_right" />
+
+        </LinearLayout>
+
+        <!-- ══════════════════════════════════════════════════════════
+             CARD DE BALANCE
+             ══════════════════════════════════════════════════════════ -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardBalance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:strokeWidth="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <!-- Etiqueta "Balance del mes" -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Balance del mes"
+                    android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
+                    android:alpha="0.7" />
+
+                <!-- Indicador + importe en la misma fila -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="4dp">
+
+                    <!-- Barra de color indicador positivo/negativo -->
+                    <View
+                        android:id="@+id/viewIndicadorBalance"
+                        android:layout_width="4dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="12dp"
+                        android:background="@drawable/bg_indicator_bar" />
+
+                    <!-- Signo ▲ / ▼ -->
+                    <TextView
+                        android:id="@+id/tvSignoBalance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="6dp"
+                        android:textSize="18sp"
+                        tools:text="▲" />
+
+                    <!-- Importe del balance -->
+                    <TextView
+                        android:id="@+id/tvBalance"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
+                        android:textStyle="bold"
+                        tools:text="+1.250,00 €" />
+
+                </LinearLayout>
+
+                <!-- Separador -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="16dp"
+                    android:background="?attr/colorOutlineVariant" />
+
+                <!-- Fila Ingresos / Gastos -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Ingresos -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:layout_marginEnd="4dp"
+                                android:src="@drawable/ic_arrow_upward"
+                                app:tint="@color/income_green"
+                                android:contentDescription="Ingresos" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Ingresos"
+                                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                                android:alpha="0.7" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvTotalIngresos"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                            android:textColor="@color/income_green"
+                            android:textStyle="bold"
+                            tools:text="2.000,00 €" />
+                    </LinearLayout>
+
+                    <!-- Divisor vertical -->
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="?attr/colorOutlineVariant" />
+
+                    <!-- Gastos -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:layout_marginEnd="4dp"
+                                android:src="@drawable/ic_arrow_downward"
+                                app:tint="@color/expense_red"
+                                android:contentDescription="Gastos" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Gastos"
+                                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                                android:alpha="0.7" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvTotalGastos"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                            android:textColor="@color/expense_red"
+                            android:textStyle="bold"
+                            tools:text="750,00 €" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ══════════════════════════════════════════════════════════
+             CABECERA "ÚLTIMOS MOVIMIENTOS"
+             ══════════════════════════════════════════════════════════ -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="Últimos movimientos"
+            android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+            android:textStyle="bold" />
+
+        <!-- ══════════════════════════════════════════════════════════
+             ESTADO VACÍO
+             ══════════════════════════════════════════════════════════ -->
+        <LinearLayout
+            android:id="@+id/tvSinMovimientos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingVertical="32dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@drawable/ic_receipt_long"
+                android:alpha="0.3"
+                app:tint="?attr/colorOnSurface"
+                android:contentDescription="Sin movimientos" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Sin movimientos este mes"
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                android:alpha="0.5" />
+        </LinearLayout>
+
+        <!-- ══════════════════════════════════════════════════════════
+             RECYCLERVIEW (scroll deshabilitado: scroll externo es el NestedScrollView)
+             ══════════════════════════════════════════════════════════ -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvMovimientos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:overScrollMode="never"
+            tools:listitem="@layout/item_movimiento"
+            tools:itemCount="5" />
+
+        <!-- ══════════════════════════════════════════════════════════
+             BOTÓN VER TODOS
+             ══════════════════════════════════════════════════════════ -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnVerTodos"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="8dp"
+            android:text="Ver todos"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

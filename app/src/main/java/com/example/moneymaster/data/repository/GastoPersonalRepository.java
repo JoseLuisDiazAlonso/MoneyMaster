@@ -7,19 +7,11 @@ import androidx.lifecycle.LiveData;
 import com.example.moneymaster.data.database.AppDatabase;
 import com.example.moneymaster.data.dao.GastoPersonalDao;
 import com.example.moneymaster.data.model.GastoPersonal;
+import com.example.moneymaster.data.model.ResumenMensual;
+import com.example.moneymaster.data.model.TotalPorCategoria;
 
 import java.util.List;
 
-/**
- * Repositorio de gastos personales.
- *
- * Gestiona el CRUD de GastoPersonal y expone LiveData para que
- * el ViewModel observe cambios en tiempo real sin acoplarse al DAO.
- *
- * Nota sobre fotos: este repositorio NO gestiona FotoRecibo.
- * Si el gasto lleva foto, usar FotoReciboRepository primero para
- * obtener el fotoReciboId, asignarlo al GastoPersonal y luego insertar.
- */
 public class GastoPersonalRepository {
 
     private final GastoPersonalDao gastoPersonalDao;
@@ -29,48 +21,81 @@ public class GastoPersonalRepository {
         gastoPersonalDao = db.gastoPersonalDao();
     }
 
-    // ---- ESCRITURAS (background thread) ----
+    // ── ESCRITURAS ────────────────────────────────────────────────────────────
 
-    public void insertGasto(GastoPersonal gasto) {
+    public void insertarGasto(GastoPersonal gasto) {
         AppDatabase.databaseWriteExecutor.execute(() ->
-                gastoPersonalDao.insertGasto(gasto));
+                gastoPersonalDao.insertar(gasto));
     }
 
-    public void updateGasto(GastoPersonal gasto) {
+    public void insertarGastoYObtenerId(GastoPersonal gasto, SaveCallback<Long> callback) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            long id = gastoPersonalDao.insertar(gasto);
+            new android.os.Handler(android.os.Looper.getMainLooper())
+                    .post(() -> callback.onSaved(id));
+        });
+    }
+
+    public void actualizarGasto(GastoPersonal gasto) {
         AppDatabase.databaseWriteExecutor.execute(() ->
-                gastoPersonalDao.updateGasto(gasto));
+                gastoPersonalDao.actualizar(gasto));
     }
 
-    public void deleteGasto(GastoPersonal gasto) {
+    public void eliminarGasto(GastoPersonal gasto) {
         AppDatabase.databaseWriteExecutor.execute(() ->
-                gastoPersonalDao.deleteGasto(gasto));
+                gastoPersonalDao.eliminar(gasto));
     }
 
-    // ---- LECTURAS REACTIVAS (LiveData) ----
+    // ── LISTAS ────────────────────────────────────────────────────────────────
 
-    /** Todos los gastos del usuario, más recientes primero. */
-    public LiveData<List<GastoPersonal>> getGastosPorUsuario(int usuarioId) {
-        return gastoPersonalDao.getGastosPorUsuario(usuarioId);
+    public LiveData<List<GastoPersonal>> getGastosByUsuario(long usuarioId) {
+        return gastoPersonalDao.getGastosByUsuario(usuarioId);
     }
 
-    /** Gastos dentro de un rango de fechas (timestamps en milisegundos). */
-    public LiveData<List<GastoPersonal>> getGastosPorFecha(int usuarioId, long inicio, long fin) {
-        return gastoPersonalDao.getGastosPorFecha(usuarioId, inicio, fin);
+    public LiveData<List<GastoPersonal>> getGastosByMes(long usuarioId, int mes, int anio) {
+        return gastoPersonalDao.getGastosByMes(usuarioId, mes, anio);
     }
 
-    /** Gastos filtrados por categoría. */
-    public LiveData<List<GastoPersonal>> getGastosPorCategoria(int usuarioId, int categoriaId) {
-        return gastoPersonalDao.getGastosPorCategoria(usuarioId, categoriaId);
+    public LiveData<List<GastoPersonal>> getUltimosGastos(long usuarioId, int limite) {
+        return gastoPersonalDao.getUltimosGastos(usuarioId, limite);
     }
 
-    // ---- LECTURAS SINCRÓNICAS (llamar desde background thread) ----
-
-    /** Total gastado en un período. Útil para el dashboard. */
-    public double getTotalGastos(int usuarioId, long inicio, long fin) {
-        return gastoPersonalDao.getTotalGastos(usuarioId, inicio, fin);
+    public LiveData<GastoPersonal> getGastoById(long gastoId) {
+        return gastoPersonalDao.getGastoById(gastoId);
     }
 
-    public GastoPersonal getById(int id) {
-        return gastoPersonalDao.getById(id);
+    // ── TOTALES ───────────────────────────────────────────────────────────────
+
+    public LiveData<Double> getTotalGastosMes(long usuarioId, int mes, int anio) {
+        return gastoPersonalDao.getTotalGastosMes(usuarioId, mes, anio);
+    }
+
+    public LiveData<Double> getTotalGastosRango(long usuarioId, long desde, long hasta) {
+        return gastoPersonalDao.getTotalGastosRango(usuarioId, desde, hasta);
+    }
+
+    // ── ESTADÍSTICAS ──────────────────────────────────────────────────────────
+
+    public LiveData<List<TotalPorCategoria>> getGastosPorCategoria(long usuarioId,
+                                                                   int mes, int anio) {
+        return gastoPersonalDao.getGastosPorCategoria(usuarioId, mes, anio);
+    }
+
+    public LiveData<List<ResumenMensual>> getResumenUltimosMeses(long usuarioId, int meses) {
+        return gastoPersonalDao.getResumenUltimosMeses(usuarioId, meses);
+    }
+
+    public List<ResumenMensual> getResumenUltimosMesesSync(long usuarioId, int meses) {
+        return gastoPersonalDao.getResumenUltimosMesesSync(usuarioId, meses);
+    }
+
+    public int countGastos(long usuarioId) {
+        return gastoPersonalDao.countGastos(usuarioId);
+    }
+
+    // ── CALLBACK ──────────────────────────────────────────────────────────────
+
+    public interface SaveCallback<T> {
+        void onSaved(T result);
     }
 }

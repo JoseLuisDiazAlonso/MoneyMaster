@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    bg_indicator_bar.xml
+    Ruta: res/drawable/bg_indicator_bar.xml
+
+    Barra redondeada usada como indicador visual positivo/negativo
+    en la CardView de balance. El color se cambia en tiempo de ejecución
+    desde HomeFragment con setBackgroundColor().
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners android:radius="4dp" />
+    <!-- Color por defecto; se sobreescribe desde Java -->
+    <solid android:color="@color/income_green" />
+</shape>
