@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    res/menu/menu_group_detail.xml
+    Menú de la Toolbar en GroupDetailActivity.
+    Card #39 — añade el ítem "Compartir".
+
+    Ícono necesario: ic_share (descarga de fonts.google.com/icons → "Share")
+-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Compartir resumen del grupo — siempre visible en la toolbar -->
+    <item
+        android:id="@+id/action_compartir"
+        android:icon="@drawable/ic_share"
+        android:title="Compartir"
+        android:contentDescription="Compartir resumen del grupo"
+        app:showAsAction="always" />
+
+</menu>

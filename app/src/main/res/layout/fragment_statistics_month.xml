@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- fragment_statistics_month.xml
+     Pestaña "Mes actual":
+       · Selector mes/año con chevrones
+       · 3 tarjetas de resumen numérico
+       · PieChart distribución de gastos por categoría
+       · BarChart comparativa semanal gastos vs ingresos -->
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             Selector de mes/año
+             ══════════════════════════════════════════════════════════════════ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <ImageButton
+                android:id="@+id/btnMonthPrev"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_chevron_left"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Mes anterior" />
+
+            <TextView
+                android:id="@+id/tvMonthYear"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                android:text="Enero 2025" />
+
+            <ImageButton
+                android:id="@+id/btnMonthNext"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_chevron_right"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Mes siguiente" />
+        </LinearLayout>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             Resumen numérico — 3 tarjetas en fila
+             ══════════════════════════════════════════════════════════════════ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp">
+
+            <!-- Gasto total -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                app:cardElevation="2dp"
+                app:cardCornerRadius="12dp"
+                app:cardBackgroundColor="?attr/colorErrorContainer">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Gastado"
+                        android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                        android:textColor="?attr/colorOnErrorContainer" />
+
+                    <TextView
+                        android:id="@+id/tvTotalGastado"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0,00 €"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+                        android:textColor="?attr/colorOnErrorContainer"
+                        android:fontFamily="sans-serif-medium" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Ingreso total -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                app:cardElevation="2dp"
+                app:cardCornerRadius="12dp"
+                app:cardBackgroundColor="@color/md_theme_light_tertiaryContainer">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ingresado"
+                        android:textAppearance="@style/TextAppearance.Material3.LabelSmall" />
+
+                    <TextView
+                        android:id="@+id/tvTotalIngresado"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0,00 €"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+                        android:fontFamily="sans-serif-medium" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Balance -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                app:cardElevation="2dp"
+                app:cardCornerRadius="12dp"
+                app:cardBackgroundColor="?attr/colorSecondaryContainer">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Balance"
+                        android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                        android:textColor="?attr/colorOnSecondaryContainer" />
+
+                    <TextView
+                        android:id="@+id/tvBalance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0,00 €"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+                        android:textColor="?attr/colorOnSecondaryContainer"
+                        android:fontFamily="sans-serif-medium" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             PieChart — Distribución gastos por categoría
+             ══════════════════════════════════════════════════════════════════ -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardElevation="2dp"
+            app:cardCornerRadius="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Gastos por categoría"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+                    android:layout_marginBottom="8dp" />
+
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/pieChartGastos"
+                    android:layout_width="match_parent"
+                    android:layout_height="240dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             BarChart — Gastos vs Ingresos por semana
+             ══════════════════════════════════════════════════════════════════ -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardElevation="2dp"
+            app:cardCornerRadius="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Gastos vs Ingresos por semana"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+                    android:layout_marginBottom="8dp" />
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/barChartSemanal"
+                    android:layout_width="match_parent"
+                    android:layout_height="220dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+</ScrollView>

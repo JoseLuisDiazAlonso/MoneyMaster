@@ -30,4 +30,15 @@
 
     <!-- Variante más oscura para estados pressed -->
     <color name="income_green_dark">#388E3C</color>
+
+    <!--colores para dialog compartir -->
+    <color name="blue_50">#E3F2FD</color>
+    <color name="green_50">#E8F5E9</color>
+    <color name="green_700">#388E3C</color>
+    <color name="purple_50">#F3E5F5</color>
+    <color name="purple_700">#7B1FA2</color>
+
+    <color name="md_theme_light_tertiaryContainer">#FFD8E4</color>
+
+    <color name="md_theme_dark_tertiaryContainer">#633B48</color>
 </resources>

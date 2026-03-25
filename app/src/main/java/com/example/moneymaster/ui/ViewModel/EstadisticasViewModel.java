@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
+import com.example.moneymaster.data.model.PuntoLinea;
 import com.example.moneymaster.data.model.ResumenMensual;
 import com.example.moneymaster.data.model.TotalPorCategoria;
 import com.example.moneymaster.data.repository.EstadisticasRepository;
@@ -15,54 +16,30 @@ import com.example.moneymaster.data.repository.EstadisticasRepository;
 import java.util.Calendar;
 import java.util.List;
 
-/**
- * ViewModel de la pantalla de Estadísticas.
- *
- * Proporciona datos agregados, listos para pasarlos directamente
- * a MPAndroidChart sin transformaciones adicionales en la UI.
- *
- * Gráficas que alimenta:
- *   · PieChart  → gastos o ingresos por categoría en un mes concreto
- *   · BarChart  → evolución de gastos vs ingresos en los últimos N meses
- *
- * Uso desde la Activity/Fragment:
- *   viewModel.setUsuarioId(id);
- *   viewModel.gastosPorCategoria.observe(this, lista -> pintarPieChart(lista));
- *   viewModel.resumenGastosMeses.observe(this, lista -> pintarBarChart(lista));
- */
 public class EstadisticasViewModel extends AndroidViewModel {
 
     private final EstadisticasRepository repository;
 
-    private final MutableLiveData<Long>    usuarioIdLive    = new MutableLiveData<>();
-    private final MutableLiveData<int[]>   filtroMes        = new MutableLiveData<>();
-    private final MutableLiveData<Integer> mesesHistorial   = new MutableLiveData<>(6);
+    private final MutableLiveData<Long>    usuarioIdLive  = new MutableLiveData<>();
+    private final MutableLiveData<int[]>   filtroMes      = new MutableLiveData<>();
+    private final MutableLiveData<Integer> mesesHistorial = new MutableLiveData<>(6);
+    private final MutableLiveData<long[]>  rangoLineChart = new MutableLiveData<>();
 
-    // ─── LiveData para PieChart ───────────────────────────────────────────────
+    // ─── LiveData para PieChart (Card #42) ───────────────────────────────────
 
-    /**
-     * Gastos agrupados por categoría en el mes activo.
-     * Cada item tiene: nombreCategoria, icono, color, total.
-     */
     public final LiveData<List<TotalPorCategoria>> gastosPorCategoria;
-
-    /**
-     * Ingresos agrupados por categoría en el mes activo.
-     */
     public final LiveData<List<TotalPorCategoria>> ingresosPorCategoria;
+    public final LiveData<Double>                  totalGastosMes;
 
-    // ─── LiveData para BarChart ───────────────────────────────────────────────
+    // ─── LiveData para BarChart (Card #43) ───────────────────────────────────
 
-    /**
-     * Totales de gasto, mes a mes, para los últimos N meses con datos.
-     * Ordenados cronológicamente (más antiguo primero) para el eje X.
-     */
     public final LiveData<List<ResumenMensual>> resumenGastosMeses;
-
-    /**
-     * Totales de ingreso mes a mes, misma estructura que resumenGastosMeses.
-     */
     public final LiveData<List<ResumenMensual>> resumenIngresosMeses;
+
+    // ─── LiveData para LineChart (Card #44) ──────────────────────────────────
+
+    public final LiveData<List<PuntoLinea>> gastosDiarios;
+    public final LiveData<List<PuntoLinea>> gastosSemanales;
 
     // ─── Constructor ──────────────────────────────────────────────────────────
 
@@ -72,9 +49,13 @@ public class EstadisticasViewModel extends AndroidViewModel {
 
         // Mes por defecto: el actual
         Calendar cal = Calendar.getInstance();
-        filtroMes.setValue(new int[]{cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR)});
+        int mesActual  = cal.get(Calendar.MONTH) + 1;
+        int anioActual = cal.get(Calendar.YEAR);
+        filtroMes.setValue(new int[]{mesActual, anioActual});
+        rangoLineChart.setValue(calcularRangoMes(mesActual, anioActual));
 
-        // PieChart: se actualiza al cambiar el mes seleccionado
+        // ── PieChart ──────────────────────────────────────────────────────────
+
         gastosPorCategoria = Transformations.switchMap(filtroMes, filtro -> {
             Long uid = usuarioIdLive.getValue();
             if (uid == null || filtro == null) return new MutableLiveData<>(null);
@@ -87,7 +68,14 @@ public class EstadisticasViewModel extends AndroidViewModel {
             return repository.getIngresosPorCategoria(uid, filtro[0], filtro[1]);
         });
 
-        // BarChart: se actualiza al cambiar el rango de meses
+        totalGastosMes = Transformations.switchMap(filtroMes, filtro -> {
+            Long uid = usuarioIdLive.getValue();
+            if (uid == null || filtro == null) return new MutableLiveData<>(0.0);
+            return repository.getTotalGastosMes(uid, filtro[0], filtro[1]);
+        });
+
+        // ── BarChart ──────────────────────────────────────────────────────────
+
         resumenGastosMeses = Transformations.switchMap(mesesHistorial, meses -> {
             Long uid = usuarioIdLive.getValue();
             if (uid == null) return new MutableLiveData<>(null);
@@ -99,30 +87,53 @@ public class EstadisticasViewModel extends AndroidViewModel {
             if (uid == null) return new MutableLiveData<>(null);
             return repository.getResumenIngresosMeses(uid, meses);
         });
+
+        // ── LineChart ─────────────────────────────────────────────────────────
+
+        gastosDiarios = Transformations.switchMap(rangoLineChart, rango -> {
+            Long uid = usuarioIdLive.getValue();
+            if (uid == null || rango == null) return new MutableLiveData<>(null);
+            return repository.getGastosDiarios(uid, rango[0], rango[1]);
+        });
+
+        gastosSemanales = Transformations.switchMap(rangoLineChart, rango -> {
+            Long uid = usuarioIdLive.getValue();
+            if (uid == null || rango == null) return new MutableLiveData<>(null);
+            return repository.getGastosSemanales(uid, rango[0], rango[1]);
+        });
     }
 
     // ─── Setters ──────────────────────────────────────────────────────────────
 
+    /**
+     * Inyectar el ID del usuario desde SharedPreferences.
+     * Fuerza re-emisión de todos los switchMap.
+     */
     public void setUsuarioId(long id) {
         if (!Long.valueOf(id).equals(usuarioIdLive.getValue())) {
             usuarioIdLive.setValue(id);
-            // Forzar actualización de los switchMap que dependen del usuario
             filtroMes.setValue(filtroMes.getValue());
             mesesHistorial.setValue(mesesHistorial.getValue());
+            rangoLineChart.setValue(rangoLineChart.getValue());
         }
     }
 
-    /** Cambia el mes del PieChart. Llamar al tocar el selector de mes. */
+    /** Cambia el mes activo del PieChart. */
     public void setFiltroMes(int mes, int anio) {
         filtroMes.setValue(new int[]{mes, anio});
     }
 
-    /**
-     * Cambia el rango del BarChart.
-     * Valores sugeridos: 3 (trimestral), 6 (semestral), 12 (anual).
-     */
+    /** Cambia el rango del BarChart (3, 6 o 12 meses). */
     public void setMesesHistorial(int meses) {
         mesesHistorial.setValue(meses);
+    }
+
+    /**
+     * Actualiza el rango del LineChart al mes indicado.
+     * Llamar junto a setFiltroMes() cuando el usuario cambia de mes.
+     */
+    public void setRangoLineChart(int mes, int anio) {
+        rangoLineChart.setValue(calcularRangoMes(mes, anio));
     }
 
     // ─── Getters de estado ────────────────────────────────────────────────────
@@ -140,5 +151,23 @@ public class EstadisticasViewModel extends AndroidViewModel {
     public int getMesesHistorial() {
         Integer m = mesesHistorial.getValue();
         return m != null ? m : 6;
+    }
+
+    // ─── Helpers privados ─────────────────────────────────────────────────────
+
+    /**
+     * Calcula los timestamps de inicio (00:00:00 del día 1) y fin
+     * (23:59:59 del último día) del mes dado, en milisegundos.
+     */
+    private long[] calcularRangoMes(int mes, int anio) {
+        Calendar inicio = Calendar.getInstance();
+        inicio.set(anio, mes - 1, 1, 0, 0, 0);
+        inicio.set(Calendar.MILLISECOND, 0);
+
+        Calendar fin = Calendar.getInstance();
+        fin.set(anio, mes - 1, inicio.getActualMaximum(Calendar.DAY_OF_MONTH), 23, 59, 59);
+        fin.set(Calendar.MILLISECOND, 999);
+
+        return new long[]{ inicio.getTimeInMillis(), fin.getTimeInMillis() };
     }
 }

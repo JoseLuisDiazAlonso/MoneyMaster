@@ -126,4 +126,26 @@ public interface IngresoPersonalDao {
             "  AND fecha >= :inicio " +
             "  AND fecha <  :fin")
     LiveData<Double> getTotalIngresosMesRango(int userId, long inicio, long fin);
+
+    /**Query para estadísticas**/
+
+    @Query("SELECT * FROM ingresos_personales " +
+            "WHERE usuario_id = :userId " +
+            "AND CAST(strftime('%m', fecha, 'unixepoch') AS INTEGER) = :mes " +
+            "AND CAST(strftime('%Y', fecha, 'unixepoch') AS INTEGER) = :anio " +
+            "ORDER BY fecha DESC")
+    LiveData<List<IngresoPersonal>> getIngresosByMonthYear(int userId, int mes, int anio);
+
+    @Query("SELECT * FROM ingresos_personales " +
+            "WHERE usuario_id = :userId " +
+            "AND CAST(strftime('%Y', fecha, 'unixepoch') AS INTEGER) = :anio " +
+            "ORDER BY fecha DESC")
+    LiveData<List<IngresoPersonal>> getIngresosByYear(int userId, int anio);
+
+    @Query("SELECT * FROM ingresos_personales " +
+            "WHERE usuario_id = :userId " +
+            "AND fecha >= :startTimestamp AND fecha <= :endTimestamp " +
+            "ORDER BY fecha DESC")
+    LiveData<List<IngresoPersonal>> getIngresosByDateRange(int userId, long startTimestamp, long endTimestamp);
+
 }

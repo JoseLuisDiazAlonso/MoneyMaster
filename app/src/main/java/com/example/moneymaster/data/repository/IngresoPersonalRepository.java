@@ -119,6 +119,18 @@ public class IngresoPersonalRepository {
         return ingresoPersonalDao.countIngresos(usuarioId);
     }
 
+    public LiveData<List<IngresoPersonal>> getIngresosByMonthYear(int mes, int anio) {
+        return null;
+    }
+
+    public LiveData<List<IngresoPersonal>> getIngresosByYear(int anio) {
+        return null;
+    }
+
+    public LiveData<List<IngresoPersonal>> getIngresosByDateRange(long startTimestamp, long endTimestamp) {
+        return null;
+    }
+
     // ── CALLBACK ──────────────────────────────────────────────────────────────
 
     public interface SaveCallback<T> {

@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import com.example.moneymaster.data.dao.GastoPersonalDao;
 import com.example.moneymaster.data.dao.IngresoPersonalDao;
 import com.example.moneymaster.data.database.AppDatabase;
+import com.example.moneymaster.data.model.PuntoLinea;
 import com.example.moneymaster.data.model.ResumenMensual;
 import com.example.moneymaster.data.model.TotalPorCategoria;
 
@@ -19,7 +20,7 @@ import java.util.List;
  */
 public class EstadisticasRepository {
 
-    private final GastoPersonalDao gastoDao;
+    private final GastoPersonalDao   gastoDao;
     private final IngresoPersonalDao ingresoDao;
 
     public EstadisticasRepository(Application application) {
@@ -28,7 +29,7 @@ public class EstadisticasRepository {
         ingresoDao = db.ingresoPersonalDao();
     }
 
-    // ─── Para PieChart ────────────────────────────────────────────────────────
+    // ─── PieChart (Card #42) ──────────────────────────────────────────────────
 
     public LiveData<List<TotalPorCategoria>> getGastosPorCategoria(long usuarioId, int mes, int anio) {
         return gastoDao.getGastosPorCategoria(usuarioId, mes, anio);
@@ -38,7 +39,25 @@ public class EstadisticasRepository {
         return ingresoDao.getIngresosPorCategoria(usuarioId, mes, anio);
     }
 
-    // ─── Para BarChart ────────────────────────────────────────────────────────
+    public LiveData<List<TotalPorCategoria>> getGastosPorCategoria(int usuarioId, String mes, String anio) {
+        return gastoDao.getGastosPorCategoria(usuarioId, mes, anio);
+    }
+
+    // ─── Totales del mes ──────────────────────────────────────────────────────
+
+    public LiveData<Double> getTotalGastosMes(long usuarioId, int mes, int anio) {
+        return gastoDao.getTotalGastosMes(usuarioId, mes, anio);
+    }
+
+    public LiveData<Double> getTotalIngresosMes(long usuarioId, int mes, int anio) {
+        return ingresoDao.getTotalIngresosMes(usuarioId, mes, anio);
+    }
+
+    public LiveData<Double> getTotalGastosMes(int usuarioId, String mes, String anio) {
+        return gastoDao.getTotalGastosMes(usuarioId, mes, anio);
+    }
+
+    // ─── BarChart (Card #43) ──────────────────────────────────────────────────
 
     public LiveData<List<ResumenMensual>> getResumenGastosMeses(long usuarioId, int meses) {
         return gastoDao.getResumenUltimosMeses(usuarioId, meses);
@@ -48,13 +67,22 @@ public class EstadisticasRepository {
         return ingresoDao.getResumenUltimosMeses(usuarioId, meses);
     }
 
-    // ─── Totales rápidos (también usados por MainViewModel) ───────────────────
+    // ─── LineChart (Card #44) ─────────────────────────────────────────────────
 
-    public LiveData<Double> getTotalGastosMes(long usuarioId, int mes, int anio) {
-        return gastoDao.getTotalGastosMes(usuarioId, mes, anio);
+    /**
+     * Gastos agrupados por día para el rango dado (inicio y fin en ms).
+     * Room devuelve sólo los días con gastos; LineChartHelper rellena los huecos con 0.
+     */
+    public LiveData<List<PuntoLinea>> getGastosDiarios(long usuarioId, long inicio, long fin) {
+        return gastoDao.getGastosDiarios(usuarioId, inicio, fin);
     }
 
-    public LiveData<Double> getTotalIngresosMes(long usuarioId, int mes, int anio) {
-        return ingresoDao.getTotalIngresosMes(usuarioId, mes, anio);
+    /**
+     * Gastos agrupados por semana para el rango dado (inicio y fin en ms).
+     * Semana 1 = días 1–7, semana 2 = 8–14, semana 3 = 15–21, semana 4 = 22–fin.
+     */
+    public LiveData<List<PuntoLinea>> getGastosSemanales(long usuarioId, long inicio, long fin) {
+        return gastoDao.getGastosSemanales(usuarioId, inicio, fin);
     }
 }
+

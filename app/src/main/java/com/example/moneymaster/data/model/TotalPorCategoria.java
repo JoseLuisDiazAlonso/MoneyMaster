@@ -1,29 +1,54 @@
 package com.example.moneymaster.data.model;
 
 /**
- * POJO que Room mapea desde queries con GROUP BY de categoría.
- * No es una @Entity — nunca tiene tabla propia.
+ * POJO de Room — resultado de la consulta SQL agrupada por categoría.
  *
- * Los nombres de campo DEBEN coincidir exactamente con los alias
- * definidos en los @Query de GastoPersonalDao e IngresoPersonalDao:
- *   c.nombre AS nombreCategoria
- *   c.icono  AS icono
- *   c.color  AS color
- *   SUM(...) AS total
+ * Room mapea automáticamente las columnas del SELECT a estos campos:
+ *   nombreCategoria ← alias "nombreCategoria" de la consulta
+ *   icono           ← alias "icono"
+ *   color           ← alias "color"
+ *   total           ← alias "total" (SUM)
+ *
+ * Este archivo ya pudo haberse creado en el Card de ViewModels.
+ * Si existe, comprueba que contiene todos estos campos; si falta alguno, añádelo.
  */
 public class TotalPorCategoria {
 
+    /** Nombre de la categoría (p. ej. "Alimentación") */
     public String nombreCategoria;
-    public String icono;   // nombre del vector drawable, e.g. "ic_restaurant"
-    public String color;   // hex string, e.g. "#FF5722"
+
+    /**
+     * Nombre del drawable del icono (p. ej. "ic_food").
+     * Se usa con Resources.getIdentifier() para cargar el drawable dinámicamente.
+     */
+    public String icono;
+
+    /**
+     * Color en formato hexadecimal (p. ej. "#FF5722").
+     * Se parsea con Color.parseColor() para pintar el sector del PieChart.
+     */
+    public String color;
+
+    /** Suma total de gastos de esta categoría en el periodo consultado */
     public double total;
 
-    public TotalPorCategoria() {}
+    // ─── Helpers utilizados por PieChartHelper ────────────────────────────────
 
-    public TotalPorCategoria(String nombreCategoria, String icono, String color, double total) {
-        this.nombreCategoria = nombreCategoria;
-        this.icono  = icono;
-        this.color  = color;
-        this.total  = total;
+    /**
+     * Devuelve una etiqueta segura: si el nombre es nulo usa "Sin categoría".
+     */
+    public String getNombreSeguro() {
+        return (nombreCategoria != null && !nombreCategoria.isEmpty())
+                ? nombreCategoria
+                : "Sin categoría";
+    }
+
+    /**
+     * Porcentaje de este sector respecto al total general.
+     * @param totalGeneral suma de todos los sectores
+     */
+    public float getPorcentaje(double totalGeneral) {
+        if (totalGeneral <= 0) return 0f;
+        return (float) ((total / totalGeneral) * 100.0);
     }
 }

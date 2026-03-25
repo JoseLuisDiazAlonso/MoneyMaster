@@ -93,6 +93,34 @@ public class GastoPersonalRepository {
         return gastoPersonalDao.countGastos(usuarioId);
     }
 
+    // ── ESTADÍSTICAS · Card #41 ───────────────────────────────────────────────
+
+    public LiveData<List<GastoPersonal>> getGastosByMonthYear(long usuarioId, int mes, int anio) {
+        return gastoPersonalDao.getGastosByMonthYear((int) usuarioId, mes, anio);
+    }
+
+    public LiveData<List<GastoPersonal>> getGastosByYear(long usuarioId, int anio) {
+        return gastoPersonalDao.getGastosByYear((int) usuarioId, anio);
+    }
+
+    public LiveData<List<GastoPersonal>> getGastosByDateRange(long usuarioId,
+                                                              long startTimestamp,
+                                                              long endTimestamp) {
+        return gastoPersonalDao.getGastosByDateRange((int) usuarioId, startTimestamp, endTimestamp);
+    }
+
+    public LiveData<List<GastoPersonal>> getGastosByMonthYear(int mes, int anio) {
+        return null;
+    }
+
+    public LiveData<List<GastoPersonal>> getGastosByYear(int anio) {
+        return null;
+    }
+
+    public LiveData<List<GastoPersonal>> getGastosByDateRange(long startTimestamp, long endTimestamp) {
+        return null;
+    }
+
     // ── CALLBACK ──────────────────────────────────────────────────────────────
 
     public interface SaveCallback<T> {

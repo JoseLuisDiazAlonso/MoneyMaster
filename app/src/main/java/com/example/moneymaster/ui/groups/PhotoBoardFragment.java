@@ -4,11 +4,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.ActionMode;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.LayoutInflater;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,18 +23,35 @@ import com.example.moneymaster.data.model.FotoRecibo;
 import com.example.moneymaster.databinding.FragmentPhotoBoardBinding;
 import com.example.moneymaster.ui.groups.adapter.PhotoBoardAdapter;
 import com.example.moneymaster.ui.viewer.ImageViewerActivity;
+import com.example.moneymaster.utils.ShareUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Card #34 — Fragment Tablón de Fotos del grupo.
- * Card #35 — abrirViewer() actualizado a ImageViewerActivity.
+ * PhotoBoardFragment — Tablón de fotos del grupo en cuadrícula 3 columnas.
+ *
+ * Funcionalidades:
+ *   - Click normal: abrir foto ampliada (ImageViewerActivity)
+ *   - Long-press: activar modo selección múltiple
+ *   - Toolbar contextual: compartir seleccionadas / eliminar seleccionadas
+ *
+ * Card #40 — actualiza compartirSeleccionadas() para:
+ *   1. Construir ArrayList<Uri> con FileProvider
+ *   2. Intentar WhatsApp directamente si está instalado (1 foto → shareImageViaWhatsApp,
+ *      varias fotos → ACTION_SEND_MULTIPLE con setPackage WhatsApp)
+ *   3. Fallback al chooser genérico del sistema si WhatsApp no está disponible
+ *
+ * Depende de: ShareUtils (Card #36)
  */
 public class PhotoBoardFragment extends Fragment {
 
     public static final String ARG_GRUPO_ID = "grupoId";
+
+    // Package names de WhatsApp para la preselección
+    private static final String WHATSAPP_PACKAGE          = "com.whatsapp";
+    private static final String WHATSAPP_BUSINESS_PACKAGE = "com.whatsapp.w4b";
 
     private FragmentPhotoBoardBinding binding;
     private PhotoBoardViewModel       viewModel;
@@ -81,12 +98,12 @@ public class PhotoBoardFragment extends Fragment {
 
     private void configurarGrid() {
         adapter = new PhotoBoardAdapter(
-                // Click normal → ver foto ampliada
+                // Click normal → ver foto ampliada o toggle selección
                 foto -> {
                     if (adapter.isSelectionMode()) {
                         toggleSeleccion(foto);
                     } else {
-                        abrirViewer(foto); // Card #35
+                        abrirViewer(foto);
                     }
                 },
                 // Long-press → activar selección múltiple
@@ -115,12 +132,8 @@ public class PhotoBoardFragment extends Fragment {
         });
     }
 
-    // ─── Viewer — Card #35 ────────────────────────────────────────────────────
+    // ─── Viewer ──────────────────────────────────────────────────────────────
 
-    /**
-     * Abre ImageViewerActivity pasando el ID y la ruta de la foto.
-     * Sustituye FotoViewerDialog del Card #34.
-     */
     private void abrirViewer(FotoRecibo foto) {
         ImageViewerActivity.start(requireContext(), foto.id, foto.rutaArchivo);
     }
@@ -185,35 +198,72 @@ public class PhotoBoardFragment extends Fragment {
         }
     }
 
-    // ─── Compartir ────────────────────────────────────────────────────────────
+    // ─── Compartir — Card #40 ─────────────────────────────────────────────────
 
+    /**
+     * Comparte las fotos seleccionadas intentando WhatsApp primero.
+     *
+     * Flujo:
+     *   1. Convierte rutas locales en Uris seguras con FileProvider.
+     *   2. Si hay exactamente 1 foto: usa ShareUtils.shareImageViaWhatsApp()
+     *      (que cae en chooser genérico si WhatsApp no está instalado).
+     *   3. Si hay varias fotos: intenta WhatsApp directamente con setPackage().
+     *      Si WhatsApp no está instalado, abre el chooser genérico del sistema.
+     *   4. Siempre finaliza el modo selección al terminar.
+     */
     private void compartirSeleccionadas() {
         List<FotoRecibo> seleccionadas = adapter.getSeleccionadas();
         if (seleccionadas.isEmpty()) return;
 
+        // ── Paso 1: construir ArrayList<Uri> con FileProvider ─────────────────
         ArrayList<Uri> uris = new ArrayList<>();
-        String authority = requireContext().getPackageName() + ".fileprovider";
-
         for (FotoRecibo foto : seleccionadas) {
             File file = new File(foto.rutaArchivo);
             if (file.exists()) {
                 try {
                     Uri uri = FileProvider.getUriForFile(
-                            requireContext(), authority, file);
+                            requireContext(),
+                            requireContext().getPackageName() + ".fileprovider",
+                            file);
                     uris.add(uri);
                 } catch (IllegalArgumentException e) {
-                    // Ignorar archivos que FileProvider no puede exponer
+                    // Archivo fuera del directorio autorizado — ignorar
+                    e.printStackTrace();
                 }
             }
         }
 
         if (uris.isEmpty()) return;
 
+        // ── Paso 2: una sola foto → ShareUtils con preselección de WhatsApp ──
+        if (uris.size() == 1) {
+            File archivoUnico = new File(seleccionadas.get(0).rutaArchivo);
+            // shareImageViaWhatsApp() ya maneja el fallback al chooser si
+            // WhatsApp no está instalado (internamente usa isAppInstalled)
+            ShareUtils.shareImageViaWhatsApp(requireContext(), archivoUnico);
+            finalizarModoSeleccion();
+            return;
+        }
+
+        // ── Paso 3: varias fotos → ACTION_SEND_MULTIPLE con WhatsApp ─────────
         Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
         intent.setType("image/jpeg");
         intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        startActivity(Intent.createChooser(intent, "Compartir fotos"));
+
+        // Preselección de WhatsApp si está instalado
+        if (isAppInstalada(WHATSAPP_PACKAGE)) {
+            // Lanzar directamente en WhatsApp sin chooser
+            intent.setPackage(WHATSAPP_PACKAGE);
+            startActivity(intent);
+        } else if (isAppInstalada(WHATSAPP_BUSINESS_PACKAGE)) {
+            // Fallback a WhatsApp Business
+            intent.setPackage(WHATSAPP_BUSINESS_PACKAGE);
+            startActivity(intent);
+        } else {
+            // Ninguna versión de WhatsApp instalada → chooser genérico
+            startActivity(Intent.createChooser(intent, "Compartir fotos"));
+        }
 
         finalizarModoSeleccion();
     }
@@ -234,6 +284,23 @@ public class PhotoBoardFragment extends Fragment {
                 .setNegativeButton("Cancelar", null)
                 .show();
     }
+
+    // ─── Helpers ─────────────────────────────────────────────────────────────
+
+    /**
+     * Comprueba si una app está instalada en el dispositivo.
+     * En Android 11+ requiere declarar el paquete en <queries> del Manifest.
+     */
+    private boolean isAppInstalada(String packageName) {
+        try {
+            requireContext().getPackageManager().getPackageInfo(packageName, 0);
+            return true;
+        } catch (android.content.pm.PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
+    // ─── Destrucción ─────────────────────────────────────────────────────────
 
     @Override
     public void onDestroyView() {

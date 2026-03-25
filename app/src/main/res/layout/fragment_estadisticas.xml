@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- ─── Selector de mes ───────────────────────────────────────── -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardElevation="2dp"
+            app:cardCornerRadius="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="8dp">
+
+                <ImageButton
+                    android:id="@+id/btn_mes_anterior"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_chevron_left"
+                    android:background="?attr/actionBarItemBackground"
+                    android:contentDescription="Mes anterior" />
+
+                <TextView
+                    android:id="@+id/tv_mes_anio"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Marzo 2025"
+                    android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+                <ImageButton
+                    android:id="@+id/btn_mes_siguiente"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_chevron_right"
+                    android:background="?attr/actionBarItemBackground"
+                    android:contentDescription="Mes siguiente" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ─── Tarjeta PieChart ──────────────────────────────────────── -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_pie_chart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardElevation="2dp"
+            app:cardCornerRadius="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Gastos por categoría"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/tv_sin_datos"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:gravity="center"
+                    android:text="Sin gastos este mes"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:visibility="gone" />
+
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/pie_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="320dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_filtro_categoria"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:text="Mostrando: todas"
+                    app:closeIconVisible="true"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ─── Tarjeta BarChart ──────────────────────────────────────── -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_bar_chart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardElevation="2dp"
+            app:cardCornerRadius="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Gastos vs Ingresos"
+                        android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/chip_group_rango"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:singleSelection="true"
+                        app:selectionRequired="true">
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_3_meses"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="3M"
+                            style="@style/Widget.Material3.Chip.Filter" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_6_meses"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="6M"
+                            android:checked="true"
+                            style="@style/Widget.Material3.Chip.Filter" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_12_meses"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="12M"
+                            style="@style/Widget.Material3.Chip.Filter" />
+
+                    </com.google.android.material.chip.ChipGroup>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_sin_datos_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:gravity="center"
+                    android:text="Sin datos disponibles"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:visibility="gone" />
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/bar_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="260dp" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ─── Tarjeta LineChart ─────────────────────────────────────── -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_line_chart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardElevation="2dp"
+            app:cardCornerRadius="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Cabecera: título + selector diario/semanal -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Evolución de gastos"
+                        android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/chip_group_vista"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:singleSelection="true"
+                        app:selectionRequired="true">
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_vista_diaria"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Diario"
+                            android:checked="true"
+                            style="@style/Widget.Material3.Chip.Filter" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_vista_semanal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Semanal"
+                            style="@style/Widget.Material3.Chip.Filter" />
+
+                    </com.google.android.material.chip.ChipGroup>
+
+                </LinearLayout>
+
+                <!-- Estado vacío -->
+                <TextView
+                    android:id="@+id/tv_sin_datos_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:gravity="center"
+                    android:text="Sin gastos este mes"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:visibility="gone" />
+
+                <!-- LineChart -->
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/line_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="260dp" />
+
+                <!-- Resumen al tocar un punto -->
+                <TextView
+                    android:id="@+id/tv_line_detalle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+</ScrollView>
