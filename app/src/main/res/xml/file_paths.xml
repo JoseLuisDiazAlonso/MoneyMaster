@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
+
     <!-- Directorio interno de la app -->
     <files-path name="internal_files" path="." />
+
+    <!-- ✅ NUEVO (Card #46 - ExportUtils): exportaciones internas Excel/PDF -->
+    <!-- Ruta real: /data/data/com.example.moneymaster/files/exports/       -->
+    <!-- Usado por: ExportUtils.getUriParaCompartir()                        -->
+    <files-path name="exports" path="exports/" />
 
     <!-- Directorio de caché -->
     <cache-path name="cache" path="." />
@@ -12,6 +18,7 @@
     <!-- Directorio de imágenes (fotos de tickets) -->
     <external-files-path name="images" path="Pictures/" />
 
-    <!-- Directorio de exportaciones (Excel, PDF) -->
-    <external-files-path name="exports" path="Exports/" />
+    <!-- Directorio de exportaciones externas (Excel, PDF) -->
+    <external-files-path name="exports_external" path="Exports/" />
+
 </paths>

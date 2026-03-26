@@ -6,7 +6,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,268 +15,180 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.moneymaster.R;
-import com.example.moneymaster.databinding.FragmentEstadisticasBinding;
 import com.example.moneymaster.ui.ViewModel.EstadisticasViewModel;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 
-/**
- * Fragment de Estadísticas — Cards #42, #43 y #44.
- *
- * Contiene tres gráficos en una sola pantalla con ScrollView:
- *   1. PieChart  — gastos por categoría del mes activo
- *   2. BarChart  — gastos vs ingresos de los últimos N meses
- *   3. LineChart — evolución de gastos acumulados (diaria o semanal)
- *
- * Este Fragment sólo orquesta: recibe LiveData del ViewModel y delega
- * el dibujado a PieChartHelper, BarChartHelper y LineChartHelper.
- */
 public class EstadisticasFragment extends Fragment {
 
-    private FragmentEstadisticasBinding binding;
+    // ─── ViewModel ────────────────────────────────────────────────────────────
     private EstadisticasViewModel viewModel;
 
-    // ─── Helpers de gráficos ──────────────────────────────────────────────────
-    private PieChartHelper  pieChartHelper;
-    private BarChartHelper  barChartHelper;
-    private LineChartHelper lineChartHelper;
+    // ─── Estado interno del selector de mes ──────────────────────────────────
+    private Calendar calendarActual;
 
-    // ─── Estado ───────────────────────────────────────────────────────────────
-    private String  categoriaFiltroActiva = null;
-    private boolean vistaLineDiaria       = true; // true = diario, false = semanal
+    // ─── Vistas (solo IDs que existen en tu fragment_estadisticas.xml) ────────
+    private TextView    tvMesAnio;       // R.id.tv_mes_anio
+    private ImageButton btnMesAnterior;  // R.id.btn_mes_anterior
+    private ImageButton btnMesSiguiente; // R.id.btn_mes_siguiente
 
-    // ─── Lifecycle ────────────────────────────────────────────────────────────
+    // ─── Sesión ───────────────────────────────────────────────────────────────
+    private int usuarioId;
+
+    // ─── Nombres de meses en español (Calendar.MONTH es 0-indexed) ───────────
+    private static final String[] MESES_ES = {
+            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    };
+
+    // =========================================================================
+    // Ciclo de vida
+    // =========================================================================
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        binding = FragmentEstadisticasBinding.inflate(inflater, container, false);
-        return binding.getRoot();
+        return inflater.inflate(R.layout.fragment_estadisticas, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        configurarViewModel();
-        configurarPieChart();
-        configurarBarChart();
-        configurarLineChart();
+        leerSesion();
+        inicializarCalendario();
+        enlazarVistas(view);
+        inicializarViewModel();
         configurarSelectorMes();
-        configurarChipFiltro();
-        configurarChipsRango();
-        configurarChipsVista();
         observarDatos();
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
+    // =========================================================================
+    // Inicialización
+    // =========================================================================
 
-    // ─── ViewModel ────────────────────────────────────────────────────────────
-
-    private void configurarViewModel() {
-        viewModel = new ViewModelProvider(this).get(EstadisticasViewModel.class);
-
+    private void leerSesion() {
         SharedPreferences prefs = requireActivity()
-                .getSharedPreferences("moneymaster_session", Context.MODE_PRIVATE);
-        long usuarioId = prefs.getLong("usuario_id", -1L);
-
-        if (usuarioId != -1L) {
-            viewModel.setUsuarioId(usuarioId);
-        }
+                .getSharedPreferences("MoneyMasterPrefs", Context.MODE_PRIVATE);
+        usuarioId = prefs.getInt("usuario_id", -1);
     }
 
-    // ─── PieChart (Card #42) ──────────────────────────────────────────────────
+    private void inicializarCalendario() {
+        calendarActual = Calendar.getInstance();
+    }
 
-    private void configurarPieChart() {
-        pieChartHelper = new PieChartHelper(requireContext(), binding.pieChart);
+    /**
+     * Solo se enlazan las vistas que existen en el XML actual.
+     * tv_total_gastos, tv_total_ingresos, tv_balance, rv_top_categorias
+     * se añadirán al XML cuando se implemente la UI completa.
+     */
+    private void enlazarVistas(View view) {
+        tvMesAnio       = view.findViewById(R.id.tv_mes_anio);
+        btnMesAnterior  = view.findViewById(R.id.btn_mes_anterior);
+        btnMesSiguiente = view.findViewById(R.id.btn_mes_siguiente);
+    }
 
-        pieChartHelper.setOnSliceClickListener((nombreCategoria, total) -> {
-            categoriaFiltroActiva = nombreCategoria;
-            mostrarChipFiltro(nombreCategoria);
-            Toast.makeText(requireContext(),
-                    nombreCategoria + " — " + String.format("%.2f €", total),
-                    Toast.LENGTH_SHORT).show();
-        });
+    private void inicializarViewModel() {
+        viewModel = new ViewModelProvider(this).get(EstadisticasViewModel.class);
+        if (usuarioId != -1) {
+            viewModel.setUsuarioId((long) usuarioId);
+        }
     }
 
     private void configurarSelectorMes() {
-        binding.btnMesAnterior.setOnClickListener(v -> {
-            int mes  = viewModel.getMesActual();
-            int anio = viewModel.getAnioActual();
-            if (mes == 1) { mes = 12; anio--; } else { mes--; }
-            viewModel.setFiltroMes(mes, anio);
-            viewModel.setRangoLineChart(mes, anio);
-            actualizarEtiquetaMes(mes, anio);
-            limpiarFiltroCategoria();
+        actualizarTextMes();
+
+        btnMesAnterior.setOnClickListener(v -> {
+            calendarActual.add(Calendar.MONTH, -1);
+            actualizarTextMes();
+            empujarFiltroMes();
         });
 
-        binding.btnMesSiguiente.setOnClickListener(v -> {
-            int mes  = viewModel.getMesActual();
-            int anio = viewModel.getAnioActual();
-            if (mes == 12) { mes = 1; anio++; } else { mes++; }
-            viewModel.setFiltroMes(mes, anio);
-            viewModel.setRangoLineChart(mes, anio);
-            actualizarEtiquetaMes(mes, anio);
-            limpiarFiltroCategoria();
-        });
-
-        actualizarEtiquetaMes(viewModel.getMesActual(), viewModel.getAnioActual());
-    }
-
-    private void configurarChipFiltro() {
-        binding.chipFiltroCategoria.setOnCloseIconClickListener(v -> limpiarFiltroCategoria());
-    }
-
-    // ─── BarChart (Card #43) ──────────────────────────────────────────────────
-
-    private void configurarBarChart() {
-        barChartHelper = new BarChartHelper(requireContext(), binding.barChart);
-
-        barChartHelper.setOnBarClickListener((etiqueta, gastos, ingresos) -> {
-            String mensaje = etiqueta
-                    + "\nGastos: "   + String.format("%.2f €", gastos)
-                    + "\nIngresos: " + String.format("%.2f €", ingresos);
-            Toast.makeText(requireContext(), mensaje, Toast.LENGTH_SHORT).show();
-        });
-
-        BarTooltipMarker marker = new BarTooltipMarker(
-                requireContext(), R.layout.marker_bar_tooltip);
-        marker.setChartView(binding.barChart);
-        binding.barChart.setMarker(marker);
-    }
-
-    private void configurarChipsRango() {
-        binding.chipGroupRango.setOnCheckedStateChangeListener((group, checkedIds) -> {
-            if (checkedIds.isEmpty()) return;
-            int id = checkedIds.get(0);
-            int meses;
-            if      (id == R.id.chip_3_meses)  meses = 3;
-            else if (id == R.id.chip_12_meses) meses = 12;
-            else                               meses = 6;
-            viewModel.setMesesHistorial(meses);
+        btnMesSiguiente.setOnClickListener(v -> {
+            Calendar ahora = Calendar.getInstance();
+            boolean esAnioAnterior = calendarActual.get(Calendar.YEAR) < ahora.get(Calendar.YEAR);
+            boolean esMesAnterior  = calendarActual.get(Calendar.YEAR) == ahora.get(Calendar.YEAR)
+                    && calendarActual.get(Calendar.MONTH) < ahora.get(Calendar.MONTH);
+            if (esAnioAnterior || esMesAnterior) {
+                calendarActual.add(Calendar.MONTH, 1);
+                actualizarTextMes();
+                empujarFiltroMes();
+            }
         });
     }
 
-    // ─── LineChart (Card #44) ─────────────────────────────────────────────────
-
-    private void configurarLineChart() {
-        lineChartHelper = new LineChartHelper(requireContext(), binding.lineChart);
-
-        lineChartHelper.setOnPuntoClickListener((etiqueta, acumulado, totalPunto) -> {
-            String texto = etiqueta
-                    + "  |  día: "       + String.format("%.2f €", totalPunto)
-                    + "  |  acumulado: " + String.format("%.2f €", acumulado);
-            binding.tvLineDetalle.setText(texto);
-            binding.tvLineDetalle.setVisibility(View.VISIBLE);
-        });
-    }
+    // =========================================================================
+    // Observers LiveData
+    // =========================================================================
 
     /**
-     * Chips Diario / Semanal — cambian la vista del LineChart sin tocar el mes.
+     * Los observers están preparados para cuando añadas las vistas al XML.
+     * Ahora mismo el ViewModel carga los datos en memoria — cuando conectes
+     * tv_total_gastos, tv_total_ingresos, tv_balance y rv_top_categorias
+     * al XML, solo tendrás que descomentar el código de cada observer.
      */
-    private void configurarChipsVista() {
-        binding.chipGroupVista.setOnCheckedStateChangeListener((group, checkedIds) -> {
-            if (checkedIds.isEmpty()) return;
-            int id = checkedIds.get(0);
-            vistaLineDiaria = (id == R.id.chip_vista_diaria);
-            // Re-renderizar con los datos ya cargados
-            actualizarLineChart();
-        });
-    }
-
-    // ─── Observadores ─────────────────────────────────────────────────────────
-
     private void observarDatos() {
-        // ── PieChart ──────────────────────────────────────────────────────────
-        viewModel.gastosPorCategoria.observe(getViewLifecycleOwner(), items -> {
-            if (items == null || items.isEmpty()) {
-                binding.tvSinDatos.setVisibility(View.VISIBLE);
-                binding.pieChart.setVisibility(View.GONE);
-            } else {
-                binding.tvSinDatos.setVisibility(View.GONE);
-                binding.pieChart.setVisibility(View.VISIBLE);
-                pieChartHelper.actualizarDatos(items);
-            }
-        });
 
+        // ── Totales del mes ───────────────────────────────────────────────────
+        // Descomentar cuando añadas tv_total_gastos al XML:
+        /*
         viewModel.totalGastosMes.observe(getViewLifecycleOwner(), total -> {
-            if (total != null) pieChartHelper.actualizarTotalCentral(total);
+            double valor = (total != null) ? total : 0.0;
+            tvTotalGastos.setText(formatearEuros(valor));
+            tvTotalGastos.setTextColor(requireContext().getColor(R.color.expense_red));
         });
+        */
 
-        // ── BarChart ──────────────────────────────────────────────────────────
-        viewModel.resumenGastosMeses.observe(getViewLifecycleOwner(), gastos -> {
-            boolean hayDatos = gastos != null && !gastos.isEmpty();
-            binding.tvSinDatosBar.setVisibility(hayDatos ? View.GONE  : View.VISIBLE);
-            binding.barChart.setVisibility(      hayDatos ? View.VISIBLE : View.GONE);
-            barChartHelper.setGastos(gastos);
+        // Descomentar cuando añadas tv_total_ingresos al XML:
+        /*
+        viewModel.totalIngresosMes.observe(getViewLifecycleOwner(), total -> {
+            double valor = (total != null) ? total : 0.0;
+            tvTotalIngresos.setText(formatearEuros(valor));
+            tvTotalIngresos.setTextColor(requireContext().getColor(R.color.income_green));
         });
+        */
 
-        viewModel.resumenIngresosMeses.observe(getViewLifecycleOwner(),
-                ingresos -> barChartHelper.setIngresos(ingresos));
-
-        // ── LineChart ─────────────────────────────────────────────────────────
-        viewModel.gastosDiarios.observe(getViewLifecycleOwner(), puntos -> {
-            if (vistaLineDiaria) {
-                mostrarOcultarLineChart(puntos != null && !puntos.isEmpty());
-                lineChartHelper.actualizarDiario(puntos);
-                binding.tvLineDetalle.setVisibility(View.GONE);
+        // Descomentar cuando añadas tv_balance al XML:
+        /*
+        viewModel.balanceMes.observe(getViewLifecycleOwner(), balance -> {
+            double valor = (balance != null) ? balance : 0.0;
+            tvBalance.setText(formatearEuros(valor));
+            if (valor > 0) {
+                tvBalance.setTextColor(requireContext().getColor(R.color.income_green));
+            } else if (valor < 0) {
+                tvBalance.setTextColor(requireContext().getColor(R.color.expense_red));
+            } else {
+                tvBalance.setTextColor(requireContext().getColor(R.color.md_theme_onSurface));
             }
         });
+        */
 
-        viewModel.gastosSemanales.observe(getViewLifecycleOwner(), puntos -> {
-            if (!vistaLineDiaria) {
-                mostrarOcultarLineChart(puntos != null && !puntos.isEmpty());
-                lineChartHelper.actualizarSemanal(puntos);
-                binding.tvLineDetalle.setVisibility(View.GONE);
-            }
+        // ── Top 5 categorías (STATS-005) ──────────────────────────────────────
+        // Descomentar cuando añadas section_top_categorias y rv_top_categorias al XML:
+        /*
+        viewModel.top5CategoriasMes.observe(getViewLifecycleOwner(), items -> {
+            topAdapter.submitList(items);
+            boolean hayDatos = items != null && !items.isEmpty();
+            sectionTopCategorias.setVisibility(hayDatos ? View.VISIBLE : View.GONE);
         });
+        */
     }
 
-    /**
-     * Re-renderiza el LineChart con la vista activa (diaria o semanal)
-     * usando los datos ya cargados en el ViewModel.
-     */
-    private void actualizarLineChart() {
-        binding.tvLineDetalle.setVisibility(View.GONE);
-        if (vistaLineDiaria) {
-            lineChartHelper.actualizarDiario(viewModel.gastosDiarios.getValue());
-        } else {
-            lineChartHelper.actualizarSemanal(viewModel.gastosSemanales.getValue());
-        }
+    // =========================================================================
+    // Helpers
+    // =========================================================================
+
+    private void actualizarTextMes() {
+        int mes  = calendarActual.get(Calendar.MONTH);
+        int anio = calendarActual.get(Calendar.YEAR);
+        tvMesAnio.setText(MESES_ES[mes] + " " + anio);
     }
 
-    private void mostrarOcultarLineChart(boolean hayDatos) {
-        binding.tvSinDatosLine.setVisibility(hayDatos ? View.GONE    : View.VISIBLE);
-        binding.lineChart.setVisibility(      hayDatos ? View.VISIBLE : View.GONE);
-    }
-
-    // ─── Helpers de UI ────────────────────────────────────────────────────────
-
-    private void actualizarEtiquetaMes(int mes, int anio) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(anio, mes - 1, 1);
-        SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", new Locale("es", "ES"));
-        String etiqueta = sdf.format(cal.getTime());
-        etiqueta = etiqueta.substring(0, 1).toUpperCase(new Locale("es", "ES"))
-                + etiqueta.substring(1);
-        binding.tvMesAnio.setText(etiqueta);
-    }
-
-    private void mostrarChipFiltro(String nombreCategoria) {
-        binding.chipFiltroCategoria.setText("Mostrando: " + nombreCategoria);
-        binding.chipFiltroCategoria.setVisibility(View.VISIBLE);
-    }
-
-    private void limpiarFiltroCategoria() {
-        categoriaFiltroActiva = null;
-        binding.chipFiltroCategoria.setVisibility(View.GONE);
+    private void empujarFiltroMes() {
+        int mes  = calendarActual.get(Calendar.MONTH) + 1; // DAOs usan 1-indexed
+        int anio = calendarActual.get(Calendar.YEAR);
+        viewModel.setFiltroMes(mes, anio);
     }
 }

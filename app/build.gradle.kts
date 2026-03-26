@@ -40,6 +40,10 @@ android {
         resources.excludes += "META-INF/LICENSE.md"
         resources.excludes += "META-INF/NOTICE"
         resources.excludes += "META-INF/LICENSE"
+        // Necesarias para iText7
+        resources.excludes += "META-INF/versions/9/module-info.class"
+        resources.excludes += "META-INF/*.kotlin_module"
+        resources.excludes += "mozilla/public-suffix-list.txt"
     }
 }
 
@@ -53,11 +57,13 @@ dependencies {
 
     // Room Database
     implementation(libs.androidx.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+
+    // Navigation
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
-    annotationProcessor(libs.androidx.room.compiler)
 
     // Lifecycle
     implementation(libs.androidx.lifecycle.viewmodel)
@@ -70,12 +76,23 @@ dependencies {
     implementation(libs.glide)
     annotationProcessor(libs.glide.compiler)
 
-    // Excel
+    // Excel (Apache POI)
     implementation(libs.poi) {
         exclude(group = "org.apache.logging.log4j", module = "log4j-api")
     }
     implementation(libs.poi.ooxml) {
         exclude(group = "org.apache.logging.log4j", module = "log4j-api")
+    }
+
+    // PDF (iText7)
+    implementation(libs.itext7.kernel) {
+        exclude(group = "org.bouncycastle")
+    }
+    implementation(libs.itext7.layout) {
+        exclude(group = "org.bouncycastle")
+    }
+    implementation(libs.itext7.io) {
+        exclude(group = "org.bouncycastle")
     }
 
     // ViewPager2
@@ -88,16 +105,17 @@ dependencies {
     implementation("com.sun.mail:android-mail:1.6.7")
     implementation("com.sun.mail:android-activation:1.6.7")
 
+    // CoordinatorLayout
+    implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
+
+    // ExifInterface
+    implementation("androidx.exifinterface:exifinterface:1.3.7")
+
+    // PhotoView
+    implementation("com.github.chrisbanes:PhotoView:2.3.0")
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
-    //Coordinator Layout
-    implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
-
-    //ExifInterface
-    implementation("androidx.exifinterface:exifinterface:1.3.7")
-    //PhotoView
-    implementation("com.github.chrisbanes:PhotoView:2.3.0")
 }

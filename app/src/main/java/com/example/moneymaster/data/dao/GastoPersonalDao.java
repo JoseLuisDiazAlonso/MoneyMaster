@@ -12,6 +12,7 @@ import com.example.moneymaster.data.model.GastoConCategoria;
 import com.example.moneymaster.data.model.GastoPersonal;
 import com.example.moneymaster.data.model.PuntoLinea;
 import com.example.moneymaster.data.model.ResumenMensual;
+import com.example.moneymaster.data.model.TopCategoriasItem;
 import com.example.moneymaster.data.model.TotalPorCategoria;
 
 import java.util.List;
@@ -223,4 +224,56 @@ public interface GastoPersonalDao {
 
     @Query("SELECT COUNT(*) FROM gastos_personales WHERE usuario_id = :usuarioId")
     int countGastos(long usuarioId);
+
+    /**
+     * Top 5 categorías con mayor gasto total en un mes/año concreto.
+     *
+     * JOIN con categorias_gasto para obtener icono y color.
+     * ORDER BY total DESC garantiza que el primer elemento es el mayor.
+     * LIMIT 5 restringe exactamente al ranking pedido por el card.
+     *
+     * @param usuarioId  ID del usuario en sesión
+     * @param mes        Mes (1-12)
+     * @param anio       Año (e.g. 2025)
+     * @return LiveData con lista de hasta 5 ítems, actualizada automáticamente.
+     */
+    @Query("SELECT " +
+            "  c.nombre     AS nombreCategoria, " +
+            "  c.icono      AS icono, " +
+            "  c.color      AS color, " +
+            "  SUM(g.monto) AS total " +
+            "FROM gastos_personales g " +
+            "INNER JOIN categorias_gasto c ON g.categoria_id = c.id " +
+            "WHERE g.usuario_id = :usuarioId " +
+            "  AND CAST(strftime('%m', datetime(g.fecha / 1000, 'unixepoch')) AS INTEGER) = :mes " +
+            "  AND CAST(strftime('%Y', datetime(g.fecha / 1000, 'unixepoch')) AS INTEGER) = :anio " +
+            "GROUP BY c.id " +
+            "ORDER BY total DESC " +
+            "LIMIT 5")
+    LiveData<List<TopCategoriasItem>> getTop5CategoriasMes(int usuarioId, int mes, int anio);
+
+    /**
+     * Gastos de un usuario en un rango de fechas. Síncrono para exportación.
+     * Llamar desde un hilo de fondo (ExecutorService), nunca desde el hilo principal.
+     *
+     * @param usuarioId ID del usuario en sesión.
+     * @param inicio    Timestamp Unix (ms) del inicio del período (inclusive).
+     * @param fin       Timestamp Unix (ms) del fin del período (exclusive).
+     * @return          Lista de GastoPersonal ordenada por fecha descendente.
+     */
+    @Query("SELECT * FROM gastos_personales " +
+            "WHERE usuario_id = :usuarioId " +
+            "  AND fecha >= :inicio " +
+            "  AND fecha < :fin " +
+            "ORDER BY fecha DESC")
+    List<GastoPersonal> getGastosParaExportacion(int usuarioId, long inicio, long fin);
+
+    /**
+     * Todos los gastos de un usuario. Síncrono para exportación anual o total.
+     */
+    @Query("SELECT * FROM gastos_personales " +
+            "WHERE usuario_id = :usuarioId " +
+            "ORDER BY fecha DESC")
+    List<GastoPersonal> getTodosGastosParaExportacion(int usuarioId);
+
 }

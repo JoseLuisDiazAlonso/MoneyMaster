@@ -1,22 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Menu: toolbar_menu.xml
+    Ubicación: res/menu/toolbar_menu.xml
+
+    Actualización Card #49: añadida la opción "Exportar" al overflow menu.
+    Las opciones action_settings, action_logout y action_notifications
+    ya existían — no se modifican.
+-->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/action_notifications"
         android:icon="@drawable/ic_notifications"
-        android:title="@string/action_notifications"
+        android:title="Notificaciones"
         android:iconTint="@android:color/white"
         app:showAsAction="ifRoom" />
 
+    <!-- NUEVO Card #49: opción de exportación en el overflow -->
+    <item
+        android:id="@+id/action_export"
+        android:title="Exportar"
+        app:showAsAction="never" />
+
     <item
         android:id="@+id/action_settings"
-        android:title="@string/action_settings"
+        android:title="Ajustes"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_logout"
-        android:title="@string/action_logout"
+        android:title="Cerrar sesión"
         app:showAsAction="never" />
 
 </menu>

@@ -48,4 +48,13 @@ public interface CategoriaIngresoDao {
 
     @Query("SELECT COUNT(*) FROM categorias_ingreso WHERE es_sistema = 1")
     int countCategoriasDelSistema();
+
+    /**
+     * Devuelve todas las categorías de ingreso activas para el usuario.
+     * Síncrono para construir el mapa ID→nombre antes de exportar.
+     */
+    @Query("SELECT * FROM categorias_ingreso " +
+            "WHERE activo = 1 " +
+            "  AND (usuario_id IS NULL OR usuario_id = :usuarioId)")
+    List<CategoriaIngreso> getCategoriasParaExportacion(int usuarioId);
 }

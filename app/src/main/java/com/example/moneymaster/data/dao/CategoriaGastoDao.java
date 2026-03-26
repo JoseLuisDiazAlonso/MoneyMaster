@@ -66,4 +66,14 @@ public interface CategoriaGastoDao {
 
     @Query("SELECT * FROM categorias_gasto WHERE id = :id LIMIT 1")
     CategoriaGasto getByIdSync(int id);
+
+    /**
+     * Devuelve todas las categorías de gasto activas para el usuario,
+     * incluyendo las del sistema. Síncrono para construir el mapa ID→nombre
+     * antes de exportar.
+     */
+    @Query("SELECT * FROM categorias_gasto " +
+            "WHERE activo = 1 " +
+            "  AND (usuario_id IS NULL OR usuario_id = :usuarioId)")
+    List<CategoriaGasto> getCategoriasParaExportacion(int usuarioId);
 }

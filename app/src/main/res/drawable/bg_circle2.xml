@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Drawable: bg_circle.xml
+    Ubicación: res/drawable/bg_circle.xml
+
+    Fondo circular para el chip numérico de ranking.
+    El color real lo aplica el adaptador mediante setBackgroundTintList().
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="#1A9E9E9E" />
+</shape>

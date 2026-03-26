@@ -148,4 +148,27 @@ public interface IngresoPersonalDao {
             "ORDER BY fecha DESC")
     LiveData<List<IngresoPersonal>> getIngresosByDateRange(int userId, long startTimestamp, long endTimestamp);
 
+    /**
+     * Ingresos de un usuario en un rango de fechas. Síncrono para exportación.
+     *
+     * @param usuarioId ID del usuario en sesión.
+     * @param inicio    Timestamp Unix (ms) del inicio del período (inclusive).
+     * @param fin       Timestamp Unix (ms) del fin del período (exclusive).
+     * @return          Lista de IngresoPersonal ordenada por fecha descendente.
+     */
+    @Query("SELECT * FROM ingresos_personales " +
+            "WHERE usuario_id = :usuarioId " +
+            "  AND fecha >= :inicio " +
+            "  AND fecha < :fin " +
+            "ORDER BY fecha DESC")
+    List<IngresoPersonal> getIngresosParaExportacion(int usuarioId, long inicio, long fin);
+
+    /**
+     * Todos los ingresos de un usuario. Síncrono para exportación anual o total.
+     */
+    @Query("SELECT * FROM ingresos_personales " +
+            "WHERE usuario_id = :usuarioId " +
+            "ORDER BY fecha DESC")
+    List<IngresoPersonal> getTodosIngresosParaExportacion(int usuarioId);
+
 }
