@@ -37,7 +37,7 @@ import java.util.concurrent.Executors;
 /**
  * Singleton de la base de datos Room.
  *
- * Versión 2: esquema completo con las 11 entidades.
+ * Versión 3: esquema completo con las 11 entidades.
  * El Callback de creación siembra las categorías predefinidas.
  */
 @Database(
@@ -58,6 +58,7 @@ import java.util.concurrent.Executors;
         exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {
+
     public static AppDatabase getInstance(Context context) {
         return getDatabase(context);
     }
@@ -102,12 +103,17 @@ public abstract class AppDatabase extends RoomDatabase {
         return INSTANCE;
     }
 
+    /**
+     * Limpia la referencia estática al Singleton.
+     * SOLO debe llamarse desde BackupManager antes de sobrescribir el archivo .db,
+     * inmediatamente seguido de un reinicio de la app.
+     */
+    public static synchronized void resetInstance() {
+        INSTANCE = null;
+    }
+
     // ─── Seed: categorías predefinidas ────────────────────────────────────────
 
-    /**
-     * Se ejecuta una sola vez al crear la BD.
-     * Inserta las categorías de sistema para gastos e ingresos.
-     */
     private static final RoomDatabase.Callback seedCallback = new RoomDatabase.Callback() {
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db) {
@@ -118,7 +124,6 @@ public abstract class AppDatabase extends RoomDatabase {
                 CategoriaGastoDao gastoDao     = INSTANCE.categoriaGastoDao();
                 CategoriaIngresoDao ingresoDao = INSTANCE.categoriaIngresoDao();
 
-                // Evita duplicados si el callback se llamara más de una vez
                 if (gastoDao.countCategoriasDelSistema() > 0) return;
 
                 // ── Categorías de GASTO ──────────────────────────────────────
@@ -154,7 +159,6 @@ public abstract class AppDatabase extends RoomDatabase {
             });
         }
     };
-
 }
 
 

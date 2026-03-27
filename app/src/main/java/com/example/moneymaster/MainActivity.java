@@ -12,7 +12,7 @@ import com.example.moneymaster.ui.dialogs.ExportDialogFragment;
 import com.example.moneymaster.ui.estadisticas.EstadisticasFragment;
 import com.example.moneymaster.ui.groups.GroupsFragment;
 import com.example.moneymaster.HomeFragment;
-import com.example.moneymaster.ProfileFragment;
+import com.example.moneymaster.ui.PerfilFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             } else if (id == R.id.nav_profile) {
-                loadFragment(new ProfileFragment(), TAG_PROFILE);
+                loadFragment(new PerfilFragment(), TAG_PROFILE);
                 hideFab();
                 return true;
             }

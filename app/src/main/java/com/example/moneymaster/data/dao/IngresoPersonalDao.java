@@ -171,4 +171,15 @@ public interface IngresoPersonalDao {
             "ORDER BY fecha DESC")
     List<IngresoPersonal> getTodosIngresosParaExportacion(int usuarioId);
 
+    // ─── Card #50: Eliminar datos (PerfilFragment) ────────────────────────────
+
+    /**
+     * Elimina todos los ingresos personales de un usuario.
+     * Llamar desde databaseWriteExecutor, nunca desde el hilo principal.
+     *
+     * @param usuarioId ID del usuario en sesión.
+     */
+    @Query("DELETE FROM ingresos_personales WHERE usuario_id = :usuarioId")
+    void deleteAllByUsuario(int usuarioId);
+
 }

@@ -48,7 +48,7 @@ public interface GrupoDao {
             "  g.nombre          AS nombre, " +
             "  g.descripcion     AS descripcion, " +
             "  g.fecha_creacion  AS fechaCreacion, " +
-            "  COUNT(DISTINCT m.id)          AS numMiembros, " +
+            "  COUNT(DISTINCT m.id)         AS numMiembros, " +
             "  COALESCE(SUM(gg.monto), 0)  AS balanceTotal " +
             "FROM grupos g " +
             "LEFT JOIN miembros_grupo m  ON m.grupoId = g.id " +
@@ -56,4 +56,17 @@ public interface GrupoDao {
             "GROUP BY g.id " +
             "ORDER BY g.fecha_creacion DESC")
     LiveData<List<GroupWithDetails>> getAllGroupsWithDetails();
+
+    // ─── Card #50: Eliminar datos (PerfilFragment) ────────────────────────────
+
+    /**
+     * Elimina todos los grupos creados por un usuario.
+     * Los gastos_grupo asociados se eliminan en cascada por la FK definida en la entidad.
+     * Llamar desde databaseWriteExecutor, nunca desde el hilo principal.
+     *
+     * @param usuarioId ID del usuario en sesión.
+     */
+    @Query("DELETE FROM grupos WHERE creador_id = :usuarioId")
+    void deleteAllByUsuario(int usuarioId);
+
 }

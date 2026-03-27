@@ -276,4 +276,15 @@ public interface GastoPersonalDao {
             "ORDER BY fecha DESC")
     List<GastoPersonal> getTodosGastosParaExportacion(int usuarioId);
 
+    // ─── Card #50: Eliminar datos (PerfilFragment) ────────────────────────────
+
+    /**
+     * Elimina todos los gastos personales de un usuario.
+     * Llamar desde databaseWriteExecutor, nunca desde el hilo principal.
+     *
+     * @param usuarioId ID del usuario en sesión.
+     */
+    @Query("DELETE FROM gastos_personales WHERE usuario_id = :usuarioId")
+    void deleteAllByUsuario(int usuarioId);
+
 }
