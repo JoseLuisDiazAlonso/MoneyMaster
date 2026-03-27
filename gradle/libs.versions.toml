@@ -16,7 +16,9 @@ glide = "4.16.0"
 poi = "5.2.5"
 navigationFragmentKtx = "2.9.7"
 navigationUiKtx = "2.9.7"
-# itext = "5.5.13.3"  # ← COMENTADO (agregar después cuando lo necesites)
+navigationFragment = "2.9.7"
+navigationUi = "2.9.7"
+itext7 = "7.2.5"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -39,7 +41,11 @@ poi = { module = "org.apache.poi:poi", version.ref = "poi" }
 poi-ooxml = { module = "org.apache.poi:poi-ooxml", version.ref = "poi" }
 androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
 androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
-# itext = { module = "com.itextpdf:itextg", version.ref = "itext" }  # ← COMENTADO
+androidx-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
+androidx-navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
+itext7-kernel = { module = "com.itextpdf:kernel", version.ref = "itext7" }
+itext7-layout = { module = "com.itextpdf:layout", version.ref = "itext7" }
+itext7-io = { module = "com.itextpdf:io", version.ref = "itext7" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
