@@ -1,30 +1,23 @@
 package com.example.moneymaster.ui.expenses;
 
-import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Filter;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.example.moneymaster.R;
-import com.example.moneymaster.data.dao.FotoReciboDao;
+import com.example.moneymaster.data.database.AppDatabase;
 import com.example.moneymaster.data.model.CategoriaGasto;
 import com.example.moneymaster.data.model.FotoRecibo;
 import com.example.moneymaster.data.model.GastoPersonal;
@@ -32,6 +25,7 @@ import com.example.moneymaster.data.repository.FotoReciboRepository;
 import com.example.moneymaster.databinding.ActivityAddExpenseBinding;
 import com.example.moneymaster.ui.ViewModel.GastoViewModel;
 import com.example.moneymaster.utils.CameraGalleryManager;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -47,19 +41,16 @@ public class AddExpenseActivity extends AppCompatActivity {
     private GastoViewModel gastoViewModel;
 
     // ── Estado del formulario ────────────────────────────────────────────────
-    private List<CategoriaGasto> categoriasList        = new ArrayList<>();
-    private CategoriaGasto       categoriaSeleccionada = null;
-    private final Calendar       fechaSeleccionada     = Calendar.getInstance();
-    private int                  usuarioId             = -1;
+    private List<CategoriaGasto> categoriasList  = new ArrayList<>();
+    private CategoriaGasto categoriaSeleccionada = null;
+    private final Calendar fechaSeleccionada     = Calendar.getInstance();
+    private int usuarioId                        = -1;
 
-    // ── Card #30: ruta absoluta de la foto comprimida (null si no hay foto) ─
-    private String               rutaFotoActual        = null;
+    // ── Foto ─────────────────────────────────────────────────────────────────
+    private String rutaFotoActual                = null;
     private CameraGalleryManager cameraGalleryManager;
 
     // ── ActivityResultLaunchers ──────────────────────────────────────────────
-    // IMPORTANTE: deben declararse como campos (antes de onCreate) para que
-    // Android los registre en el ciclo de vida correctamente.
-
     private final ActivityResultLauncher<Intent> cameraLauncher =
             registerForActivityResult(
                     new ActivityResultContracts.StartActivityForResult(),
@@ -81,37 +72,31 @@ public class AddExpenseActivity extends AppCompatActivity {
         binding = ActivityAddExpenseBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        usuarioId = getSharedPreferences("MoneyMasterPrefs", MODE_PRIVATE)
-                .getInt("userId", -1);
+        usuarioId = new com.example.moneymaster.utils.SessionManager(this).getUserId();
 
-        configurarCameraGalleryManager(); // Card #30 — debe ir antes de los botones
+        configurarCameraGalleryManager();
         configurarToolbar();
         configurarViewModels();
         configurarDatePicker();
         configurarBotonFoto();
         configurarBotonEliminarFoto();
         configurarBotonGuardar();
-
         actualizarCampoFecha();
     }
 
-    // ── Card #30: Configuración del manager ───────────────────────────────────
+    // ── CameraGalleryManager ──────────────────────────────────────────────────
 
     private void configurarCameraGalleryManager() {
         cameraGalleryManager = new CameraGalleryManager(
                 this, CameraGalleryManager.FILE_PROVIDER_AUTHORITY);
-
         cameraGalleryManager.setCameraLauncher(cameraLauncher);
         cameraGalleryManager.setGalleryLauncher(galleryLauncher);
-
         cameraGalleryManager.setCallback(new CameraGalleryManager.Callback() {
             @Override
             public void onImageReady(String absolutePath) {
-                // La foto está comprimida y guardada en /files/receipts/
                 rutaFotoActual = absolutePath;
                 mostrarPreviewFoto(absolutePath);
             }
-
             @Override
             public void onError(String errorMessage) {
                 Toast.makeText(AddExpenseActivity.this,
@@ -119,8 +104,6 @@ public class AddExpenseActivity extends AppCompatActivity {
             }
         });
     }
-
-    // ── Card #30: Permisos runtime ────────────────────────────────────────────
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -130,7 +113,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         cameraGalleryManager.handlePermissionResult(requestCode, permissions, grantResults);
     }
 
-    // ── Configuración UI ─────────────────────────────────────────────────────
+    // ── Toolbar ───────────────────────────────────────────────────────────────
 
     private void configurarToolbar() {
         setSupportActionBar(binding.toolbar);
@@ -140,54 +123,60 @@ public class AddExpenseActivity extends AppCompatActivity {
         }
     }
 
+    // ── ViewModel + categorías ────────────────────────────────────────────────
+
     private void configurarViewModels() {
         gastoViewModel = new ViewModelProvider(this).get(GastoViewModel.class);
-
         if (usuarioId != -1) {
-            gastoViewModel.setUsuarioId(usuarioId);
+            gastoViewModel.setUsuarioId((long) usuarioId);
         }
 
-        gastoViewModel.categorias.observe(this, categorias -> {
-            if (categorias != null) {
-                categoriasList = categorias;
-                configurarDropdownCategorias(categorias);
-            }
+        // Cargar categorías directamente desde BD en hilo de fondo
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            List<CategoriaGasto> lista = AppDatabase.getDatabase(this)
+                    .categoriaGastoDao()
+                    .getCategoriasSync((long) usuarioId);
+            runOnUiThread(() -> {
+                if (lista != null && !lista.isEmpty()) {
+                    categoriasList = lista;
+                } else {
+                    Toast.makeText(this,
+                            "No hay categorías disponibles", Toast.LENGTH_LONG).show();
+                }
+            });
         });
+
+        configurarSelectorCategoria();
     }
 
-    private void configurarDropdownCategorias(List<CategoriaGasto> categorias) {
-        List<String> nombres = new ArrayList<>();
-        for (CategoriaGasto c : categorias) {
-            nombres.add(c.nombre);
+    private void configurarSelectorCategoria() {
+        binding.etCategoria.setOnClickListener(v -> mostrarDialogCategoria());
+        binding.tilCategoria.setEndIconOnClickListener(v -> mostrarDialogCategoria());
+    }
+
+    private void mostrarDialogCategoria() {
+        if (categoriasList.isEmpty()) {
+            Toast.makeText(this, "Cargando categorías...", Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_dropdown_item_1line, nombres) {
-            @Override
-            public Filter getFilter() {
-                return new Filter() {
-                    @Override
-                    protected FilterResults performFiltering(CharSequence constraint) {
-                        FilterResults results = new FilterResults();
-                        results.values = nombres;
-                        results.count  = nombres.size();
-                        return results;
-                    }
-                    @Override
-                    protected void publishResults(CharSequence constraint, FilterResults results) {
-                        notifyDataSetChanged();
-                    }
-                };
-            }
-        };
+        String[] nombres = new String[categoriasList.size()];
+        for (int i = 0; i < categoriasList.size(); i++) {
+            nombres[i] = categoriasList.get(i).nombre;
+        }
 
-        binding.actvCategoria.setAdapter(adapter);
-        binding.actvCategoria.setOnClickListener(v -> binding.actvCategoria.showDropDown());
-        binding.actvCategoria.setOnItemClickListener((parent, view, position, id) -> {
-            categoriaSeleccionada = categoriasList.get(position);
-            binding.tilCategoria.setError(null);
-        });
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Seleccionar categoría")
+                .setItems(nombres, (dialog, which) -> {
+                    categoriaSeleccionada = categoriasList.get(which);
+                    binding.etCategoria.setText(categoriaSeleccionada.nombre);
+                    binding.tilCategoria.setError(null);
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
     }
+
+    // ── DatePicker ────────────────────────────────────────────────────────────
 
     private void configurarDatePicker() {
         View.OnClickListener abrirPicker = v -> new DatePickerDialog(
@@ -210,35 +199,37 @@ public class AddExpenseActivity extends AppCompatActivity {
         binding.etFecha.setText(sdf.format(fechaSeleccionada.getTime()));
     }
 
+    // ── Foto ──────────────────────────────────────────────────────────────────
+
     private void configurarBotonFoto() {
-        // Delega toda la lógica al manager (diálogo + permisos + cámara/galería)
         binding.btnFoto.setOnClickListener(v ->
                 cameraGalleryManager.showSelectionDialog());
     }
 
     private void configurarBotonEliminarFoto() {
         binding.btnEliminarFoto.setOnClickListener(v -> {
-            // Opcional: borrar el archivo físico si quieres liberar espacio inmediatamente
-            // CameraGalleryManager.deletePhoto(rutaFotoActual);
             rutaFotoActual = null;
             binding.cardFotoPreview.setVisibility(View.GONE);
             binding.btnFoto.setText(R.string.btn_anadir_foto);
         });
     }
 
-    // ── Foto ─────────────────────────────────────────────────────────────────
-
     private void mostrarPreviewFoto(String absolutePath) {
         binding.cardFotoPreview.setVisibility(View.VISIBLE);
-        // Glide acepta String de ruta absoluta directamente
         Glide.with(this).load(absolutePath).centerCrop().into(binding.ivFotoPreview);
         binding.btnFoto.setText(R.string.btn_cambiar_foto);
     }
 
-    // ── Validación y guardado ────────────────────────────────────────────────
+    // ── Validación y guardado ─────────────────────────────────────────────────
 
     private void configurarBotonGuardar() {
         binding.btnGuardar.setOnClickListener(v -> {
+            android.util.Log.d("DEBUG_GASTO", "Botón guardar pulsado");
+            android.util.Log.d("DEBUG_GASTO", "categoriaSeleccionada=" + categoriaSeleccionada);
+            android.util.Log.d("DEBUG_GASTO", "usuarioId=" + usuarioId);
+            String montoStr = binding.etCantidad.getText() != null
+                    ? binding.etCantidad.getText().toString().trim() : "null";
+            android.util.Log.d("DEBUG_GASTO", "monto=" + montoStr);
             if (validarFormulario()) guardarGasto();
         });
     }
@@ -285,7 +276,6 @@ public class AddExpenseActivity extends AppCompatActivity {
                 ? binding.etDescripcion.getText().toString().trim() : "";
 
         if (rutaFotoActual != null) {
-            // Hay foto: insertar FotoRecibo primero → obtener ID → luego insertar gasto
             FotoRecibo foto = new FotoRecibo();
             foto.usuarioId     = usuarioId;
             foto.rutaArchivo   = rutaFotoActual;
@@ -295,15 +285,19 @@ public class AddExpenseActivity extends AppCompatActivity {
 
             binding.btnGuardar.setEnabled(false);
 
-            FotoReciboRepository fotoReciboRepository = null;
+            FotoReciboRepository fotoReciboRepository =
+                    new FotoReciboRepository(getApplication());
             fotoReciboRepository.insertar(foto, fotoId -> {
                 GastoPersonal gasto = buildGasto(monto, descripcion, fotoId);
+                android.util.Log.d("DEBUG_GASTO", "Insertando gasto: usuarioId=" + gasto.usuarioId
+                        + " categoria=" + gasto.categoria_id
+                        + " monto=" + gasto.monto
+                        + " fecha=" + gasto.fecha);
                 gastoViewModel.insertar(gasto);
                 finalizarGuardado();
             });
 
         } else {
-            // Sin foto: insertar gasto directamente
             GastoPersonal gasto = buildGasto(monto, descripcion, 0);
             binding.btnGuardar.setEnabled(false);
             gastoViewModel.insertar(gasto);
@@ -313,13 +307,14 @@ public class AddExpenseActivity extends AppCompatActivity {
 
     private GastoPersonal buildGasto(double monto, String descripcion, int fotoId) {
         GastoPersonal gasto = new GastoPersonal();
-        gasto.usuarioId     = usuarioId;
-        gasto.categoria_id   = categoriaSeleccionada.id;
-        gasto.monto         = monto;
-        gasto.descripcion   = descripcion.isEmpty() ? null : descripcion;
-        gasto.fecha         = fechaSeleccionada.getTimeInMillis();
-        gasto.fecha = System.currentTimeMillis();
-        gasto.tieneFoto  = fotoId > 0 ? fotoId : null;
+        gasto.usuarioId    = usuarioId;
+        gasto.categoria_id = categoriaSeleccionada.id;
+        gasto.monto        = monto;
+        gasto.descripcion  = descripcion.isEmpty() ? null : descripcion;
+        gasto.fecha        = fechaSeleccionada.getTimeInMillis();
+        if (fotoId > 0) {
+            gasto.tieneFoto = fotoId;
+        }
         return gasto;
     }
 
@@ -331,7 +326,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         }, 300);
     }
 
-    // ── Navegación ───────────────────────────────────────────────────────────
+    // ── Navegación ────────────────────────────────────────────────────────────
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -7,11 +7,6 @@
         android:title="@string/nav_home" />
 
     <item
-        android:id="@+id/nav_categories"
-        android:icon="@drawable/ic_category_default"
-        android:title="Categorías" />
-
-    <item
         android:id="@+id/nav_groups"
         android:icon="@drawable/ic_groups"
         android:title="@string/nav_groups" />

@@ -62,12 +62,6 @@ dependencies {
     testImplementation(libs.ext.junit)
     annotationProcessor(libs.androidx.room.compiler)
 
-    // Navigation
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.androidx.navigation.fragment)
-    implementation(libs.androidx.navigation.ui)
-
     // Lifecycle
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.lifecycle.livedata)

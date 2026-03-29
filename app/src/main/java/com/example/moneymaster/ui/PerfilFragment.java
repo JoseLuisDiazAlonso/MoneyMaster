@@ -26,14 +26,11 @@ import com.example.moneymaster.data.database.AppDatabase;
 import com.example.moneymaster.data.model.User;
 import com.example.moneymaster.ui.auth.LoginActivity;
 import com.example.moneymaster.utils.BackupManager;
-import com.example.moneymaster.utils.CurrencyUtils;
 import com.example.moneymaster.utils.ResetManager;
 import com.example.moneymaster.utils.SecurityUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-
-import java.util.Arrays;
 
 public class PerfilFragment extends Fragment {
 
@@ -43,14 +40,9 @@ public class PerfilFragment extends Fragment {
     private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
     private static final String KEY_REMEMBER_ME  = "rememberMe";
 
-    private static final String PREFS_CONFIG = "moneymaster_config";
-    private static final String KEY_IDIOMA   = "idioma_nombre";
-
     // ── Vistas ────────────────────────────────────────────────────────────────
     private TextView tvNombreActual;
     private TextView tvEmailActual;
-    private TextView tvMonedaActual;
-    private TextView tvIdiomaActual;
     private TextView tvVersionActual;
 
     // ── Launcher SAF para restore ─────────────────────────────────────────────
@@ -72,7 +64,6 @@ public class PerfilFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         bindViews(view);
         cargarDatosUsuario();
-        cargarPreferencias();
         cargarVersion();
         configurarClickListeners(view);
     }
@@ -81,8 +72,6 @@ public class PerfilFragment extends Fragment {
     private void bindViews(View view) {
         tvNombreActual  = view.findViewById(R.id.tvNombreActual);
         tvEmailActual   = view.findViewById(R.id.tvEmailActual);
-        tvMonedaActual  = view.findViewById(R.id.tvMonedaActual);
-        tvIdiomaActual  = view.findViewById(R.id.tvIdiomaActual);
         tvVersionActual = view.findViewById(R.id.tvVersionActual);
     }
 
@@ -103,17 +92,6 @@ public class PerfilFragment extends Fragment {
         });
     }
 
-    private void cargarPreferencias() {
-        String simbolo = CurrencyUtils.getCurrencySymbol(requireContext());
-        String nombre  = CurrencyUtils.getCurrencyName(requireContext());
-        tvMonedaActual.setText(simbolo + " " + nombre);
-
-        String idioma = requireContext()
-                .getSharedPreferences(PREFS_CONFIG, 0)
-                .getString(KEY_IDIOMA, "Español");
-        tvIdiomaActual.setText(idioma);
-    }
-
     private void cargarVersion() {
         try {
             PackageInfo pInfo = requireContext().getPackageManager()
@@ -130,14 +108,6 @@ public class PerfilFragment extends Fragment {
                 .setOnClickListener(v -> mostrarDialogEditarNombre());
         view.findViewById(R.id.itemCambiarPassword)
                 .setOnClickListener(v -> mostrarDialogCambiarPassword());
-        view.findViewById(R.id.itemMoneda)
-                .setOnClickListener(v -> mostrarDialogMoneda());
-        view.findViewById(R.id.itemIdioma)
-                .setOnClickListener(v -> mostrarDialogIdioma());
-        view.findViewById(R.id.itemCrearBackup)
-                .setOnClickListener(v -> ejecutarBackup());
-        view.findViewById(R.id.itemRestaurarBackup)
-                .setOnClickListener(v -> abrirSelectorArchivo());
         view.findViewById(R.id.itemEliminarDatos)
                 .setOnClickListener(v -> mostrarDialogEliminarDatos());
         view.findViewById(R.id.itemCerrarSesion)
@@ -146,32 +116,7 @@ public class PerfilFragment extends Fragment {
                 .setOnClickListener(v -> abrirContacto());
     }
 
-    // ── Backup ────────────────────────────────────────────────────────────────
-    private void ejecutarBackup() {
-        Toast.makeText(requireContext(), "Creando backup...", Toast.LENGTH_SHORT).show();
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            String ruta = BackupManager.createBackup(requireContext());
-            if (!isAdded()) return;
-            requireActivity().runOnUiThread(() -> {
-                if (ruta != null) {
-                    new MaterialAlertDialogBuilder(requireContext())
-                            .setTitle("Backup creado")
-                            .setMessage("Copia guardada en:\n" + ruta)
-                            .setPositiveButton("Aceptar", null)
-                            .show();
-                } else {
-                    Toast.makeText(requireContext(),
-                            "Error al crear el backup", Toast.LENGTH_LONG).show();
-                }
-            });
-        });
-    }
-
     // ── Restore ───────────────────────────────────────────────────────────────
-    private void abrirSelectorArchivo() {
-        pickFileLauncher.launch(new String[]{"application/octet-stream", "*/*"});
-    }
-
     private void confirmarRestore(Uri uri) {
         new MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Restaurar backup")
@@ -194,7 +139,7 @@ public class PerfilFragment extends Fragment {
         });
     }
 
-    // ── Eliminar todos los datos (Card #53) ───────────────────────────────────
+    // ── Eliminar todos los datos ──────────────────────────────────────────────
     private void mostrarDialogEliminarDatos() {
         View dialogView = LayoutInflater.from(requireContext())
                 .inflate(R.layout.dialog_confirmar_eliminar, null);
@@ -205,21 +150,17 @@ public class PerfilFragment extends Fragment {
                 .setTitle("Eliminar todos los datos")
                 .setView(dialogView)
                 .setNegativeButton("Cancelar", null)
-                .setPositiveButton("Eliminar todo", null)   // null: evita cierre automático
+                .setPositiveButton("Eliminar todo", null)
                 .create();
 
         dialog.setOnShowListener(d -> {
             Button btnEliminar = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-
-            // El botón empieza desactivado hasta que se marque el checkbox
             btnEliminar.setEnabled(false);
             btnEliminar.setAlpha(0.4f);
-
             cbConfirmar.setOnCheckedChangeListener((btn, checked) -> {
                 btnEliminar.setEnabled(checked);
                 btnEliminar.setAlpha(checked ? 1f : 0.4f);
             });
-
             btnEliminar.setOnClickListener(v -> {
                 dialog.dismiss();
                 ejecutarResetCompleto();
@@ -236,10 +177,8 @@ public class PerfilFragment extends Fragment {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             boolean ok = ResetManager.resetApp(requireContext());
             if (!isAdded()) return;
-
             requireActivity().runOnUiThread(() -> {
                 if (ok) {
-                    // Limpiar sesión y volver a LoginActivity
                     limpiarSesion();
                     Intent intent = new Intent(requireContext(), LoginActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
@@ -349,7 +288,8 @@ public class PerfilFragment extends Fragment {
             requireActivity().runOnUiThread(() -> {
                 if (!valida) { tilActual.setError("Contraseña actual incorrecta"); return; }
                 AppDatabase.databaseWriteExecutor.execute(() -> {
-                    db.usuarioDao().updatePasswordByEmail(user.email, SecurityUtils.hashPassword(nueva));
+                    db.usuarioDao().updatePasswordByEmail(
+                            user.email, SecurityUtils.hashPassword(nueva));
                     if (isAdded()) requireActivity().runOnUiThread(() -> {
                         dialog.dismiss();
                         Toast.makeText(requireContext(),
@@ -358,49 +298,6 @@ public class PerfilFragment extends Fragment {
                 });
             });
         });
-    }
-
-    // ── Diálogo: seleccionar moneda ───────────────────────────────────────────
-    private void mostrarDialogMoneda() {
-        int seleccionado    = CurrencyUtils.getCurrentIndex(requireContext());
-        final int[] elegido = {seleccionado};
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Seleccionar moneda")
-                .setSingleChoiceItems(CurrencyUtils.NOMBRES, seleccionado,
-                        (d, which) -> elegido[0] = which)
-                .setNegativeButton("Cancelar", null)
-                .setPositiveButton("Aceptar", (d, w) -> {
-                    CurrencyUtils.saveCurrency(requireContext(),
-                            CurrencyUtils.SIMBOLOS[elegido[0]],
-                            CurrencyUtils.NOMBRES[elegido[0]]);
-                    tvMonedaActual.setText(CurrencyUtils.SIMBOLOS[elegido[0]]
-                            + " " + CurrencyUtils.NOMBRES[elegido[0]]);
-                    Toast.makeText(requireContext(),
-                            "Moneda actualizada", Toast.LENGTH_SHORT).show();
-                })
-                .show();
-    }
-
-    // ── Diálogo: seleccionar idioma ───────────────────────────────────────────
-    private void mostrarDialogIdioma() {
-        final String[] idiomas = {"Español", "English", "Français",
-                "Deutsch", "Italiano", "Português"};
-        String actual       = requireContext().getSharedPreferences(PREFS_CONFIG, 0)
-                .getString(KEY_IDIOMA, "Español");
-        int    seleccionado = Math.max(Arrays.asList(idiomas).indexOf(actual), 0);
-        final int[] elegido = {seleccionado};
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Seleccionar idioma")
-                .setSingleChoiceItems(idiomas, seleccionado, (d, which) -> elegido[0] = which)
-                .setNegativeButton("Cancelar", null)
-                .setPositiveButton("Aceptar", (d, w) -> {
-                    requireContext().getSharedPreferences(PREFS_CONFIG, 0).edit()
-                            .putString(KEY_IDIOMA, idiomas[elegido[0]]).apply();
-                    tvIdiomaActual.setText(idiomas[elegido[0]]);
-                    Toast.makeText(requireContext(),
-                            "Preferencia guardada", Toast.LENGTH_SHORT).show();
-                })
-                .show();
     }
 
     // ── Diálogo: cerrar sesión ────────────────────────────────────────────────
@@ -451,7 +348,6 @@ public class PerfilFragment extends Fragment {
                 .getInt(KEY_USER_ID, -1);
     }
 
-    /** Limpia la sesión activa de SharedPreferences. */
     private void limpiarSesion() {
         requireContext().getSharedPreferences(PREFS_NAME, 0).edit()
                 .putBoolean(KEY_IS_LOGGED_IN, false)

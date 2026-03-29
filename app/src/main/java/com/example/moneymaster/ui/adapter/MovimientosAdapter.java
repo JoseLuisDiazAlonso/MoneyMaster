@@ -26,20 +26,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * MovimientosAdapter
- *
- * Adapter para el RecyclerView de movimientos recientes (HomeFragment).
- *
- * Animaciones incluidas (Card #55):
- *  - onBindViewHolder: animación escalonada de entrada por posición
- *  - removeItemWithAnimation(): fade-out + slide antes de notifyItemRemoved()
- *  - submitList() con DiffUtil para animaciones automáticas de cambios
- *
- * Card #57: implementa SwipeDeleteManager.AdapterContract<MovimientoReciente>
- *  - removeItem(): elimina visualmente un item para el swipe
- *  - restoreItem(): devuelve el item a su posición para Deshacer
- */
 public class MovimientosAdapter
         extends RecyclerView.Adapter<MovimientosAdapter.ViewHolder>
         implements SwipeDeleteManager.AdapterContract<MovimientoReciente> {
@@ -57,7 +43,6 @@ public class MovimientosAdapter
     private OnItemClickListener clickListener;
     private OnItemLongClickListener longClickListener;
 
-    // Evita reanimar items ya visibles al hacer scroll
     private int lastAnimatedPosition = -1;
 
     private final NumberFormat currencyFormat =
@@ -77,9 +62,7 @@ public class MovimientosAdapter
         this.longClickListener = listener;
     }
 
-    // -------------------------------------------------------------------------
-    // DiffUtil — animaciones automáticas de insert / remove / change
-    // -------------------------------------------------------------------------
+    // ── DiffUtil ──────────────────────────────────────────────────────────────
 
     public void submitList(List<MovimientoReciente> newList) {
         List<MovimientoReciente> safeNew = newList != null ? newList : new ArrayList<>();
@@ -102,12 +85,12 @@ public class MovimientosAdapter
         result.dispatchUpdatesTo(this);
     }
 
-    // -------------------------------------------------------------------------
-    // Eliminación con animación (Card #55)
-    // -------------------------------------------------------------------------
+    // ── Eliminación con animación ─────────────────────────────────────────────
 
-    public void removeItemWithAnimation(RecyclerView recyclerView, int position, Runnable afterRemove) {
-        RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
+    public void removeItemWithAnimation(RecyclerView recyclerView, int position,
+                                        Runnable afterRemove) {
+        RecyclerView.ViewHolder holder =
+                recyclerView.findViewHolderForAdapterPosition(position);
         if (holder == null) {
             if (position < items.size()) {
                 items.remove(position);
@@ -133,9 +116,7 @@ public class MovimientosAdapter
         holder.itemView.startAnimation(removeAnim);
     }
 
-    // -------------------------------------------------------------------------
-    // SwipeDeleteManager.AdapterContract<MovimientoReciente> (Card #57)
-    // -------------------------------------------------------------------------
+    // ── SwipeDeleteManager.AdapterContract ────────────────────────────────────
 
     @Override
     public MovimientoReciente getItemAt(int position) {
@@ -158,9 +139,7 @@ public class MovimientosAdapter
         notifyItemInserted(safePos);
     }
 
-    // -------------------------------------------------------------------------
-    // RecyclerView.Adapter
-    // -------------------------------------------------------------------------
+    // ── RecyclerView.Adapter ──────────────────────────────────────────────────
 
     @NonNull
     @Override
@@ -171,10 +150,9 @@ public class MovimientosAdapter
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder,
+                                 @SuppressLint("RecyclerView") int position) {
         holder.bind(items.get(position));
-
-        // Animación escalonada sólo para items que aún no han aparecido
         if (position > lastAnimatedPosition) {
             TransitionHelper.animateItemEntry(holder.itemView, position);
             lastAnimatedPosition = position;
@@ -184,9 +162,7 @@ public class MovimientosAdapter
     @Override
     public int getItemCount() { return items.size(); }
 
-    // -------------------------------------------------------------------------
-    // ViewHolder
-    // -------------------------------------------------------------------------
+    // ── ViewHolder ────────────────────────────────────────────────────────────
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -198,14 +174,16 @@ public class MovimientosAdapter
 
             binding.getRoot().setOnClickListener(v -> {
                 int pos = getAdapterPosition();
-                if (clickListener != null && pos != RecyclerView.NO_ID && pos < items.size()) {
+                if (clickListener != null && pos != RecyclerView.NO_ID
+                        && pos < items.size()) {
                     clickListener.onItemClick(items.get(pos));
                 }
             });
 
             binding.getRoot().setOnLongClickListener(v -> {
                 int pos = getAdapterPosition();
-                if (longClickListener != null && pos != RecyclerView.NO_ID && pos < items.size()) {
+                if (longClickListener != null && pos != RecyclerView.NO_ID
+                        && pos < items.size()) {
                     return longClickListener.onItemLongClick(items.get(pos));
                 }
                 return false;
@@ -214,10 +192,10 @@ public class MovimientosAdapter
 
         public void bind(MovimientoReciente mov) {
 
-            // Título — nombre de categoría
+            // Título
             binding.tvTitulo.setText(mov.getNombreCategoria());
 
-            // Descripción (subtítulo)
+            // Descripción
             String desc = mov.getDescripcion();
             if (desc != null && !desc.isEmpty()) {
                 binding.tvDescripcion.setVisibility(View.VISIBLE);
@@ -229,7 +207,7 @@ public class MovimientosAdapter
             // Fecha
             binding.tvFecha.setText(dateFormat.format(new Date(mov.getFecha())));
 
-            // Importe con color según tipo
+            // Importe
             String importeStr = currencyFormat.format(Math.abs(mov.getImporte()));
             if (mov.getTipo() == MovimientoReciente.Tipo.GASTO) {
                 binding.tvCantidad.setText("-" + importeStr);
@@ -239,7 +217,7 @@ public class MovimientosAdapter
                 binding.tvCantidad.setTextColor(context.getColor(R.color.income_green));
             }
 
-            // Color de fondo del icono de categoría
+            // Color del icono
             try {
                 int color = Color.parseColor(mov.getColorCategoria());
                 int alpha30 = Color.argb(77,
@@ -249,17 +227,24 @@ public class MovimientosAdapter
                 binding.ivCategoriaIcono.setColorFilter(color);
             } catch (IllegalArgumentException ignored) { }
 
-            // Icono de categoría (drawable por nombre)
+            // Icono — con fallback seguro ante SVGs inválidos
             String iconoNombre = mov.getIconoNombre();
-            int iconoRes = context.getResources().getIdentifier(
-                    iconoNombre, "drawable", context.getPackageName());
-            if (iconoRes != 0) {
-                binding.ivCategoriaIcono.setImageResource(iconoRes);
-            } else {
+            int iconoRes = 0;
+            if (iconoNombre != null && !iconoNombre.isEmpty()) {
+                iconoRes = context.getResources().getIdentifier(
+                        iconoNombre, "drawable", context.getPackageName());
+            }
+            try {
+                if (iconoRes != 0) {
+                    binding.ivCategoriaIcono.setImageResource(iconoRes);
+                } else {
+                    binding.ivCategoriaIcono.setImageResource(R.drawable.ic_category_default);
+                }
+            } catch (Exception e) {
                 binding.ivCategoriaIcono.setImageResource(R.drawable.ic_category_default);
             }
 
-            // Miniatura de foto (Card #35)
+            // Miniatura foto
             String fotoRuta = mov.getFotoRuta();
             if (fotoRuta != null && !fotoRuta.isEmpty()) {
                 binding.ivFotoMiniatura.setVisibility(View.VISIBLE);

@@ -28,23 +28,15 @@ import com.example.moneymaster.utils.SessionManager;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * HomeFragment — Cards #19, #55, #57, #58
- *
- * Dashboard personal con:
- *  - Selector de mes y card de balance (Card #19 / DashboardViewModel)
- *  - Swipe to delete con Deshacer (Card #57)
- *  - SearchView + filtros avanzados en Bottom Sheet (Card #58)
- *  - Contador de resultados
- */
 public class HomeFragment extends Fragment {
 
-    private FragmentHomeBinding                     binding;
-    private DashboardViewModel                      dashboardViewModel;
-    private BusquedaViewModel                       busquedaViewModel;
-    private MovimientosAdapter                      adapter;
-    private SwipeDeleteManager<MovimientoReciente>  swipeDeleteManager;
-    private List<CategoriaGasto>                    categorias = new ArrayList<>();
+    private FragmentHomeBinding                    binding;
+    private DashboardViewModel                     dashboardViewModel;
+    private BusquedaViewModel                      busquedaViewModel;
+    private MovimientosAdapter                     adapter;
+    private SwipeDeleteManager<MovimientoReciente> swipeDeleteManager;
+    private List<CategoriaGasto>                   categorias      = new ArrayList<>();
+    private boolean                                hayFiltroActivo = false;
 
     @Nullable
     @Override
@@ -59,7 +51,11 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
+        // Scope en requireActivity() para que el ViewModel sobreviva
+        // mientras MainActivity esté viva — así Room actualiza el LiveData
+        // automáticamente al volver de AddExpenseActivity sin recrear el VM
+        dashboardViewModel = new ViewModelProvider(requireActivity())
+                .get(DashboardViewModel.class);
         busquedaViewModel  = new ViewModelProvider(this).get(BusquedaViewModel.class);
         busquedaViewModel.initPersonal();
 
@@ -71,15 +67,16 @@ public class HomeFragment extends Fragment {
         observeData();
     }
 
-    // ─── RecyclerView ─────────────────────────────────────────────────────────
+    // ── RecyclerView ──────────────────────────────────────────────────────────
 
     private void setupRecyclerView() {
         adapter = new MovimientosAdapter(requireContext());
-        binding.rvMovimientos.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.rvMovimientos.setLayoutManager(
+                new LinearLayoutManager(requireContext()));
         binding.rvMovimientos.setAdapter(adapter);
     }
 
-    // ─── Swipe delete (Card #57) ──────────────────────────────────────────────
+    // ── Swipe delete ──────────────────────────────────────────────────────────
 
     private void setupSwipeDelete() {
         swipeDeleteManager = new SwipeDeleteManager<>(
@@ -92,31 +89,31 @@ public class HomeFragment extends Fragment {
         swipeDeleteManager.attach();
     }
 
-    // ─── Card #58: SearchView + filtros ──────────────────────────────────────
+    // ── SearchView + filtros ──────────────────────────────────────────────────
 
     private void setupSearch() {
-        // SearchView directamente en el layout (no en toolbar)
         binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                hayFiltroActivo = !query.trim().isEmpty();
                 busquedaViewModel.setQuery(query.trim());
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                hayFiltroActivo = !newText.trim().isEmpty();
                 busquedaViewModel.setQuery(newText.trim());
                 return true;
             }
         });
 
-        // Limpiar búsqueda al cerrar el SearchView
         binding.searchView.setOnCloseListener(() -> {
+            hayFiltroActivo = false;
             busquedaViewModel.setQuery("");
             return false;
         });
 
-        // Botón de filtros avanzados
         binding.btnFiltros.setOnClickListener(v -> abrirFiltrosAvanzados());
     }
 
@@ -126,8 +123,8 @@ public class HomeFragment extends Fragment {
                 categorias
         );
         sheet.setOnFiltroAplicadoListener(filtro -> {
+            hayFiltroActivo = !filtro.isEmpty();
             busquedaViewModel.aplicarFiltro(filtro);
-            // Actualizar icono del botón para indicar filtros activos
             int count = filtro.contarFiltrosActivos();
             binding.btnFiltros.setAlpha(count > 0 ? 1.0f : 0.6f);
         });
@@ -143,21 +140,22 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    // ─── Selector de mes (DashboardViewModel) ────────────────────────────────
+    // ── Selector de mes ───────────────────────────────────────────────────────
 
     private void setupMesSelector() {
-        binding.btnMesAnterior.setOnClickListener(v -> dashboardViewModel.mesAnterior());
-        binding.btnMesSiguiente.setOnClickListener(v -> dashboardViewModel.mesSiguiente());
+        binding.btnMesAnterior.setOnClickListener(
+                v -> dashboardViewModel.mesAnterior());
+        binding.btnMesSiguiente.setOnClickListener(
+                v -> dashboardViewModel.mesSiguiente());
     }
 
-    // ─── Observadores ─────────────────────────────────────────────────────────
+    // ── Observadores ─────────────────────────────────────────────────────────
 
     private void observeData() {
-        // Etiqueta del mes
+
         dashboardViewModel.etiquetaMes.observe(getViewLifecycleOwner(),
                 label -> binding.tvMesActual.setText(label));
 
-        // Balance
         dashboardViewModel.balance.observe(getViewLifecycleOwner(), balance -> {
             if (balance == null) return;
             boolean positivo = balance >= 0;
@@ -167,50 +165,66 @@ public class HomeFragment extends Fragment {
                             "%s%.2f €", positivo ? "+" : "", balance));
         });
 
-        // Totales
         dashboardViewModel.totalIngresos.observe(getViewLifecycleOwner(), total -> {
             if (total != null)
                 binding.tvTotalIngresos.setText(
-                        String.format(new java.util.Locale("es", "ES"), "%.2f €", total));
+                        String.format(new java.util.Locale("es", "ES"),
+                                "%.2f €", total));
         });
 
         dashboardViewModel.totalGastos.observe(getViewLifecycleOwner(), total -> {
             if (total != null)
                 binding.tvTotalGastos.setText(
-                        String.format(new java.util.Locale("es", "ES"), "%.2f €", total));
+                        String.format(new java.util.Locale("es", "ES"),
+                                "%.2f €", total));
         });
 
-        // Card #58: resultados filtrados
-        busquedaViewModel.getResultadosPersonales().observe(getViewLifecycleOwner(), gastos -> {
-            List<MovimientoReciente> lista = convertirAMovimientos(gastos);
-            adapter.submitList(lista);
-
-            boolean vacio = lista.isEmpty();
-            binding.rvMovimientos.setVisibility(vacio ? View.GONE : View.VISIBLE);
-            binding.tvSinMovimientos.setVisibility(vacio ? View.VISIBLE : View.GONE);
-            binding.btnVerTodos.setVisibility(vacio ? View.GONE : View.VISIBLE);
-        });
-
-        // Card #58: contador de resultados
-        busquedaViewModel.getContadorPersonales().observe(getViewLifecycleOwner(), count -> {
-            if (count == null) {
-                binding.tvContadorResultados.setVisibility(View.GONE);
-                return;
-            }
-            FiltroGasto filtro = busquedaViewModel.getFiltroSnapshot();
-            if (filtro.isEmpty()) {
-                binding.tvContadorResultados.setVisibility(View.GONE);
-            } else {
-                binding.tvContadorResultados.setText(
-                        count + " resultado" + (count != 1 ? "s" : ""));
-                binding.tvContadorResultados.setVisibility(View.VISIBLE);
+        // Sin filtro → lista del Dashboard (reactiva a Room, scope Activity)
+        dashboardViewModel.movimientos.observe(getViewLifecycleOwner(), movimientos -> {
+            if (!hayFiltroActivo) {
+                mostrarMovimientos(movimientos);
             }
         });
+
+        // Con filtro → lista del BusquedaViewModel
+        busquedaViewModel.getResultadosPersonales().observe(
+                getViewLifecycleOwner(), gastos -> {
+                    if (hayFiltroActivo) {
+                        mostrarMovimientos(convertirAMovimientos(gastos));
+                    }
+                });
+
+        // Contador de resultados
+        busquedaViewModel.getContadorPersonales().observe(
+                getViewLifecycleOwner(), count -> {
+                    if (count == null || !hayFiltroActivo) {
+                        binding.tvContadorResultados.setVisibility(View.GONE);
+                        return;
+                    }
+                    FiltroGasto filtro = busquedaViewModel.getFiltroSnapshot();
+                    if (filtro.isEmpty()) {
+                        binding.tvContadorResultados.setVisibility(View.GONE);
+                    } else {
+                        binding.tvContadorResultados.setText(
+                                count + " resultado" + (count != 1 ? "s" : ""));
+                        binding.tvContadorResultados.setVisibility(View.VISIBLE);
+                    }
+                });
     }
 
-    // ─── Conversión GastoConCategoria → MovimientoReciente ───────────────────
+    // ── Helpers ───────────────────────────────────────────────────────────────
 
-    private List<MovimientoReciente> convertirAMovimientos(List<GastoConCategoria> gastos) {
+    private void mostrarMovimientos(List<MovimientoReciente> lista) {
+        if (lista == null) lista = new ArrayList<>();
+        adapter.submitList(lista);
+        boolean vacio = lista.isEmpty();
+        binding.rvMovimientos.setVisibility(vacio ? View.GONE : View.VISIBLE);
+        binding.tvSinMovimientos.setVisibility(vacio ? View.VISIBLE : View.GONE);
+        binding.btnVerTodos.setVisibility(vacio ? View.GONE : View.VISIBLE);
+    }
+
+    private List<MovimientoReciente> convertirAMovimientos(
+            List<GastoConCategoria> gastos) {
         List<MovimientoReciente> lista = new ArrayList<>();
         if (gastos == null) return lista;
         for (GastoConCategoria g : gastos) {

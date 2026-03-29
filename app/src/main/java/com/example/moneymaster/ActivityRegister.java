@@ -101,10 +101,12 @@ public class ActivityRegister extends AppCompatActivity {
             try {
                 String passwordHash = SecurityUtils.hashPassword(password);
 
-                // Corrección Card #62: usuarioDao() en lugar de userDao()
                 long userId = db.usuarioDao().insertUser(
                         new User(nombre, email, passwordHash)
                 );
+
+                // Insertar categorías del sistema si no existen
+                sembrarCategoriasSiNecesario();
 
                 runOnUiThread(() -> {
                     session.saveSession((int) userId, email, nombre);
@@ -120,6 +122,52 @@ public class ActivityRegister extends AppCompatActivity {
                 );
             }
         });
+    }
+
+    private void sembrarCategoriasSiNecesario() {
+        if (db.categoriaGastoDao().countCategoriasDelSistema() > 0) return;
+
+        java.util.List<com.example.moneymaster.data.model.CategoriaGasto> gastos =
+                java.util.Arrays.asList(
+                        com.example.moneymaster.data.model.CategoriaGasto.crearSistema(
+                                "Alimentación",  "ic_restaurant",     "#FF5722"),
+                        com.example.moneymaster.data.model.CategoriaGasto.crearSistema(
+                                "Transporte",    "ic_directions_car", "#2196F3"),
+                        com.example.moneymaster.data.model.CategoriaGasto.crearSistema(
+                                "Vivienda",      "ic_home",           "#4CAF50"),
+                        com.example.moneymaster.data.model.CategoriaGasto.crearSistema(
+                                "Salud",         "ic_local_hospital", "#F44336"),
+                        com.example.moneymaster.data.model.CategoriaGasto.crearSistema(
+                                "Ocio",          "ic_sports_esports", "#9C27B0"),
+                        com.example.moneymaster.data.model.CategoriaGasto.crearSistema(
+                                "Ropa",          "ic_checkroom",      "#E91E63"),
+                        com.example.moneymaster.data.model.CategoriaGasto.crearSistema(
+                                "Educación",     "ic_school",         "#3F51B5"),
+                        com.example.moneymaster.data.model.CategoriaGasto.crearSistema(
+                                "Tecnología",    "ic_devices",        "#00BCD4"),
+                        com.example.moneymaster.data.model.CategoriaGasto.crearSistema(
+                                "Viajes",        "ic_flight",         "#FF9800"),
+                        com.example.moneymaster.data.model.CategoriaGasto.crearSistema(
+                                "Otros",         "ic_category",       "#607D8B")
+                );
+        db.categoriaGastoDao().insertarVarias(gastos);
+
+        java.util.List<com.example.moneymaster.data.model.CategoriaIngreso> ingresos =
+                java.util.Arrays.asList(
+                        com.example.moneymaster.data.model.CategoriaIngreso.crearSistema(
+                                "Salario",       "ic_work",           "#4CAF50"),
+                        com.example.moneymaster.data.model.CategoriaIngreso.crearSistema(
+                                "Freelance",     "ic_laptop",         "#2196F3"),
+                        com.example.moneymaster.data.model.CategoriaIngreso.crearSistema(
+                                "Inversiones",   "ic_trending_up",    "#FF9800"),
+                        com.example.moneymaster.data.model.CategoriaIngreso.crearSistema(
+                                "Alquiler",      "ic_home",           "#9C27B0"),
+                        com.example.moneymaster.data.model.CategoriaIngreso.crearSistema(
+                                "Regalo",        "ic_card_giftcard",  "#E91E63"),
+                        com.example.moneymaster.data.model.CategoriaIngreso.crearSistema(
+                                "Otros",         "ic_category",       "#607D8B")
+                );
+        db.categoriaIngresoDao().insertarVarias(ingresos);
     }
 
     private TextWatcher clearErrorTextWatcher(TextInputLayout layout) {

@@ -220,17 +220,12 @@ public class OnboardingActivity extends AppCompatActivity {
         editor.putBoolean(KEY_ONBOARDING_COMPLETED, true);
         editor.apply();
 
-        // TODO: Navegar a LoginActivity cuando la crees
-        // Intent intent = new Intent(OnboardingActivity.this, LoginActivity.class);
-        // startActivity(intent);
-
-        // Por ahora, simplemente cerramos la activity
+        // Navegar a LoginActivity
+        Intent intent = new Intent(OnboardingActivity.this,
+                com.example.moneymaster.ui.auth.LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
         finish();
-
-        // Mensaje temporal para confirmar que funciona
-        Toast.makeText(this,
-                "¡Onboarding completado! Próximamente: LoginActivity",
-                Toast.LENGTH_LONG).show();
     }
 
     /**
