@@ -28,7 +28,7 @@ public class GastoRepository {
         executor     = AppDatabase.databaseWriteExecutor;
     }
 
-    // ─── Gastos ───────────────────────────────────────────────────────────────
+    // ── Gastos ────────────────────────────────────────────────────────────────
 
     public LiveData<List<GastoPersonal>> getGastosByUsuario(long usuarioId) {
         return gastoDao.getGastosByUsuario(usuarioId);
@@ -50,6 +50,16 @@ public class GastoRepository {
         return gastoDao.getGastoById(gastoId);
     }
 
+    /** Card #62 — StatisticsViewModel: gastos de todo un año. */
+    public LiveData<List<GastoPersonal>> getGastosByAnio(long usuarioId, int anio) {
+        return gastoDao.getGastosByAnio(usuarioId, anio);
+    }
+
+    /** Card #62 — StatisticsViewModel: gastos en rango de fechas. */
+    public LiveData<List<GastoPersonal>> getGastosByRango(long usuarioId, long inicio, long fin) {
+        return gastoDao.getGastosByRango(usuarioId, inicio, fin);
+    }
+
     public void insertar(GastoPersonal gasto) {
         executor.execute(() -> gastoDao.insertar(gasto));
     }
@@ -62,7 +72,7 @@ public class GastoRepository {
         executor.execute(() -> gastoDao.eliminar(gasto));
     }
 
-    // ─── Estadísticas ─────────────────────────────────────────────────────────
+    // ── Estadísticas ──────────────────────────────────────────────────────────
 
     public LiveData<List<TotalPorCategoria>> getGastosPorCategoria(long usuarioId, int mes, int anio) {
         return gastoDao.getGastosPorCategoria(usuarioId, mes, anio);
@@ -72,7 +82,7 @@ public class GastoRepository {
         return gastoDao.getResumenUltimosMeses(usuarioId, meses);
     }
 
-    // ─── Categorías ───────────────────────────────────────────────────────────
+    // ── Categorías ────────────────────────────────────────────────────────────
 
     public LiveData<List<CategoriaGasto>> getCategorias(long usuarioId) {
         return categoriaDao.getCategorias(usuarioId);

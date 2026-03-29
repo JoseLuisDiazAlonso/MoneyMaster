@@ -18,12 +18,12 @@ public class CategoriaRepository {
     private final CategoriaIngresoDao categoriaIngresoDao;
 
     public CategoriaRepository(Context context) {
-        AppDatabase db = AppDatabase.getInstance(context);
+        AppDatabase db = AppDatabase.getDatabase(context);
         categoriaGastoDao   = db.categoriaGastoDao();
         categoriaIngresoDao = db.categoriaIngresoDao();
     }
 
-    // ── GASTOS ────────────────────────────────────────────────────────────────
+    //GASTOS
 
     public void insertarCategoriaGasto(CategoriaGasto categoria) {
         AppDatabase.databaseWriteExecutor.execute(() ->
@@ -53,7 +53,7 @@ public class CategoriaRepository {
         return categoriaGastoDao.getCategoriaById(id);
     }
 
-    // ── INGRESOS ──────────────────────────────────────────────────────────────
+    //INGRESOS
 
     public void insertarCategoriaIngreso(CategoriaIngreso categoria) {
         AppDatabase.databaseWriteExecutor.execute(() ->

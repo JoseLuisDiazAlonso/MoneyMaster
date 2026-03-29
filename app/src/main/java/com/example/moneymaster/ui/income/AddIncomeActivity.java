@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.moneymaster.R;
 import com.example.moneymaster.data.model.CategoriaIngreso;
 import com.example.moneymaster.data.model.IngresoPersonal;
-import com.example.moneymaster.data.repository.IngresoPersonalRepository;
 import com.example.moneymaster.databinding.ActivityAddIncomeBinding;
 import com.example.moneymaster.ui.adapters.IncomeDropdownAdapter;
 import com.example.moneymaster.utils.SessionManager;
@@ -30,9 +29,9 @@ public class AddIncomeActivity extends AppCompatActivity {
     private AddIncomeViewModel       viewModel;
     private IncomeDropdownAdapter    categoryAdapter;
 
-    private CategoriaIngreso selectedCategory    = null;
+    private CategoriaIngreso selectedCategory     = null;
     private long             selectedDateTimestamp = 0;
-    private long             usuarioId            = -1;
+    private long             usuarioId             = -1;
 
     private static final String DATE_DISPLAY_FORMAT = "dd MMM yyyy";
 
@@ -46,17 +45,14 @@ public class AddIncomeActivity extends AppCompatActivity {
         binding = ActivityAddIncomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Toolbar
         setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(R.string.add_income_title);
         }
 
-        // Obtener usuarioId de sesión
         usuarioId = new SessionManager(this).getUserId();
 
-        // ViewModel con Factory para pasar usuarioId
         AddIncomeViewModelFactory factory =
                 new AddIncomeViewModelFactory(getApplication(), usuarioId);
         viewModel = new ViewModelProvider(this, factory).get(AddIncomeViewModel.class);
@@ -153,7 +149,6 @@ public class AddIncomeActivity extends AppCompatActivity {
     private boolean validateForm() {
         boolean valid = true;
 
-        // Importe
         String importeStr = binding.etImporte.getText() != null
                 ? binding.etImporte.getText().toString().trim() : "";
         if (TextUtils.isEmpty(importeStr)) {
@@ -174,7 +169,6 @@ public class AddIncomeActivity extends AppCompatActivity {
             }
         }
 
-        // Categoría
         if (selectedCategory == null) {
             binding.tilCategory.setError(getString(R.string.error_category_required));
             valid = false;
@@ -182,7 +176,6 @@ public class AddIncomeActivity extends AppCompatActivity {
             binding.tilCategory.setError(null);
         }
 
-        // Fecha
         if (selectedDateTimestamp == 0) {
             binding.tilFecha.setError(getString(R.string.error_date_required));
             valid = false;
@@ -199,19 +192,21 @@ public class AddIncomeActivity extends AppCompatActivity {
 
     private void saveIncome() {
         IngresoPersonal ingreso = new IngresoPersonal();
-        ingreso.usuarioId   = (int) usuarioId;
-        ingreso.categoriaId = selectedCategory.id;
-        ingreso.monto       = Double.parseDouble(
+        ingreso.usuarioId    = (int) usuarioId;
+        ingreso.categoria_id = selectedCategory.id;
+        ingreso.monto        = Double.parseDouble(
                 binding.etImporte.getText().toString().trim().replace(",", "."));
-        ingreso.descripcion = binding.etDescripcion.getText() != null
+        ingreso.descripcion  = binding.etDescripcion.getText() != null
                 ? binding.etDescripcion.getText().toString().trim() : "";
-        ingreso.fecha       = selectedDateTimestamp * 1000L; // Room usa milisegundos
+        ingreso.fecha        = selectedDateTimestamp * 1000L;
 
         binding.btnSave.setEnabled(false);
 
-        viewModel.insertIngreso(ingreso, new IngresoPersonalRepository.SaveCallback<Void>() {
+        // Corrección Card #62: usa AddIncomeViewModel.SaveCallback
+        // en lugar del eliminado IngresoPersonalRepository.SaveCallback
+        viewModel.insertIngreso(ingreso, new AddIncomeViewModel.SaveCallback() {
             @Override
-            public void onSaved(Void result) {
+            public void onSuccess() {
                 setResult(RESULT_OK);
                 finish();
             }

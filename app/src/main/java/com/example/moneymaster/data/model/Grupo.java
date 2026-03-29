@@ -7,16 +7,7 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-/**
- * Entidad Room — tabla "grupos".
- *
- * Representa un grupo de personas para control de gastos compartidos.
- * El creador del grupo tiene FK con SET_NULL: si el creador elimina su cuenta,
- * el grupo sobrevive y puede ser administrado por otro miembro con rol ADMIN.
- *
- * Borrado suave con "activo": archivar grupo en lugar de eliminar,
- * para preservar el historial de gastos grupales.
- */
+
 @Entity(
         tableName = "grupos",
         foreignKeys = {

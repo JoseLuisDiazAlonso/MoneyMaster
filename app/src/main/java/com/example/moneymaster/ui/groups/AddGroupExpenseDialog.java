@@ -301,11 +301,11 @@ public class AddGroupExpenseDialog extends BottomSheetDialogFragment {
         gasto.descripcion     = TextUtils.isEmpty(descripcion) ? null : descripcion;
         gasto.pagadoPorId     = miembroSeleccionado.id;
         gasto.pagadoPorNombre = miembroSeleccionado.nombre;
-        gasto.categoriaId     = categoriaSeleccionada != null ? categoriaSeleccionada.id : 1;
+        gasto.categoria_id     = categoriaSeleccionada != null ? categoriaSeleccionada.id : 1;
         gasto.fecha           = fechaSeleccionada;
-        gasto.fechaCreacion   = System.currentTimeMillis();
+        gasto.fecha   = System.currentTimeMillis();
         gasto.dividirIgual    = 1;
-        gasto.fotoReciboId    = fotoId > 0 ? fotoId : null;
+        gasto.foto_recibo_id   = fotoId > 0 ? fotoId : null;
         return gasto;
     }
 

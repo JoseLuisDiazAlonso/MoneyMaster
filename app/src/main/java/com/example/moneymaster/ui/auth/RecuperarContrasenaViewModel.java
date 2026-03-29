@@ -39,7 +39,7 @@ public class RecuperarContrasenaViewModel extends AndroidViewModel {
 
     public RecuperarContrasenaViewModel(@NonNull Application application) {
         super(application);
-        db    = AppDatabase.getInstance(application);
+        db    = AppDatabase.getDatabase(application);
         prefs = application.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
@@ -56,7 +56,7 @@ public class RecuperarContrasenaViewModel extends AndroidViewModel {
 
         executor.execute(() -> {
             // 1. Verificar que el email existe en la DB
-            User user = db.userDao().getByEmail(email.trim().toLowerCase());
+            User user = db.usuarioDao().getByEmail(email.trim().toLowerCase());
 
             if (user == null) {
                 errorMessage.postValue("No existe una cuenta con ese email");
@@ -142,7 +142,7 @@ public class RecuperarContrasenaViewModel extends AndroidViewModel {
             String nuevoHash = SecurityUtils.hashPassword(nuevaContrasena);
 
             // Actualizar en la DB buscando por email
-            db.userDao().updatePasswordByEmail(email, nuevoHash);
+            db.usuarioDao().updatePasswordByEmail(email, nuevoHash);
 
             // Limpiar todos los datos de recuperación de SharedPreferences
             prefs.edit().clear().apply();

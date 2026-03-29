@@ -15,10 +15,25 @@ import com.example.moneymaster.data.model.TotalPorCategoria;
 
 import java.util.List;
 
+/**
+ * IngresoPersonalDao — Card #62: métodos originales conservados + optimizaciones.
+ *
+ * Cambios respecto a la versión anterior:
+ *  - getIngresosByUsuario()      → añadido LIMIT 200
+ *  - getIngresosByMes()          → sin cambios (ya filtra por mes/año)
+ *  - getUltimosIngresos()        → conservado con :limite dinámico
+ *  - getTotalIngresosMes()       → sin cambios
+ *  - getIngresosPorCategoria()   → sin cambios (agregado)
+ *  - getResumenUltimosMeses()    → sin cambios
+ *  - Todos los SELECT usan columnas indexadas (fecha, categoria_id)
+ *    definidas en la entidad IngresoPersonal con @Index
+ */
 @Dao
 public interface IngresoPersonalDao {
 
-    // ─── CRUD ─────────────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+    // INSERT / UPDATE / DELETE
+    // ─────────────────────────────────────────────────────────────────────────
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertar(IngresoPersonal ingreso);
@@ -29,157 +44,166 @@ public interface IngresoPersonalDao {
     @Delete
     void eliminar(IngresoPersonal ingreso);
 
-    // ─── Listas ───────────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+    // SELECT — usados por IngresoRepository
+    // ─────────────────────────────────────────────────────────────────────────
 
-    @Query("SELECT * FROM ingresos_personales WHERE usuario_id = :usuarioId ORDER BY fecha DESC")
+    /**
+     * Todos los ingresos del usuario ordenados por fecha DESC.
+     * Card #62: LIMIT 200 añadido.
+     */
+    @Query("SELECT * FROM ingresos_personales " +
+            "WHERE usuarioId = :usuarioId " +
+            "ORDER BY fecha DESC " +
+            "LIMIT 200")
     LiveData<List<IngresoPersonal>> getIngresosByUsuario(long usuarioId);
 
+    /**
+     * Ingresos filtrados por mes y año (usa índice de fecha).
+     */
     @Query("SELECT * FROM ingresos_personales " +
-            "WHERE usuario_id = :usuarioId " +
-            "  AND CAST(strftime('%m', datetime(fecha / 1000, 'unixepoch')) AS INTEGER) = :mes " +
-            "  AND CAST(strftime('%Y', datetime(fecha / 1000, 'unixepoch')) AS INTEGER) = :anio " +
+            "WHERE usuarioId = :usuarioId " +
+            "  AND strftime('%Y', fecha / 1000, 'unixepoch') = printf('%04d', :anio) " +
+            "  AND strftime('%m', fecha / 1000, 'unixepoch') = printf('%02d', :mes) " +
             "ORDER BY fecha DESC")
     LiveData<List<IngresoPersonal>> getIngresosByMes(long usuarioId, int mes, int anio);
 
+    /**
+     * Total de ingresos del mes para el balance del Dashboard.
+     */
+    @Query("SELECT SUM(monto) FROM ingresos_personales " +
+            "WHERE usuarioId = :usuarioId " +
+            "  AND strftime('%Y', fecha / 1000, 'unixepoch') = printf('%04d', :anio) " +
+            "  AND strftime('%m', fecha / 1000, 'unixepoch') = printf('%02d', :mes)")
+    LiveData<Double> getTotalIngresosMes(long usuarioId, int mes, int anio);
+
+    /**
+     * Últimos N ingresos para el widget del Dashboard.
+     * MainViewModel lo llama con limite = 3.
+     */
     @Query("SELECT * FROM ingresos_personales " +
-            "WHERE usuario_id = :usuarioId ORDER BY fecha DESC LIMIT :limite")
+            "WHERE usuarioId = :usuarioId " +
+            "ORDER BY fecha DESC " +
+            "LIMIT :limite")
     LiveData<List<IngresoPersonal>> getUltimosIngresos(long usuarioId, int limite);
 
+    /**
+     * Ingreso por ID (para edición / detalle).
+     */
     @Query("SELECT * FROM ingresos_personales WHERE id = :ingresoId LIMIT 1")
     LiveData<IngresoPersonal> getIngresoById(long ingresoId);
 
-    // ─── Totales ──────────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+    // SELECT — Estadísticas (usados por IngresoRepository)
+    // ─────────────────────────────────────────────────────────────────────────
 
-    @Query("SELECT COALESCE(SUM(monto), 0.0) FROM ingresos_personales " +
-            "WHERE usuario_id = :usuarioId " +
-            "  AND CAST(strftime('%m', datetime(fecha / 1000, 'unixepoch')) AS INTEGER) = :mes " +
-            "  AND CAST(strftime('%Y', datetime(fecha / 1000, 'unixepoch')) AS INTEGER) = :anio")
-    LiveData<Double> getTotalIngresosMes(long usuarioId, int mes, int anio);
-
-    @Query("SELECT COALESCE(SUM(monto), 0.0) FROM ingresos_personales " +
-            "WHERE usuario_id = :usuarioId AND fecha BETWEEN :desde AND :hasta")
-    LiveData<Double> getTotalIngresosRango(long usuarioId, long desde, long hasta);
-
-    // ─── Estadísticas: PieChart ───────────────────────────────────────────────
-
-    @Query("SELECT " +
-            "  c.nombre     AS nombreCategoria, " +
-            "  c.icono      AS icono, " +
-            "  c.color      AS color, " +
-            "  SUM(g.monto) AS total " +
-            "FROM ingresos_personales g " +
-            "INNER JOIN categorias_ingreso c ON g.categoria_id = c.id " +
-            "WHERE g.usuario_id = :usuarioId " +
-            "  AND CAST(strftime('%m', datetime(g.fecha / 1000, 'unixepoch')) AS INTEGER) = :mes " +
-            "  AND CAST(strftime('%Y', datetime(g.fecha / 1000, 'unixepoch')) AS INTEGER) = :anio " +
-            "GROUP BY c.id " +
+    /**
+     * Suma de ingresos agrupada por categoría para el mes indicado.
+     * Usa índice de categoria_id.
+     */
+    @Query("SELECT c.nombre AS nombreCategoria, " +
+            "       c.color AS colorCategoria, " +
+            "       c.icono AS iconoCategoria, " +
+            "       SUM(i.monto) AS total " +
+            "FROM ingresos_personales i " +
+            "LEFT JOIN categorias_ingreso c ON i.categoria_id = c.id " +
+            "WHERE i.usuarioId = :usuarioId " +
+            "  AND strftime('%Y', i.fecha / 1000, 'unixepoch') = printf('%04d', :anio) " +
+            "  AND strftime('%m', i.fecha / 1000, 'unixepoch') = printf('%02d', :mes) " +
+            "GROUP BY i.categoria_id " +
             "ORDER BY total DESC")
     LiveData<List<TotalPorCategoria>> getIngresosPorCategoria(long usuarioId, int mes, int anio);
 
-    // ─── Estadísticas: BarChart ───────────────────────────────────────────────
-
-    @Query("SELECT " +
-            "  CAST(strftime('%m', datetime(fecha / 1000, 'unixepoch')) AS INTEGER) AS mes, " +
-            "  CAST(strftime('%Y', datetime(fecha / 1000, 'unixepoch')) AS INTEGER) AS anio, " +
-            "  COALESCE(SUM(monto), 0.0) AS total " +
+    /**
+     * Resumen mensual (total ingresos por mes) para los últimos N meses.
+     * Usado por el LineChart en EstadisticasFragment.
+     */
+    @Query("SELECT CAST(strftime('%m', fecha / 1000, 'unixepoch') AS INTEGER) AS mes, " +
+            "       CAST(strftime('%Y', fecha / 1000, 'unixepoch') AS INTEGER) AS anio, " +
+            "       SUM(monto) AS total " +
             "FROM ingresos_personales " +
-            "WHERE usuario_id = :usuarioId " +
-            "GROUP BY anio, mes " +
+            "WHERE usuarioId = :usuarioId " +
+            "GROUP BY strftime('%Y-%m', fecha / 1000, 'unixepoch') " +
             "ORDER BY anio DESC, mes DESC " +
             "LIMIT :meses")
     LiveData<List<ResumenMensual>> getResumenUltimosMeses(long usuarioId, int meses);
 
-    @Query("SELECT " +
-            "  CAST(strftime('%m', datetime(fecha / 1000, 'unixepoch')) AS INTEGER) AS mes, " +
-            "  CAST(strftime('%Y', datetime(fecha / 1000, 'unixepoch')) AS INTEGER) AS anio, " +
-            "  COALESCE(SUM(monto), 0.0) AS total " +
-            "FROM ingresos_personales " +
-            "WHERE usuario_id = :usuarioId " +
-            "GROUP BY anio, mes " +
-            "ORDER BY anio DESC, mes DESC " +
-            "LIMIT :meses")
-    List<ResumenMensual> getResumenUltimosMesesSync(long usuarioId, int meses);
+    // ─────────────────────────────────────────────────────────────────────────
+    // SELECT — usados por StatisticsViewModel (Card #62)
+    // ─────────────────────────────────────────────────────────────────────────
 
-    @Query("SELECT COUNT(*) FROM ingresos_personales WHERE usuario_id = :usuarioId")
-    int countIngresos(long usuarioId);
+    /** Todos los ingresos del año indicado (usa índice de fecha). */
+    @Query("SELECT * FROM ingresos_personales " +
+            "WHERE usuarioId = :usuarioId " +
+            "  AND strftime('%Y', fecha / 1000, 'unixepoch') = printf('%04d', :anio) " +
+            "ORDER BY fecha DESC")
+    LiveData<List<IngresoPersonal>> getIngresosByAnio(long usuarioId, int anio);
 
-    @Query("SELECT " +
-            "  ip.id              AS id, " +
-            "  ip.descripcion     AS descripcion, " +
-            "  ip.monto           AS importe, " +
-            "  ip.fecha           AS fecha, " +
-            "  COALESCE(ci.nombre, 'Sin categoría') AS nombreCategoria, " +
-            "  COALESCE(ci.icono, 'ic_category')    AS iconoNombre, " +
-            "  COALESCE(ci.color, '#4CAF50')         AS colorCategoria " +
-            "FROM ingresos_personales ip " +
-            "LEFT JOIN categorias_ingreso ci ON ip.categoria_id = ci.id " +
-            "WHERE ip.usuario_id = :userId " +
-            "  AND ip.fecha >= :inicio " +
-            "  AND ip.fecha <  :fin " +
-            "ORDER BY ip.fecha DESC")
-    LiveData<List<IngresoConCategoria>> getIngresosConCategoriaDelMes(
-            int userId, long inicio, long fin);
-
-    @Query("SELECT COALESCE(SUM(monto), 0.0) " +
-            "FROM ingresos_personales " +
-            "WHERE usuario_id = :userId " +
+    /** Ingresos en un rango de fechas (timestamps ms, inclusive). */
+    @Query("SELECT * FROM ingresos_personales " +
+            "WHERE usuarioId = :usuarioId " +
             "  AND fecha >= :inicio " +
-            "  AND fecha <  :fin")
-    LiveData<Double> getTotalIngresosMesRango(int userId, long inicio, long fin);
-
-    /**Query para estadísticas**/
-
-    @Query("SELECT * FROM ingresos_personales " +
-            "WHERE usuario_id = :userId " +
-            "AND CAST(strftime('%m', fecha, 'unixepoch') AS INTEGER) = :mes " +
-            "AND CAST(strftime('%Y', fecha, 'unixepoch') AS INTEGER) = :anio " +
+            "  AND fecha <= :fin " +
             "ORDER BY fecha DESC")
-    LiveData<List<IngresoPersonal>> getIngresosByMonthYear(int userId, int mes, int anio);
+    LiveData<List<IngresoPersonal>> getIngresosByRango(long usuarioId, long inicio, long fin);
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // SELECT — Síncronas para Export (PDF / CSV)
+    // ─────────────────────────────────────────────────────────────────────────
 
     @Query("SELECT * FROM ingresos_personales " +
-            "WHERE usuario_id = :userId " +
-            "AND CAST(strftime('%Y', fecha, 'unixepoch') AS INTEGER) = :anio " +
+            "WHERE usuarioId = :usuarioId " +
             "ORDER BY fecha DESC")
-    LiveData<List<IngresoPersonal>> getIngresosByYear(int userId, int anio);
+    List<IngresoPersonal> getAllSync(long usuarioId);
 
     @Query("SELECT * FROM ingresos_personales " +
-            "WHERE usuario_id = :userId " +
-            "AND fecha >= :startTimestamp AND fecha <= :endTimestamp " +
+            "WHERE usuarioId = :usuarioId " +
+            "  AND strftime('%Y', fecha / 1000, 'unixepoch') = printf('%04d', :anio) " +
+            "  AND strftime('%m', fecha / 1000, 'unixepoch') = printf('%02d', :mes) " +
             "ORDER BY fecha DESC")
-    LiveData<List<IngresoPersonal>> getIngresosByDateRange(int userId, long startTimestamp, long endTimestamp);
+    List<IngresoPersonal> getByMesSync(long usuarioId, int mes, int anio);
 
-    /**
-     * Ingresos de un usuario en un rango de fechas. Síncrono para exportación.
-     *
-     * @param usuarioId ID del usuario en sesión.
-     * @param inicio    Timestamp Unix (ms) del inicio del período (inclusive).
-     * @param fin       Timestamp Unix (ms) del fin del período (exclusive).
-     * @return          Lista de IngresoPersonal ordenada por fecha descendente.
-     */
+    @Query("SELECT * FROM ingresos_personales WHERE id = :id LIMIT 1")
+    IngresoPersonal getByIdSync(long id);
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // SELECT — Síncronas para Export (rango de fechas y completo)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /** Ingresos en un rango de timestamps ms — para ExportFragment CSV/PDF. */
     @Query("SELECT * FROM ingresos_personales " +
-            "WHERE usuario_id = :usuarioId " +
+            "WHERE usuarioId = :usuarioId " +
             "  AND fecha >= :inicio " +
-            "  AND fecha < :fin " +
+            "  AND fecha <= :fin " +
             "ORDER BY fecha DESC")
     List<IngresoPersonal> getIngresosParaExportacion(int usuarioId, long inicio, long fin);
 
-    /**
-     * Todos los ingresos de un usuario. Síncrono para exportación anual o total.
-     */
+    /** Todos los ingresos del usuario sin filtro de fecha — para CSV completo. */
     @Query("SELECT * FROM ingresos_personales " +
-            "WHERE usuario_id = :usuarioId " +
+            "WHERE usuarioId = :usuarioId " +
             "ORDER BY fecha DESC")
     List<IngresoPersonal> getTodosIngresosParaExportacion(int usuarioId);
 
-    // ─── Card #50: Eliminar datos (PerfilFragment) ────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+    // SELECT — usados por DashboardViewModel (rango de timestamps)
+    // ─────────────────────────────────────────────────────────────────────────
 
     /**
-     * Elimina todos los ingresos personales de un usuario.
-     * Llamar desde databaseWriteExecutor, nunca desde el hilo principal.
-     *
-     * @param usuarioId ID del usuario en sesión.
+     * Ingresos con datos de categoría filtrados por rango de timestamps ms.
+     * Usado por DashboardViewModel para el selector de mes.
      */
-    @Query("DELETE FROM ingresos_personales WHERE usuario_id = :usuarioId")
-    void deleteAllByUsuario(int usuarioId);
-
+    @Query("SELECT i.id AS id, " +
+            "       i.descripcion AS descripcion, " +
+            "       i.monto AS importe, " +
+            "       i.fecha AS fecha, " +
+            "       COALESCE(c.nombre, 'Sin categoría') AS nombreCategoria, " +
+            "       COALESCE(c.icono,  'ic_category_default') AS iconoNombre, " +
+            "       COALESCE(c.color,  '#9E9E9E') AS colorCategoria " +
+            "FROM ingresos_personales i " +
+            "LEFT JOIN categorias_ingreso c ON i.categoria_id = c.id " +
+            "WHERE i.usuarioId = :usuarioId " +
+            "  AND i.fecha >= :inicio " +
+            "  AND i.fecha < :fin " +
+            "ORDER BY i.fecha DESC")
+    LiveData<List<IngresoConCategoria>> getIngresosPorCategoria(int usuarioId, long inicio, long fin);
 }

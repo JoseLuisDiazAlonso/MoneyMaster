@@ -16,28 +16,6 @@ import com.example.moneymaster.ui.groups.util.BalanceCalculator;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Servicio de capa de datos que recalcula y persiste los balances
- * de un grupo en la tabla balance_grupo cada vez que se llama.
- *
- * NO es un Android Service — es una clase de utilidad que se ejecuta
- * siempre en un hilo de background (AppDatabase.databaseWriteExecutor).
- *
- * Patron de uso:
- *   AppDatabase.databaseWriteExecutor.execute(() ->
- *       BalancePersistenceService.recalcularYPersistir(context, grupoId));
- *
- * Se llama desde GrupoRepository tras cada inserción o eliminación de gasto.
- *
- * Estrategia de persistencia:
- *   1. Borrar todos los balances actuales del grupo (eliminarBalancesByGrupo).
- *   2. Recalcular desde cero con BalanceCalculator.
- *   3. Insertar los nuevos balances con upsertVarios.
- *
- * Esta estrategia "borra y recalcula" es más simple y segura que intentar
- * actualizar registros individuales, y para grupos típicos (<20 miembros)
- * el coste es despreciable.
- */
 public class BalancePersistenceService {
 
     /**

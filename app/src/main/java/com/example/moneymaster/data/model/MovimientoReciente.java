@@ -12,10 +12,10 @@ public class MovimientoReciente {
     private final String colorCategoria;
     private final double importe;
     private final long   fecha;
-    private final String fotoRuta;   // Card #32
-    private final int    fotoId;     // Card #35 — ID de FotoRecibo, 0 si no hay foto
+    private final String fotoRuta;
+    private final int    fotoId;
 
-    // ─── Constructor completo (Card #35) ─────────────────────────────────────
+    // ─── Constructor completo
     public MovimientoReciente(int id,
                               Tipo tipo,
                               String descripcion,
@@ -38,7 +38,7 @@ public class MovimientoReciente {
         this.fotoId          = fotoId;
     }
 
-    // ─── Constructor Card #32 — compatibilidad (fotoId = 0) ──────────────────
+    //compatibilidad
     public MovimientoReciente(int id,
                               Tipo tipo,
                               String descripcion,
@@ -52,7 +52,7 @@ public class MovimientoReciente {
                 iconoNombre, colorCategoria, importe, fecha, fotoRuta, 0);
     }
 
-    // ─── Constructor legacy sin foto ──────────────────────────────────────────
+    //Constructor legacy sin foto
     public MovimientoReciente(int id,
                               Tipo tipo,
                               String descripcion,
@@ -65,7 +65,7 @@ public class MovimientoReciente {
                 iconoNombre, colorCategoria, importe, fecha, null, 0);
     }
 
-    // ─── Getters ─────────────────────────────────────────────────────────────
+    //Getters
     public int    getId()              { return id; }
     public Tipo   getTipo()            { return tipo; }
     public String getDescripcion()     { return descripcion; }
@@ -77,7 +77,7 @@ public class MovimientoReciente {
     public String getFotoRuta()        { return fotoRuta; }
     public int    getFotoId()          { return fotoId; }     // Card #35
 
-    // ─── equals para DiffUtil ────────────────────────────────────────────────
+    //equals para DiffUtil
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

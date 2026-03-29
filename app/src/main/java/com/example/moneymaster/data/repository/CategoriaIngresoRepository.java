@@ -15,11 +15,11 @@ public class CategoriaIngresoRepository {
     private final CategoriaIngresoDao dao;
 
     public CategoriaIngresoRepository(Context context) {
-        AppDatabase db = AppDatabase.getInstance(context);
+        AppDatabase db = AppDatabase.getDatabase(context);
         dao = db.categoriaIngresoDao();
     }
 
-    // ── CONSULTAS ─────────────────────────────────────────────────────────────
+    //CONSULTAS
 
     /** Categorías del sistema + propias del usuario, activas, ordenadas por nombre. */
     public LiveData<List<CategoriaIngreso>> getCategorias(long usuarioId) {
@@ -38,7 +38,7 @@ public class CategoriaIngresoRepository {
         return dao.getCategoriasByUsuario(usuarioId);
     }
 
-    // ── ESCRITURA ─────────────────────────────────────────────────────────────
+    //ESCRITURA
 
     public void insertar(CategoriaIngreso categoria) {
         AppDatabase.databaseWriteExecutor.execute(() -> dao.insertar(categoria));

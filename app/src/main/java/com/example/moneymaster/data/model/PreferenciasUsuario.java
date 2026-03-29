@@ -6,12 +6,6 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-/**
- * Entidad Room — tabla "preferencias_usuario".
- *
- * Relación 1:1 con User. Se crea automáticamente al registrar un usuario.
- * CASCADE en onDelete: si se elimina el usuario, sus preferencias se eliminan también.
- */
 @Entity(
         tableName = "preferencias_usuario",
         foreignKeys = {

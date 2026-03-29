@@ -54,9 +54,9 @@ public class GrupoRepository {
         balanceDao = db.balanceGrupoDao();
     }
 
-    // ═══════════════════════════════════════════════════════════════
+
     // GRUPOS
-    // ═══════════════════════════════════════════════════════════════
+
 
     public LiveData<List<GroupWithDetails>> getAllGroupsWithDetails() {
         return grupoDao.getAllGroupsWithDetails();
@@ -86,9 +86,9 @@ public class GrupoRepository {
                 grupoDao.deleteGrupo(grupo));
     }
 
-    // ═══════════════════════════════════════════════════════════════
+
     // MIEMBROS
-    // ═══════════════════════════════════════════════════════════════
+
 
     public LiveData<List<MiembroGrupo>> getMiembrosByGrupo(int grupoId) {
         return miembroDao.getMiembrosByGrupo(grupoId);
@@ -104,9 +104,9 @@ public class GrupoRepository {
                 miembroDao.eliminar(miembro));
     }
 
-    // ═══════════════════════════════════════════════════════════════
+
     // GASTOS — con recálculo automático de balances
-    // ═══════════════════════════════════════════════════════════════
+
 
     public LiveData<List<GastoGrupo>> getGastosByGrupo(int grupoId) {
         return gastoDao.getGastosByGrupo(grupoId);
@@ -151,9 +151,9 @@ public class GrupoRepository {
         });
     }
 
-    // ═══════════════════════════════════════════════════════════════
+
     // BALANCES — solo lectura desde la UI
-    // ═══════════════════════════════════════════════════════════════
+
 
     public LiveData<List<BalanceGrupo>> getBalancesByGrupo(int grupoId) {
         return balanceDao.getBalancesByGrupo(grupoId);
@@ -163,9 +163,9 @@ public class GrupoRepository {
         return balanceDao.getBalancesPendientes(grupoId);
     }
 
-    // ═══════════════════════════════════════════════════════════════
+
     // CALLBACK
-    // ═══════════════════════════════════════════════════════════════
+
 
     public interface SaveCallback {
         void onSaved(long newId);

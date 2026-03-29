@@ -19,20 +19,32 @@ import com.example.moneymaster.databinding.FragmentGroupExpensesBinding;
 import com.example.moneymaster.ui.adapter.GroupExpenseAdapter;
 import com.example.moneymaster.ui.expenses.FotoViewerDialog;
 import com.example.moneymaster.ui.groups.adapter.MemberBalanceAdapter;
+import com.example.moneymaster.util.SwipeDeleteManager;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * GroupExpensesFragment — Card #57
+ *
+ * Cambios respecto a la versión anterior:
+ *  - Añade swipeDeleteManager para gestionar swipe-to-delete con Deshacer
+ *  - onDestroyView() llama a swipeDeleteManager.cancelPendingDelete()
+ *    para forzar borrado inmediato si el fragment se destruye con un
+ *    item pendiente de eliminar
+ *  - El resto del fragment permanece sin cambios
+ */
 public class GroupExpensesFragment extends Fragment {
 
     public static final String ARG_GRUPO_ID = "grupoId";
 
-    private FragmentGroupExpensesBinding binding;
-    private GroupExpensesViewModel       viewModel;
-    private GroupExpenseAdapter          expenseAdapter;
-    private MemberBalanceAdapter         balanceAdapter;
+    private FragmentGroupExpensesBinding    binding;
+    private GroupExpensesViewModel          viewModel;
+    private GroupExpenseAdapter             expenseAdapter;
+    private MemberBalanceAdapter            balanceAdapter;
+    private SwipeDeleteManager<GastoGrupo>  swipeDeleteManager;  // Card #57
 
     public static GroupExpensesFragment newInstance(int grupoId) {
         GroupExpensesFragment f = new GroupExpensesFragment();
@@ -67,6 +79,7 @@ public class GroupExpensesFragment extends Fragment {
         viewModel.init(grupoId);
 
         setupRecyclerViews();
+        setupSwipeDelete();   // Card #57
         setupFab(grupoId);
         observeData();
     }
@@ -74,7 +87,7 @@ public class GroupExpensesFragment extends Fragment {
     // ─── Setup ────────────────────────────────────────────────────────────────
 
     private void setupRecyclerViews() {
-        // RecyclerView de balances por miembro (sin cambios)
+        // RecyclerView de balances por miembro
         balanceAdapter = new MemberBalanceAdapter();
         binding.recyclerViewBalances.setLayoutManager(
                 new LinearLayoutManager(requireContext(),
@@ -101,6 +114,19 @@ public class GroupExpensesFragment extends Fragment {
         binding.recyclerViewExpenses.setNestedScrollingEnabled(false);
     }
 
+    // ─── Card #57: Swipe to delete ────────────────────────────────────────────
+
+    private void setupSwipeDelete() {
+        swipeDeleteManager = new SwipeDeleteManager<>(
+                requireView(),
+                binding.recyclerViewExpenses,
+                expenseAdapter,
+                "Gasto eliminado",
+                gasto -> viewModel.eliminarGasto(gasto)
+        );
+        swipeDeleteManager.attach();
+    }
+
     private void setupFab(int grupoId) {
         binding.fabAddExpense.setOnClickListener(v -> {
             AddGroupExpenseDialog dialog = AddGroupExpenseDialog.newInstance(grupoId);
@@ -111,33 +137,29 @@ public class GroupExpensesFragment extends Fragment {
     // ─── Observadores ─────────────────────────────────────────────────────────
 
     private void observeData() {
-        // Nombre del grupo en el header
         viewModel.getGrupo().observe(getViewLifecycleOwner(), grupo -> {
             if (grupo != null) {
                 binding.textViewGroupTitle.setText(grupo.nombre);
             }
         });
 
-        // Total del grupo
         viewModel.getTotalGrupo().observe(getViewLifecycleOwner(), total -> {
             if (total != null) {
                 String formatted = String.format(
-                        new Locale("es", "ES"), "%.2f €", total);
+                        new Locale("es", "ES"), "%.2f \u20ac", total);
                 binding.textViewGroupTotal.setText(formatted);
             }
         });
 
-        // Balances por miembro
         viewModel.getBalancesPorMiembro().observe(getViewLifecycleOwner(), balances -> {
             balanceAdapter.submitList(balances);
             binding.recyclerViewBalances.setVisibility(
                     balances == null || balances.isEmpty() ? View.GONE : View.VISIBLE);
         });
 
-        // Lista de gastos — Card #33: también carga rutas de fotos
         viewModel.getGastos().observe(getViewLifecycleOwner(), gastos -> {
             expenseAdapter.submitList(gastos);
-            cargarRutasFotos(gastos); // Card #33
+            cargarRutasFotos(gastos);
 
             if (gastos == null || gastos.isEmpty()) {
                 binding.recyclerViewExpenses.setVisibility(View.GONE);
@@ -151,13 +173,6 @@ public class GroupExpensesFragment extends Fragment {
 
     // ─── Card #33: carga mapa fotoReciboId → rutaArchivo ─────────────────────
 
-    /**
-     * Para cada gasto con foto, consulta FotoReciboDao en background
-     * y construye un Map<fotoReciboId, rutaArchivo> que se pasa al adapter.
-     *
-     * Se ejecuta en background para no bloquear el UI thread.
-     * El adapter actualiza las miniaturas cuando recibe el mapa.
-     */
     private void cargarRutasFotos(List<GastoGrupo> gastos) {
         if (gastos == null || gastos.isEmpty()) {
             expenseAdapter.setRutasFoto(new HashMap<>());
@@ -169,10 +184,10 @@ public class GroupExpensesFragment extends Fragment {
             Map<Integer, String> rutas = new HashMap<>();
 
             for (GastoGrupo g : gastos) {
-                if (g.fotoReciboId != null) {
-                    FotoRecibo foto = db.fotoReciboDao().getById(g.fotoReciboId);
+                if (g.foto_recibo_id != null) {
+                    FotoRecibo foto = db.fotoReciboDao().getById(g.foto_recibo_id);
                     if (foto != null && foto.rutaArchivo != null) {
-                        rutas.put(g.fotoReciboId, foto.rutaArchivo);
+                        rutas.put(g.foto_recibo_id, foto.rutaArchivo);
                     }
                 }
             }
@@ -185,6 +200,11 @@ public class GroupExpensesFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        // Card #57: forzar borrado inmediato si el fragment se destruye
+        // con un gasto pendiente de confirmar
+        if (swipeDeleteManager != null) {
+            swipeDeleteManager.cancelPendingDelete();
+        }
         binding = null;
     }
 }

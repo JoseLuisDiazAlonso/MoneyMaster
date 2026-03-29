@@ -1,0 +1,26 @@
+<resources>
+
+    <!--
+        INSTRUCCIONES:
+        Añadir dentro de <style name="Theme.MoneyMaster"> en themes.xml:
+        <item name="android:windowAnimationStyle">@style/MoneyMasterWindowAnimations</item>
+
+        Añadir en AndroidManifest.xml a ImageViewerActivity:
+        android:theme="@style/Theme.MoneyMaster.SharedElement"
+    -->
+
+    <!-- Animaciones globales de Activity -->
+    <style name="MoneyMasterWindowAnimations" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_in_right</item>
+        <item name="android:activityOpenExitAnimation">@anim/slide_out_left</item>
+        <item name="android:activityCloseEnterAnimation">@anim/slide_in_left</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_out_right</item>
+    </style>
+
+    <!-- Tema para ImageViewerActivity con shared element -->
+    <style name="Theme.MoneyMaster.SharedElement" parent="Theme.MoneyMaster">
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+    </style>
+
+</resources>

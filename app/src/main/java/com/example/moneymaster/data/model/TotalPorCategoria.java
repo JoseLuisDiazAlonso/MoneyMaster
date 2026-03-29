@@ -1,30 +1,18 @@
 package com.example.moneymaster.data.model;
 
-/**
- * POJO de Room — resultado de la consulta SQL agrupada por categoría.
- *
- * Room mapea automáticamente las columnas del SELECT a estos campos:
- *   nombreCategoria ← alias "nombreCategoria" de la consulta
- *   icono           ← alias "icono"
- *   color           ← alias "color"
- *   total           ← alias "total" (SUM)
- *
- * Este archivo ya pudo haberse creado en el Card de ViewModels.
- * Si existe, comprueba que contiene todos estos campos; si falta alguno, añádelo.
- */
 public class TotalPorCategoria {
 
-    /** Nombre de la categoría (p. ej. "Alimentación") */
+    /** Nombre de la categoría */
     public String nombreCategoria;
 
     /**
-     * Nombre del drawable del icono (p. ej. "ic_food").
+     * Nombre del drawable del icono .
      * Se usa con Resources.getIdentifier() para cargar el drawable dinámicamente.
      */
     public String icono;
 
     /**
-     * Color en formato hexadecimal (p. ej. "#FF5722").
+     * Color en formato hexadecimal .
      * Se parsea con Color.parseColor() para pintar el sector del PieChart.
      */
     public String color;

@@ -22,6 +22,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import com.example.moneymaster.data.model.GastoPersonal;
+import com.example.moneymaster.data.model.IngresoPersonal;
+
 /**
  * ╔══════════════════════════════════════════════════════════════════╗
  * ║  DashboardViewModel.java                                         ║
@@ -93,7 +96,7 @@ public class DashboardViewModel extends AndroidViewModel {
     public DashboardViewModel(@NonNull Application application) {
         super(application);
 
-        db     = AppDatabase.getInstance(application);
+        db     = AppDatabase.getDatabase(application);
         userId = new SessionManager(application).getUserId();
 
         calendarActual = Calendar.getInstance();
@@ -103,11 +106,11 @@ public class DashboardViewModel extends AndroidViewModel {
         // switchMap cancela automáticamente las observaciones anteriores,
         // evitando fugas de memoria y resultados de meses anteriores.
         gastosMes = Transformations.switchMap(rangoMes, rango ->
-                db.gastoPersonalDao().getGastosConCategoriaDelMes(
+                db.gastoPersonalDao().getGastosPorCategoria(
                         userId, rango[0], rango[1]));
 
         ingresosMes = Transformations.switchMap(rangoMes, rango ->
-                db.ingresoPersonalDao().getIngresosConCategoriaDelMes(
+                db.ingresoPersonalDao().getIngresosPorCategoria(
                         userId, rango[0], rango[1]));
 
         // ── MediatorLiveData: recalcula cuando llegan datos de cualquier fuente ──
@@ -225,5 +228,19 @@ public class DashboardViewModel extends AndroidViewModel {
         _totalGastos.setValue(sumGastos);
         _totalIngresos.setValue(sumIngresos);
         _balance.setValue(sumIngresos - sumGastos);
+    }
+
+    public void eliminarMovimiento(MovimientoReciente movimiento) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            if (movimiento.getTipo() == MovimientoReciente.Tipo.GASTO) {
+                GastoPersonal gasto = new GastoPersonal();
+                gasto.id = movimiento.getId();
+                db.gastoPersonalDao().eliminar(gasto);
+            } else {
+                IngresoPersonal ingreso = new IngresoPersonal();
+                ingreso.id = movimiento.getId();
+                db.ingresoPersonalDao().eliminar(ingreso);
+            }
+        });
     }
 }

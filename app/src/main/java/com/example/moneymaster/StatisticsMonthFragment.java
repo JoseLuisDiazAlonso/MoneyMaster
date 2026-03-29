@@ -190,7 +190,7 @@ public class StatisticsMonthFragment extends Fragment {
         // Agrupar por idCategoria
         Map<Integer, Double> totalPorCategoria = new HashMap<>();
         for (GastoPersonal g : gastos) {
-            totalPorCategoria.merge(g.categoriaId, g.monto, Double::sum);
+            totalPorCategoria.merge(g.categoria_id, g.monto, Double::sum);
         }
 
         List<PieEntry> entries = new ArrayList<>();

@@ -57,6 +57,9 @@ dependencies {
 
     // Room Database
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.paging.runtime)
+    testImplementation(libs.espresso.core)
+    testImplementation(libs.ext.junit)
     annotationProcessor(libs.androidx.room.compiler)
 
     // Navigation
@@ -114,8 +117,27 @@ dependencies {
     // PhotoView
     implementation("com.github.chrisbanes:PhotoView:2.3.0")
 
-    // Testing
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    // ─── Testing ──────────────────────────────────────────────────────────────
+
+    // Card #60 — Unit Tests (JVM, sin emulador)
+    testImplementation("junit:junit:4.13.2") {
+        exclude(group = "org.hamcrest")
+    }
+    testImplementation("org.hamcrest:hamcrest:2.2")
+    testImplementation("org.mockito:mockito-core:5.11.0")
+    testImplementation("org.mockito:mockito-inline:5.2.0")
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+
+    // Card #61 — Instrumentation Tests (requieren emulador)
+    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.5.1") {
+        exclude(group = "org.checkerframework", module = "checker")
+    }
+    androidTestImplementation("androidx.test:core:1.5.0")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:rules:1.5.0")
+    androidTestImplementation(libs.testng) {
+        exclude(group = "org.hamcrest")
+    }
 }

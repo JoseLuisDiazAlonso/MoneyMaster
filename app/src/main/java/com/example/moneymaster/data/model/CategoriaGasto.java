@@ -7,13 +7,6 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-/**
- * Entidad Room — tabla "categorias_gasto".
- *
- * Dos tipos de categorías:
- *  · Sistema  (usuario_id = NULL, es_sistema = 1): predefinidas, no editables.
- *  · Personal (usuario_id = X,    es_sistema = 0): creadas por el usuario.
- */
 @Entity(
         tableName = "categorias_gasto",
         foreignKeys = {

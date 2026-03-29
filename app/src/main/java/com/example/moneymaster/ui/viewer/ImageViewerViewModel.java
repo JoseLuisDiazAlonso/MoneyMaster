@@ -17,6 +17,10 @@ import com.example.moneymaster.utils.ImageUtils;
 
 /**
  * Card #35 — ViewModel del visor de imagen completa.
+ *
+ * Corrección Card #62:
+ *  - gastoGrupo.categoriaId → gastoGrupo.categoria_id (nombre real del campo)
+ *  - getByFotoReciboId() y desvincularFoto() añadidos a GastoPersonalDao
  */
 public class ImageViewerViewModel extends AndroidViewModel {
 
@@ -43,7 +47,7 @@ public class ImageViewerViewModel extends AndroidViewModel {
 
     private InfoGastoFoto cargarInfoGasto(int fotoId) {
 
-        // 1. Buscar en gastos personales — variable tipada explícitamente
+        // 1. Buscar en gastos personales
         GastoPersonal gastoPersonal =
                 db.gastoPersonalDao().getByFotoReciboId(fotoId);
 
@@ -53,15 +57,15 @@ public class ImageViewerViewModel extends AndroidViewModel {
             info.monto       = gastoPersonal.monto;
             info.descripcion = gastoPersonal.descripcion;
             info.fecha       = gastoPersonal.fecha;
-            info.pagadoPor   = null; // gastos personales no tienen pagador
+            info.pagadoPor   = null;
 
             CategoriaGasto cat =
-                    db.categoriaGastoDao().getByIdSync(gastoPersonal.categoriaId);
+                    db.categoriaGastoDao().getByIdSync(gastoPersonal.categoria_id);
             info.nombreCategoria = cat != null ? cat.nombre : null;
             return info;
         }
 
-        // 2. Buscar en gastos de grupo — variable tipada explícitamente
+        // 2. Buscar en gastos de grupo
         GastoGrupo gastoGrupo =
                 db.gastoGrupoDao().getByFotoReciboId(fotoId);
 
@@ -73,8 +77,10 @@ public class ImageViewerViewModel extends AndroidViewModel {
             info.fecha       = gastoGrupo.fecha;
             info.pagadoPor   = gastoGrupo.pagadoPorNombre;
 
-            CategoriaGasto cat =
-                    db.categoriaGastoDao().getByIdSync(gastoGrupo.categoriaId);
+            // Corrección: categoria_id (snake_case) en lugar de categoriaId
+            CategoriaGasto cat = gastoGrupo.categoria_id != null
+                    ? db.categoriaGastoDao().getByIdSync(gastoGrupo.categoria_id)
+                    : null;
             info.nombreCategoria = cat != null ? cat.nombre : null;
             return info;
         }

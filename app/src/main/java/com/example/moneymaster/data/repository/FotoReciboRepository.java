@@ -20,16 +20,16 @@ public class FotoReciboRepository {
     private final Handler         mainHandler = new Handler(Looper.getMainLooper());
 
     public FotoReciboRepository(Application application) {
-        dao = AppDatabase.getInstance(application).fotoReciboDao();
+        dao = AppDatabase.getDatabase(application).fotoReciboDao();
     }
 
-    // ─── Interfaz callback ────────────────────────────────────────────────────
+    //Interfaz callback
 
     public interface InsertCallback {
         void onInserted(int fotoId);
     }
 
-    // ─── Insertar y obtener ID generado ───────────────────────────────────────
+    //Insertar y obtener ID generado
 
     /**
      * Inserta una FotoRecibo en background y devuelve el ID generado
@@ -43,7 +43,7 @@ public class FotoReciboRepository {
         });
     }
 
-    // ─── Eliminar foto + archivo físico ──────────────────────────────────────
+    //Eliminar foto + archivo físico
 
     /**
      * Elimina la fila de Room Y el archivo físico del disco.
@@ -63,13 +63,13 @@ public class FotoReciboRepository {
         });
     }
 
-    // ─── Obtener por ID (síncrono, llamar desde background) ──────────────────
+    // Obtener por ID (síncrono, llamar desde background)
 
     public FotoRecibo getById(int id) {
         return dao.getById(id);
     }
 
-    // ─── Limpieza de huérfanas ────────────────────────────────────────────────
+    // Limpieza de huérfanas
 
     public void limpiarHuerfanas() {
         executor.execute(() -> {

@@ -95,4 +95,47 @@
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</string>
     <string name="icono_categoria">Icono de categoría</string>
 
+    <!-- Dashboard / Movimientos -->
+    <string name="empty_movements_title">Aún no hay movimientos</string>
+    <string name="empty_movements_subtitle">Registra tu primer gasto o ingreso\npara empezar a llevar el control de tus finanzas.</string>
+    <string name="empty_movements_cta">Añadir movimiento</string>
+
+    <!-- Grupos -->
+    <string name="empty_groups_title">Crea tu primer grupo</string>
+    <string name="empty_groups_subtitle">Los grupos te permiten compartir gastos\ncon amigos, familia o compañeros de piso.</string>
+    <string name="empty_groups_cta">Crear grupo</string>
+
+    <!-- Estadísticas -->
+    <string name="empty_statistics_title">Registra gastos para ver estadísticas</string>
+    <string name="empty_statistics_subtitle">Cuando añadas movimientos, aquí verás\ngráficos con el desglose de tus finanzas.</string>
+    <string name="empty_statistics_cta">Añadir gasto</string>
+
+    <!-- Tablón de fotos -->
+    <string name="empty_photos_title">No hay fotos en este grupo</string>
+    <string name="empty_photos_subtitle">Adjunta fotos de recibos o tickets\na los gastos del grupo para tenerlos siempre a mano.</string>
+    <string name="empty_photos_cta">Añadir foto</string>
+
+    <!--Swipe para eliminar -->
+    <string name="swipe_gasto_eliminado">Gasto eliminado</string>
+    <string name="swipe_deshacer">Deshacer</string>
+    <string name="swipe_gasto_grupo_eliminado">Gasto del grupo eliminado</string>
+
+    <!-- Búsquedas -->
+    <string name="search_hint">Buscar gasto...</string>
+    <string name="search_filter">Filtros</string>
+    <string name="search_results_count">%d resultado</string>
+    <string name="search_results_count_plural">%d resultados</string>
+    <string name="filter_categoria">Categoría</string>
+    <string name="filter_precio">Rango de precio</string>
+    <string name="filter_periodo">Período</string>
+    <string name="filter_hoy">Hoy</string>
+    <string name="filter_semana">Esta semana</string>
+    <string name="filter_mes">Este mes</string>
+    <string name="filter_anio">Este año</string>
+    <string name="filter_aplicar">Aplicar</string>
+    <string name="filter_limpiar">Limpiar</string>
+    <string name="filter_monto_min">Mínimo (€)</string>
+    <string name="filter_monto_max">Máximo (€)</string>
+
+    <string name="sin_descripcion">Sin descripción</string>
 </resources>

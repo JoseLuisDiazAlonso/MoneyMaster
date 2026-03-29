@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        db       = AppDatabase.getInstance(this);
+        db       = AppDatabase.getDatabase(this);
         prefs    = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         executor = Executors.newSingleThreadExecutor();
 
@@ -121,7 +121,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Consultar DB en hilo de fondo
         executor.execute(() -> {
-            User user = db.userDao().getByEmail(email);
+            User user = db.usuarioDao().getByEmail(email);
 
             runOnUiThread(() -> {
                 if (user == null) {

@@ -300,7 +300,7 @@ public final class PdfExporter {
                 GastoPersonal g   = gastos.get(i);
                 boolean filaPar   = (i % 2 == 0);
                 String  categoria = catGasto != null
-                        ? catGasto.getOrDefault(g.categoriaId, "Sin categoría")
+                        ? catGasto.getOrDefault(g.categoria_id, "Sin categoría")
                         : "Sin categoría";
 
                 tabla.addCell(celdaDato(formatearFecha(g.fecha), filaPar, TextAlignment.CENTER));
@@ -318,7 +318,7 @@ public final class PdfExporter {
                 IngresoPersonal ing = ingresos.get(i);
                 boolean filaPar     = ((i + offsetPar) % 2 == 0);
                 String  categoria   = catIngreso != null
-                        ? catIngreso.getOrDefault(ing.categoriaId, "Sin categoría")
+                        ? catIngreso.getOrDefault(ing.categoria_id, "Sin categoría")
                         : "Sin categoría";
 
                 tabla.addCell(celdaDato(formatearFecha(ing.fecha), filaPar, TextAlignment.CENTER));

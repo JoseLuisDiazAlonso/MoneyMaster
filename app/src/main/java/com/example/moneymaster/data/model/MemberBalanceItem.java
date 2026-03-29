@@ -1,12 +1,6 @@
 package com.example.moneymaster.ui.groups.model;
 
-/**
- * POJO de UI (no entidad Room) que representa el resumen
- * de gasto de un miembro dentro de un grupo.
- *
- * Se calcula en GroupExpensesViewModel agrupando los gastos
- * por pagadoPorNombre.
- */
+
 public class MemberBalanceItem {
 
     public String nombreMiembro;

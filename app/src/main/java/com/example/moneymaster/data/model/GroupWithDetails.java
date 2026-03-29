@@ -1,12 +1,6 @@
 package com.example.moneymaster.data.model;
 
-/**
- * POJO (Plain Old Java Object) que combina los datos de un Grupo
- * con información calculada: número de miembros y balance total.
- *
- * Este objeto NO es una entidad Room; lo devuelve la consulta
- * mediante una @Query personalizada en GrupoDao con JOIN + COUNT.
- */
+
 public class GroupWithDetails {
 
     // Campos del Grupo base

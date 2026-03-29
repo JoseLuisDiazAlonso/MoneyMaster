@@ -123,7 +123,7 @@ public class CompartirGrupoDialog extends BottomSheetDialogFragment {
         mostrarLoading(true);
 
         executor.execute(() -> {
-            AppDatabase db = AppDatabase.getInstance(requireContext());
+            AppDatabase db = AppDatabase.getDatabase(requireContext());
 
             // ── Cargar datos síncronos desde Room ─────────────────────────────
             // Estos métodos deben existir en los DAOs (ver nota al final del archivo)

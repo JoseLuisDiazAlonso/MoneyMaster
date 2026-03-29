@@ -8,10 +8,6 @@ public class PuntoLinea {
     public int    posicion;
     public double total;
 
-    /**
-     * Calculado en LineChartHelper, no viene de la BD.
-     * @Ignore indica a Room que no intente mapearlo desde la query.
-     */
     @Ignore
     public double totalAcumulado;
 

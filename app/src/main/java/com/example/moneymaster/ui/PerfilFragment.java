@@ -93,7 +93,7 @@ public class PerfilFragment extends Fragment {
 
         AppDatabase.databaseWriteExecutor.execute(() -> {
             User user = AppDatabase.getDatabase(requireContext())
-                    .userDao().getById(userId);
+                    .usuarioDao().getById(userId);
             if (user != null && isAdded()) {
                 requireActivity().runOnUiThread(() -> {
                     tvNombreActual.setText(user.fullName);
@@ -282,10 +282,10 @@ public class PerfilFragment extends Fragment {
         if (userId == -1) return;
         AppDatabase.databaseWriteExecutor.execute(() -> {
             AppDatabase db = AppDatabase.getDatabase(requireContext());
-            User user = db.userDao().getById(userId);
+            User user = db.usuarioDao().getById(userId);
             if (user != null) {
                 user.fullName = nuevoNombre;
-                db.userDao().updateUser(user);
+                db.usuarioDao().updateUser(user);
                 if (isAdded()) {
                     requireActivity().runOnUiThread(() -> {
                         tvNombreActual.setText(nuevoNombre);
@@ -342,14 +342,14 @@ public class PerfilFragment extends Fragment {
         if (userId == -1) return;
         AppDatabase.databaseWriteExecutor.execute(() -> {
             AppDatabase db = AppDatabase.getDatabase(requireContext());
-            User user = db.userDao().getById(userId);
+            User user = db.usuarioDao().getById(userId);
             if (user == null) return;
             boolean valida = SecurityUtils.verifyPassword(actual, user.passwordHash);
             if (!isAdded()) return;
             requireActivity().runOnUiThread(() -> {
                 if (!valida) { tilActual.setError("Contraseña actual incorrecta"); return; }
                 AppDatabase.databaseWriteExecutor.execute(() -> {
-                    db.userDao().updatePasswordByEmail(user.email, SecurityUtils.hashPassword(nueva));
+                    db.usuarioDao().updatePasswordByEmail(user.email, SecurityUtils.hashPassword(nueva));
                     if (isAdded()) requireActivity().runOnUiThread(() -> {
                         dialog.dismiss();
                         Toast.makeText(requireContext(),

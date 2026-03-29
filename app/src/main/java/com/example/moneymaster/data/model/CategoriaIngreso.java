@@ -7,12 +7,6 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-/**
- * Entidad Room — tabla "categorias_ingreso".
- *
- * Misma lógica que CategoriaGasto: categorías del sistema (usuario_id = NULL)
- * y categorías personalizadas (usuario_id = X).
- */
 @Entity(
         tableName = "categorias_ingreso",
         foreignKeys = {

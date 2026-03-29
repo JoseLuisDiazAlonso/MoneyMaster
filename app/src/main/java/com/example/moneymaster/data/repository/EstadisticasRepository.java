@@ -16,9 +16,9 @@ import java.util.List;
 /**
  * Repositorio de datos de estadísticas.
  *
- * Centraliza los accesos de solo lectura a GastoPersonalDao e IngresoPersonalDao
- * para el Fragment de Estadísticas y su ViewModel.
- * No tiene métodos de escritura (eso va por GastoRepository / IngresoRepository).
+ * Corrección Card #62:
+ *  - usuarioId cambiado de int a long (coherente con los DAOs).
+ *  - getTop5CategoriasMes() ahora existe en GastoPersonalDao.
  */
 public class EstadisticasRepository {
 
@@ -31,40 +31,39 @@ public class EstadisticasRepository {
         ingresoDao = db.ingresoPersonalDao();
     }
 
-    // ─── Totales del mes ──────────────────────────────────────────────────────
+    // ── Totales del mes ───────────────────────────────────────────────────────
 
-    public LiveData<Double> getTotalGastosMes(int usuarioId, int mes, int anio) {
+    public LiveData<Double> getTotalGastosMes(long usuarioId, int mes, int anio) {
         return gastoDao.getTotalGastosMes(usuarioId, mes, anio);
     }
 
-    public LiveData<Double> getTotalIngresosMes(int usuarioId, int mes, int anio) {
+    public LiveData<Double> getTotalIngresosMes(long usuarioId, int mes, int anio) {
         return ingresoDao.getTotalIngresosMes(usuarioId, mes, anio);
     }
 
-    // ─── STATS-005: Top 5 categorías ─────────────────────────────────────────
+    // ── STATS-005: Top 5 categorías ───────────────────────────────────────────
 
-    public LiveData<List<TopCategoriasItem>> getTop5CategoriasMes(int usuarioId, int mes, int anio) {
+    public LiveData<List<TopCategoriasItem>> getTop5CategoriasMes(long usuarioId, int mes, int anio) {
         return gastoDao.getTop5CategoriasMes(usuarioId, mes, anio);
     }
 
-    // ─── STATS-002: PieChart ──────────────────────────────────────────────────
+    // ── STATS-002: PieChart ───────────────────────────────────────────────────
 
-    public LiveData<List<TotalPorCategoria>> getGastosPorCategoria(int usuarioId, int mes, int anio) {
+    public LiveData<List<TotalPorCategoria>> getGastosPorCategoria(long usuarioId, int mes, int anio) {
         return gastoDao.getGastosPorCategoria(usuarioId, mes, anio);
     }
 
-    public LiveData<List<TotalPorCategoria>> getIngresosPorCategoria(int usuarioId, int mes, int anio) {
+    public LiveData<List<TotalPorCategoria>> getIngresosPorCategoria(long usuarioId, int mes, int anio) {
         return ingresoDao.getIngresosPorCategoria(usuarioId, mes, anio);
     }
 
-    // ─── STATS-003: BarChart ──────────────────────────────────────────────────
+    // ── STATS-003: BarChart ───────────────────────────────────────────────────
 
-    public LiveData<List<ResumenMensual>> getResumenGastosMeses(int usuarioId, int meses) {
+    public LiveData<List<ResumenMensual>> getResumenGastosMeses(long usuarioId, int meses) {
         return gastoDao.getResumenUltimosMeses(usuarioId, meses);
     }
 
-    public LiveData<List<ResumenMensual>> getResumenIngresosMeses(int usuarioId, int meses) {
+    public LiveData<List<ResumenMensual>> getResumenIngresosMeses(long usuarioId, int meses) {
         return ingresoDao.getResumenUltimosMeses(usuarioId, meses);
     }
 }
-

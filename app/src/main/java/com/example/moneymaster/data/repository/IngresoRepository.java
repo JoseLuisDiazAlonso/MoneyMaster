@@ -28,7 +28,7 @@ public class IngresoRepository {
         executor     = AppDatabase.databaseWriteExecutor;
     }
 
-    // ─── Ingresos ─────────────────────────────────────────────────────────────
+    // ── Ingresos ──────────────────────────────────────────────────────────────
 
     public LiveData<List<IngresoPersonal>> getIngresosByUsuario(long usuarioId) {
         return ingresoDao.getIngresosByUsuario(usuarioId);
@@ -50,6 +50,16 @@ public class IngresoRepository {
         return ingresoDao.getIngresoById(ingresoId);
     }
 
+    /** Card #62 — StatisticsViewModel: ingresos de todo un año. */
+    public LiveData<List<IngresoPersonal>> getIngresosByAnio(long usuarioId, int anio) {
+        return ingresoDao.getIngresosByAnio(usuarioId, anio);
+    }
+
+    /** Card #62 — StatisticsViewModel: ingresos en rango de fechas. */
+    public LiveData<List<IngresoPersonal>> getIngresosByRango(long usuarioId, long inicio, long fin) {
+        return ingresoDao.getIngresosByRango(usuarioId, inicio, fin);
+    }
+
     public void insertar(IngresoPersonal ingreso) {
         executor.execute(() -> ingresoDao.insertar(ingreso));
     }
@@ -62,7 +72,7 @@ public class IngresoRepository {
         executor.execute(() -> ingresoDao.eliminar(ingreso));
     }
 
-    // ─── Estadísticas ─────────────────────────────────────────────────────────
+    // ── Estadísticas ──────────────────────────────────────────────────────────
 
     public LiveData<List<TotalPorCategoria>> getIngresosPorCategoria(long usuarioId, int mes, int anio) {
         return ingresoDao.getIngresosPorCategoria(usuarioId, mes, anio);
@@ -72,7 +82,7 @@ public class IngresoRepository {
         return ingresoDao.getResumenUltimosMeses(usuarioId, meses);
     }
 
-    // ─── Categorías ───────────────────────────────────────────────────────────
+    // ── Categorías ────────────────────────────────────────────────────────────
 
     public LiveData<List<CategoriaIngreso>> getCategorias(long usuarioId) {
         return categoriaDao.getCategorias(usuarioId);

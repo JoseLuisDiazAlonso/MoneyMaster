@@ -1,14 +1,5 @@
 package com.example.moneymaster.data.model;
 
-/**
- * ╔══════════════════════════════════════════════════════════════════╗
- * ║  IngresoConCategoria.java                                        ║
- * ║  Ruta: data/model/IngresoConCategoria.java                       ║
- * ╠══════════════════════════════════════════════════════════════════╣
- * ║  POJO de resultado para la query JOIN entre IngresoPersonal y    ║
- * ║  CategoriaIngreso. Simétrico a GastoConCategoria.                ║
- * ╚══════════════════════════════════════════════════════════════════╝
- */
 public class IngresoConCategoria {
 
     /** ID del ingreso (IngresoPersonal.id) */

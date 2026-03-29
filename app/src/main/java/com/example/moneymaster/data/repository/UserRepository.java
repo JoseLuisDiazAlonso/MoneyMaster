@@ -15,11 +15,11 @@ public class UserRepository {
     private final UserDao userDao;
 
     public UserRepository(Context context) {
-        AppDatabase db = AppDatabase.getInstance(context);
-        userDao = db.userDao();
+        AppDatabase db = AppDatabase.getDatabase(context);
+        userDao = db.usuarioDao();
     }
 
-    // ── ESCRITURAS ────────────────────────────────────────────────────────────
+    //ESCRITURAS
 
     public void insertUser(User user) {
         AppDatabase.databaseWriteExecutor.execute(() ->
@@ -49,7 +49,7 @@ public class UserRepository {
                 userDao.updatePasswordByEmail(email, passwordHash));
     }
 
-    // ── LECTURAS SÍNCRONAS (llamar desde background thread) ───────────────────
+    //LECTURAS SÍNCRONAS (llamar desde background thread)
 
     public User getByEmail(String email) {
         return userDao.getByEmail(email);
@@ -63,13 +63,13 @@ public class UserRepository {
         return userDao.countByEmail(email);
     }
 
-    // ── LECTURAS REACTIVAS ────────────────────────────────────────────────────
+    //LECTURAS REACTIVAS
 
     public LiveData<List<User>> getAllActiveUsers() {
         return userDao.getAllActiveUsers();
     }
 
-    // ── CALLBACK ──────────────────────────────────────────────────────────────
+    //CALLBACK
 
     public interface SaveCallback<T> {
         void onSaved(T result);

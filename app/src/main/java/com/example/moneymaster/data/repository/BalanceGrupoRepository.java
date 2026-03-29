@@ -13,27 +13,27 @@ import java.util.List;
 /**
  * Repositorio de balances grupales.
  *
- * Gestiona el cálculo y actualización de deudas entre miembros de un grupo.
+ * Corrección Card #62:
+ *  - getInstance() → getDatabase()
+ *  - balanceGrupoDao() añadido a AppDatabase
  *
  * Flujo típico al agregar un GastoGrupo con dividirIgual = true:
  *   1. Obtener miembros activos del grupo.
  *   2. Calcular split = gasto.monto / numMiembros.
  *   3. Para cada miembro (excepto quien pagó):
- *      acumularBalance(grupoId, miembro.usuarioId, pagadoPorId, split, now)
- *
- * Si ya existe una fila (grupo, deudor, acreedor), acumularBalance la actualiza.
- * Si no existe, upsertBalance crea una nueva fila.
+ *      acumularBalance(grupoId, miembro.usuarioId, pagadoPorId, split)
  */
 public class BalanceGrupoRepository {
 
     private final BalanceGrupoDao balanceGrupoDao;
 
     public BalanceGrupoRepository(Context context) {
-        AppDatabase db = AppDatabase.getInstance(context);
+        // Corrección: getDatabase() en lugar de getInstance()
+        AppDatabase db = AppDatabase.getDatabase(context);
         balanceGrupoDao = db.balanceGrupoDao();
     }
 
-    // ---- ESCRITURAS (background thread) ----
+    // ── Escrituras (background thread) ───────────────────────────────────────
 
     /** Inserta o reemplaza un balance completo. Usar para crear balances nuevos. */
     public void upsertBalance(BalanceGrupo balance) {
@@ -63,7 +63,7 @@ public class BalanceGrupoRepository {
                 balanceGrupoDao.liquidarDeuda(grupoId, deudorId, acreedorId, timestamp));
     }
 
-    // ---- LECTURAS REACTIVAS (LiveData) ----
+    // ── Lecturas reactivas (LiveData) ─────────────────────────────────────────
 
     /** Deudas pendientes dentro de un grupo (para la pantalla de balances). */
     public LiveData<List<BalanceGrupo>> getBalancesPendientes(int grupoId) {

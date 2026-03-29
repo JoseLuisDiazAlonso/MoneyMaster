@@ -314,12 +314,12 @@ public class AddExpenseActivity extends AppCompatActivity {
     private GastoPersonal buildGasto(double monto, String descripcion, int fotoId) {
         GastoPersonal gasto = new GastoPersonal();
         gasto.usuarioId     = usuarioId;
-        gasto.categoriaId   = categoriaSeleccionada.id;
+        gasto.categoria_id   = categoriaSeleccionada.id;
         gasto.monto         = monto;
         gasto.descripcion   = descripcion.isEmpty() ? null : descripcion;
         gasto.fecha         = fechaSeleccionada.getTimeInMillis();
-        gasto.fechaCreacion = System.currentTimeMillis();
-        gasto.fotoReciboId  = fotoId > 0 ? fotoId : null;
+        gasto.fecha = System.currentTimeMillis();
+        gasto.tieneFoto  = fotoId > 0 ? fotoId : null;
         return gasto;
     }
 

@@ -133,12 +133,12 @@ public class GroupExpensesViewModel extends AndroidViewModel {
     public void eliminarFotoDeGasto(int gastoId) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             GastoGrupo gasto = db.gastoGrupoDao().getGastoById(gastoId).getValue();
-            if (gasto == null || gasto.fotoReciboId == null) return;
+            if (gasto == null || gasto.foto_recibo_id == null) return;
 
-            int fotoId = gasto.fotoReciboId;
+            int fotoId = gasto.foto_recibo_id;
 
             // 1. Desvincular foto del gasto
-            gasto.fotoReciboId = null;
+            gasto.foto_recibo_id = null;
             db.gastoGrupoDao().actualizar(gasto);
 
             // 2. Eliminar FotoRecibo + archivo físico

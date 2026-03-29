@@ -1,31 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    ╔══════════════════════════════════════════════════════════════════╗
-    ║  fragment_home.xml                                               ║
-    ║  Ruta: res/layout/fragment_home.xml                              ║
-    ╠══════════════════════════════════════════════════════════════════╣
-    ║  Layout del Dashboard personal (Card #19).                       ║
-    ║                                                                  ║
-    ║  Estructura visual:                                              ║
-    ║  ┌────────────────────────────────────────────────┐             ║
-    ║  │  ← [  Marzo 2026  ] →                          │  Selector   ║
-    ║  ├────────────────────────────────────────────────┤             ║
-    ║  │  ┌──────────────────────────────────────────┐  │             ║
-    ║  │  │  Balance del mes                         │  │  Card       ║
-    ║  │  │  ▲ +1.250,00 €                           │  │  Balance    ║
-    ║  │  │  [Ingresos: 2.000 €] [Gastos: 750 €]     │  │             ║
-    ║  │  └──────────────────────────────────────────┘  │             ║
-    ║  ├────────────────────────────────────────────────┤             ║
-    ║  │  Últimos movimientos                           │  Header     ║
-    ║  ├────────────────────────────────────────────────┤             ║
-    ║  │  [ícono] Alimentación     -18,50 €  15 mar     │  Items      ║
-    ║  │  [ícono] Salario        +2.000,00 €  1 mar     │             ║
-    ║  │  ...                                           │             ║
-    ║  ├────────────────────────────────────────────────┤             ║
-    ║  │              [ VER TODOS ]                     │  Botón      ║
-    ║  └────────────────────────────────────────────────┘             ║
-    ╚══════════════════════════════════════════════════════════════════╝
--->
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -40,11 +13,9 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingBottom="88dp">
-        <!-- paddingBottom = altura de BottomNavigationView (56dp) + margen extra (32dp) -->
 
         <!-- ══════════════════════════════════════════════════════════
              SELECTOR DE MES
-             Fila: [←] [Marzo 2026] [→]
              ══════════════════════════════════════════════════════════ -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -103,7 +74,6 @@
                 android:orientation="vertical"
                 android:padding="20dp">
 
-                <!-- Etiqueta "Balance del mes" -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -111,7 +81,6 @@
                     android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
                     android:alpha="0.7" />
 
-                <!-- Indicador + importe en la misma fila -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -119,7 +88,6 @@
                     android:gravity="center_vertical"
                     android:layout_marginTop="4dp">
 
-                    <!-- Barra de color indicador positivo/negativo -->
                     <View
                         android:id="@+id/viewIndicadorBalance"
                         android:layout_width="4dp"
@@ -127,7 +95,6 @@
                         android:layout_marginEnd="12dp"
                         android:background="@drawable/bg_indicator_bar" />
 
-                    <!-- Signo ▲ / ▼ -->
                     <TextView
                         android:id="@+id/tvSignoBalance"
                         android:layout_width="wrap_content"
@@ -136,7 +103,6 @@
                         android:textSize="18sp"
                         tools:text="▲" />
 
-                    <!-- Importe del balance -->
                     <TextView
                         android:id="@+id/tvBalance"
                         android:layout_width="0dp"
@@ -148,20 +114,17 @@
 
                 </LinearLayout>
 
-                <!-- Separador -->
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginVertical="16dp"
                     android:background="?attr/colorOutlineVariant" />
 
-                <!-- Fila Ingresos / Gastos -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <!-- Ingresos -->
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -202,13 +165,11 @@
                             tools:text="2.000,00 €" />
                     </LinearLayout>
 
-                    <!-- Divisor vertical -->
                     <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
                         android:background="?attr/colorOutlineVariant" />
 
-                    <!-- Gastos -->
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -254,6 +215,51 @@
         </com.google.android.material.card.MaterialCardView>
 
         <!-- ══════════════════════════════════════════════════════════
+             CARD #58 — BARRA DE BÚSQUEDA + BOTÓN FILTROS
+             ══════════════════════════════════════════════════════════ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="8dp"
+            android:gravity="center_vertical">
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:queryHint="Buscar gasto..."
+                app:iconifiedByDefault="false"
+                app:queryBackground="@android:color/transparent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnFiltros"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="Filtros avanzados"
+                app:icon="@drawable/ic_filter_list" />
+
+        </LinearLayout>
+
+        <!-- ══════════════════════════════════════════════════════════
+             CARD #58 — CONTADOR DE RESULTADOS
+             ══════════════════════════════════════════════════════════ -->
+        <TextView
+            android:id="@+id/tvContadorResultados"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="4dp"
+            android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:visibility="gone"
+            tools:text="5 resultados"
+            tools:visibility="visible" />
+
+        <!-- ══════════════════════════════════════════════════════════
              CABECERA "ÚLTIMOS MOVIMIENTOS"
              ══════════════════════════════════════════════════════════ -->
         <TextView
@@ -296,7 +302,7 @@
         </LinearLayout>
 
         <!-- ══════════════════════════════════════════════════════════
-             RECYCLERVIEW (scroll deshabilitado: scroll externo es el NestedScrollView)
+             RECYCLERVIEW
              ══════════════════════════════════════════════════════════ -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvMovimientos"

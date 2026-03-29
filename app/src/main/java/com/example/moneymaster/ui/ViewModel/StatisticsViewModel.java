@@ -1,6 +1,8 @@
 package com.example.moneymaster.ui.ViewModel;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -10,47 +12,42 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.moneymaster.data.model.GastoPersonal;
 import com.example.moneymaster.data.model.IngresoPersonal;
-import com.example.moneymaster.data.repository.GastoPersonalRepository;
-import com.example.moneymaster.data.repository.IngresoPersonalRepository;
+import com.example.moneymaster.data.repository.GastoRepository;
+import com.example.moneymaster.data.repository.IngresoRepository;
 
 import java.util.Calendar;
 import java.util.List;
 
 /**
- * ViewModel compartido para todos los fragmentos de Estadísticas.
+ * StatisticsViewModel — corregido Card #62.
  *
- * ÁMBITO: Se instancia con requireActivity() desde cualquier fragmento hijo,
- * lo que garantiza una única instancia mientras la Activity viva.
- *
- * DATOS QUE EXPONE:
- *  - selectedTab          → pestaña activa (0 Mes / 1 Año / 2 Personalizado)
- *  - selectedMonth/Year   → filtro de mes y año activo
- *  - customStartTimestamp / customEndTimestamp → rango personalizado
- *  - gastosMes / ingresosMes         → movimientos del mes seleccionado
- *  - gastosAnio / ingresosAnio       → movimientos del año seleccionado
- *  - gastosCustom / ingresosCustom   → movimientos del rango personalizado
- *  - summaryTotalGastos / summaryTotalIngresos / summaryBalance → resumen numérico
+ * Cambios respecto a la versión anterior:
+ *  - Sustituidos GastoPersonalRepository / IngresoPersonalRepository
+ *    por GastoRepository / IngresoRepository (repositorios reales del proyecto).
+ *  - usuarioId se obtiene de SharedPreferences ("MoneyMasterPrefs", key "userId")
+ *    igual que el resto de ViewModels del proyecto.
+ *  - getGastosByMonthYear() → getGastosByMes(usuarioId, mes, anio)
+ *  - getGastosByYear()      → getGastosByAnio(usuarioId, anio)  [nuevo en DAO/repo]
+ *  - getGastosByDateRange() → getGastosByRango(usuarioId, inicio, fin) [nuevo en DAO/repo]
+ *  - Mismo patrón para ingresos.
  */
 public class StatisticsViewModel extends AndroidViewModel {
 
-    // ──────────────────────────────────────────────────────────────────────────
-    // Repositorios
-    // ──────────────────────────────────────────────────────────────────────────
-    private final GastoPersonalRepository gastoRepo;
-    private final IngresoPersonalRepository ingresoRepo;
+    // ── Repositorios ──────────────────────────────────────────────────────────
+    private final GastoRepository   gastoRepo;
+    private final IngresoRepository ingresoRepo;
 
-    // ──────────────────────────────────────────────────────────────────────────
-    // Estado de navegación y filtros
-    // ──────────────────────────────────────────────────────────────────────────
-    private final MutableLiveData<Integer> selectedTab = new MutableLiveData<>(0);
+    // ── ID de usuario (obtenido de SharedPreferences) ─────────────────────────
+    private final long usuarioId;
+
+    // ── Estado de navegación y filtros ────────────────────────────────────────
+    private final MutableLiveData<Integer> selectedTab   = new MutableLiveData<>(0);
     private final MutableLiveData<Integer> selectedMonth;
     private final MutableLiveData<Integer> selectedYear;
     private final MutableLiveData<Long> customStartTimestamp = new MutableLiveData<>(0L);
     private final MutableLiveData<Long> customEndTimestamp   = new MutableLiveData<>(0L);
 
-    // ──────────────────────────────────────────────────────────────────────────
-    // Datos de movimientos
-    // ──────────────────────────────────────────────────────────────────────────
+    // ── Datos de movimientos ──────────────────────────────────────────────────
     private LiveData<List<GastoPersonal>>   gastosMes;
     private LiveData<List<IngresoPersonal>> ingresosMes;
     private LiveData<List<GastoPersonal>>   gastosAnio;
@@ -58,21 +55,23 @@ public class StatisticsViewModel extends AndroidViewModel {
     private LiveData<List<GastoPersonal>>   gastosCustom;
     private LiveData<List<IngresoPersonal>> ingresosCustom;
 
-    // ──────────────────────────────────────────────────────────────────────────
-    // Resumen numérico calculado como MediatorLiveData
-    // ──────────────────────────────────────────────────────────────────────────
+    // ── Resumen numérico ──────────────────────────────────────────────────────
     private final MediatorLiveData<Double> summaryTotalGastos   = new MediatorLiveData<>();
     private final MediatorLiveData<Double> summaryTotalIngresos = new MediatorLiveData<>();
     private final MediatorLiveData<Double> summaryBalance       = new MediatorLiveData<>();
 
-    // ──────────────────────────────────────────────────────────────────────────
-    // Constructor
-    // ──────────────────────────────────────────────────────────────────────────
+    // ── Constructor ───────────────────────────────────────────────────────────
+
     public StatisticsViewModel(@NonNull Application application) {
         super(application);
 
-        gastoRepo   = new GastoPersonalRepository(application);
-        ingresoRepo = new IngresoPersonalRepository(application);
+        gastoRepo   = new GastoRepository(application);
+        ingresoRepo = new IngresoRepository(application);
+
+        // Obtener usuarioId de SharedPreferences (mismo patrón que el resto del proyecto)
+        SharedPreferences prefs = application.getSharedPreferences(
+                "MoneyMasterPrefs", Context.MODE_PRIVATE);
+        usuarioId = prefs.getInt("userId", -1);
 
         // Inicializar filtros con el mes/año actual
         Calendar now = Calendar.getInstance();
@@ -83,57 +82,40 @@ public class StatisticsViewModel extends AndroidViewModel {
         loadCurrentYearData();
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
-    // Carga de datos
-    // ──────────────────────────────────────────────────────────────────────────
+    // ── Carga de datos ────────────────────────────────────────────────────────
 
-    /**
-     * Carga gastos e ingresos del mes/año actualmente seleccionados y
-     * recalcula el resumen numérico.
-     */
     public void loadCurrentMonthData() {
         int mes  = selectedMonth.getValue() != null ? selectedMonth.getValue() : 1;
         int anio = selectedYear.getValue()  != null ? selectedYear.getValue()  : 2024;
 
-        gastosMes   = gastoRepo.getGastosByMonthYear(mes, anio);
-        ingresosMes = ingresoRepo.getIngresosByMonthYear(mes, anio);
+        // Eliminar fuentes anteriores para evitar duplicados en MediatorLiveData
+        if (gastosMes   != null) summaryTotalGastos.removeSource(gastosMes);
+        if (ingresosMes != null) summaryTotalIngresos.removeSource(ingresosMes);
 
-        // Recalcular resumen cada vez que cambien los datos del mes
-        summaryTotalGastos.addSource(gastosMes, gastos -> recalcularResumen());
-        summaryTotalIngresos.addSource(ingresosMes, ingresos -> recalcularResumen());
+        gastosMes   = gastoRepo.getGastosByMes(usuarioId, mes, anio);
+        ingresosMes = ingresoRepo.getIngresosByMes(usuarioId, mes, anio);
+
+        summaryTotalGastos.addSource(gastosMes,     g -> recalcularResumen());
+        summaryTotalIngresos.addSource(ingresosMes, i -> recalcularResumen());
     }
 
-    /**
-     * Carga gastos e ingresos de todo el año seleccionado.
-     */
     public void loadCurrentYearData() {
         int anio = selectedYear.getValue() != null ? selectedYear.getValue() : 2024;
-        gastosAnio   = gastoRepo.getGastosByYear(anio);
-        ingresosAnio = ingresoRepo.getIngresosByYear(anio);
+        gastosAnio   = gastoRepo.getGastosByAnio(usuarioId, anio);
+        ingresosAnio = ingresoRepo.getIngresosByAnio(usuarioId, anio);
     }
 
-    /**
-     * Carga datos para el rango personalizado de fechas.
-     * @param startTimestamp Unix timestamp de inicio (inclusive)
-     * @param endTimestamp   Unix timestamp de fin   (inclusive)
-     */
     public void loadCustomRangeData(long startTimestamp, long endTimestamp) {
         customStartTimestamp.setValue(startTimestamp);
         customEndTimestamp.setValue(endTimestamp);
-        gastosCustom   = gastoRepo.getGastosByDateRange(startTimestamp, endTimestamp);
-        ingresosCustom = ingresoRepo.getIngresosByDateRange(startTimestamp, endTimestamp);
+        gastosCustom   = gastoRepo.getGastosByRango(usuarioId, startTimestamp, endTimestamp);
+        ingresosCustom = ingresoRepo.getIngresosByRango(usuarioId, startTimestamp, endTimestamp);
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
-    // Lógica de resumen numérico
-    // ──────────────────────────────────────────────────────────────────────────
+    // ── Resumen numérico ──────────────────────────────────────────────────────
 
-    /**
-     * Suma todos los importes de la lista activa y publica los resultados
-     * en los tres MediatorLiveData de resumen.
-     */
     private void recalcularResumen() {
-        double totalGastos = 0;
+        double totalGastos   = 0;
         double totalIngresos = 0;
 
         List<GastoPersonal> gastos = gastosMes != null ? gastosMes.getValue() : null;
@@ -151,15 +133,10 @@ public class StatisticsViewModel extends AndroidViewModel {
         summaryBalance.setValue(totalIngresos - totalGastos);
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
-    // Setters de estado
-    // ──────────────────────────────────────────────────────────────────────────
+    // ── Setters ───────────────────────────────────────────────────────────────
 
     public void setSelectedTab(int tab) { selectedTab.setValue(tab); }
 
-    /**
-     * Cambia el mes/año del filtro y recarga los datos correspondientes.
-     */
     public void setMonthYear(int month, int year) {
         selectedMonth.setValue(month);
         selectedYear.setValue(year);
@@ -167,9 +144,7 @@ public class StatisticsViewModel extends AndroidViewModel {
         loadCurrentYearData();
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
-    // Getters de LiveData
-    // ──────────────────────────────────────────────────────────────────────────
+    // ── Getters ───────────────────────────────────────────────────────────────
 
     public LiveData<Integer> getSelectedTab()    { return selectedTab; }
     public LiveData<Integer> getSelectedMonth()  { return selectedMonth; }

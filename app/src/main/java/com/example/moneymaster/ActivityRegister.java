@@ -22,17 +22,11 @@ import java.util.concurrent.Executors;
  */
 public class ActivityRegister extends AppCompatActivity {
 
-    // ViewBinding
     private ActivityRegisterBinding binding;
-
-    // Dependencias
-    private AppDatabase   db;
+    private AppDatabase    db;
     private SessionManager session;
 
-    // Room no permite operaciones en el hilo principal
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +34,8 @@ public class ActivityRegister extends AppCompatActivity {
         binding = ActivityRegisterBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        db      = AppDatabase.getInstance(this);
+        // Corrección Card #62: getDatabase() en lugar de getInstance()
+        db      = AppDatabase.getDatabase(this);
         session = new SessionManager(this);
 
         setupListeners();
@@ -49,26 +44,18 @@ public class ActivityRegister extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        executor.shutdown(); // liberar recursos
+        executor.shutdown();
     }
-
 
     private void setupListeners() {
-
-        // Botón principal de registro
         binding.btnRegistrar.setOnClickListener(v -> attemptRegister());
 
-        // Limpiar errores mientras el usuario escribe
-        binding.etNombre.addTextChangedListener(
-                clearErrorTextWatcher(binding.tilNombre));
-        binding.etEmail.addTextChangedListener(
-                clearErrorTextWatcher(binding.tilEmail));
-        binding.etPassword.addTextChangedListener(
-                clearErrorTextWatcher(binding.tilPassword));
+        binding.etNombre.addTextChangedListener(clearErrorTextWatcher(binding.tilNombre));
+        binding.etEmail.addTextChangedListener(clearErrorTextWatcher(binding.tilEmail));
+        binding.etPassword.addTextChangedListener(clearErrorTextWatcher(binding.tilPassword));
         binding.etPasswordConfirm.addTextChangedListener(
-                clearErrorTextWatcher(binding.tisPasswordConfirm)); // ← corregido: "til" no "tis"
+                clearErrorTextWatcher(binding.tisPasswordConfirm));
     }
-
 
     private void attemptRegister() {
         String nombre          = binding.etNombre.getText().toString().trim();
@@ -78,13 +65,11 @@ public class ActivityRegister extends AppCompatActivity {
 
         boolean valid = true;
 
-        // Validación 1: nombre vacío
         if (nombre.isEmpty()) {
             binding.tilNombre.setError("El nombre es obligatorio");
             valid = false;
         }
 
-        // Validación 2: email vacío o formato incorrecto
         if (email.isEmpty()) {
             binding.tilEmail.setError("El email es obligatorio");
             valid = false;
@@ -93,7 +78,6 @@ public class ActivityRegister extends AppCompatActivity {
             valid = false;
         }
 
-        // Validación 3: contraseña vacía o menor de 6 caracteres
         if (password.isEmpty()) {
             binding.tilPassword.setError("La contraseña es obligatoria");
             valid = false;
@@ -102,44 +86,35 @@ public class ActivityRegister extends AppCompatActivity {
             valid = false;
         }
 
-        // Validación 4: contraseñas no coinciden
         if (!password.equals(passwordConfirm)) {
-            binding.tisPasswordConfirm.setError("Las contraseñas no coinciden"); // ← corregido: "til" no "tis"
+            binding.tisPasswordConfirm.setError("Las contraseñas no coinciden");
             valid = false;
         }
 
-        // Si todas las validaciones pasan → procesar en hilo de fondo
         if (valid) {
             processRegistration(nombre, email, password);
         }
     }
 
-
-
     private void processRegistration(String nombre, String email, String password) {
         executor.execute(() -> {
             try {
-                // Paso 1: hashear contraseña (SHA-256 + sal)
                 String passwordHash = SecurityUtils.hashPassword(password);
 
-                // Paso 2: insertar usuario en Room
-                long userId = db.userDao().insertUser(
+                // Corrección Card #62: usuarioDao() en lugar de userDao()
+                long userId = db.usuarioDao().insertUser(
                         new User(nombre, email, passwordHash)
                 );
 
-                // Paso 3: guardar sesión + navegar a MainActivity
                 runOnUiThread(() -> {
                     session.saveSession((int) userId, email, nombre);
-
                     Intent intent = new Intent(ActivityRegister.this, MainActivity.class);
-                    // Limpiar back-stack: el usuario no puede volver al registro pulsando "atrás"
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     finish();
                 });
 
             } catch (Exception e) {
-                // Room lanza excepción si el email ya existe (índice UNIQUE en la tabla)
                 runOnUiThread(() ->
                         binding.tilEmail.setError("Este email ya está registrado")
                 );
@@ -147,26 +122,14 @@ public class ActivityRegister extends AppCompatActivity {
         });
     }
 
-    /**
-     * Devuelve un TextWatcher que borra el error de un TextInputLayout
-     * en cuanto el usuario empieza a escribir en el campo.
-     * Se reutiliza para todos los campos del formulario.
-     */
     private TextWatcher clearErrorTextWatcher(TextInputLayout layout) {
         return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // No necesario
-            }
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            @Override public void afterTextChanged(android.text.Editable s) { }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                layout.setError(null); // limpiar error en cuanto el usuario escribe
-            }
-
-            @Override
-            public void afterTextChanged(android.text.Editable s) {
-                // No necesario
+                layout.setError(null);
             }
         };
     }

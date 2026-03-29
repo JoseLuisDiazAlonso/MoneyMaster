@@ -101,7 +101,7 @@ public final class CsvExporter {
             if (gastos != null) {
                 for (GastoPersonal gasto : gastos) {
                     String nombreCategoria = categorias != null
-                            ? categorias.getOrDefault(gasto.categoriaId, "Sin categoría")
+                            ? categorias.getOrDefault(gasto.categoria_id, "Sin categoría")
                             : "Sin categoría";
                     writer.write(construirFila(
                             gasto.fecha,
@@ -148,7 +148,7 @@ public final class CsvExporter {
             if (ingresos != null) {
                 for (IngresoPersonal ingreso : ingresos) {
                     String nombreCategoria = categorias != null
-                            ? categorias.getOrDefault(ingreso.categoriaId, "Sin categoría")
+                            ? categorias.getOrDefault(ingreso.categoria_id, "Sin categoría")
                             : "Sin categoría";
                     writer.write(construirFila(
                             ingreso.fecha,
@@ -202,7 +202,7 @@ public final class CsvExporter {
             if (gastos != null) {
                 for (GastoPersonal gasto : gastos) {
                     String cat = categoriasGasto != null
-                            ? categoriasGasto.getOrDefault(gasto.categoriaId, "Sin categoría")
+                            ? categoriasGasto.getOrDefault(gasto.categoria_id, "Sin categoría")
                             : "Sin categoría";
                     writer.write(construirFila(gasto.fecha, "Gasto", cat,
                             gasto.descripcion, gasto.monto));
@@ -214,7 +214,7 @@ public final class CsvExporter {
             if (ingresos != null) {
                 for (IngresoPersonal ingreso : ingresos) {
                     String cat = categoriasIngreso != null
-                            ? categoriasIngreso.getOrDefault(ingreso.categoriaId, "Sin categoría")
+                            ? categoriasIngreso.getOrDefault(ingreso.categoria_id, "Sin categoría")
                             : "Sin categoría";
                     writer.write(construirFila(ingreso.fecha, "Ingreso", cat,
                             ingreso.descripcion, ingreso.monto));

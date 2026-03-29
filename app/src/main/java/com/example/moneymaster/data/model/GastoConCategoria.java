@@ -1,17 +1,5 @@
 package com.example.moneymaster.data.model;
 
-/**
- * ╔══════════════════════════════════════════════════════════════════╗
- * ║  GastoConCategoria.java                                          ║
- * ║  Ruta: data/model/GastoConCategoria.java                         ║
- * ╠══════════════════════════════════════════════════════════════════╣
- * ║  POJO de resultado para la query JOIN entre GastoPersonal y      ║
- * ║  CategoriaGasto. Room mapea las columnas de la query a estos     ║
- * ║  campos por nombre (case-insensitive).                           ║
- * ║                                                                  ║
- * ║  NOT @Entity. Solo se usa para leer resultados de @Query.        ║
- * ╚══════════════════════════════════════════════════════════════════╝
- */
 public class GastoConCategoria {
 
     /** ID del gasto (GastoPersonal.id) */
@@ -34,13 +22,11 @@ public class GastoConCategoria {
 
     /**
      * Nombre del drawable del ícono (alias "iconoNombre" en la query).
-     * Ejemplo: "ic_food", "ic_transport".
      */
     public String iconoNombre;
 
     /**
      * Color hex de la categoría (alias "colorCategoria" en la query).
-     * Ejemplo: "#E53935"
      */
     public String colorCategoria;
 }

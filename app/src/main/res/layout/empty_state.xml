@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Layout reutilizable de Empty State.
+    Se incluye en cada fragment mediante <include> o se infla dinámicamente.
+    Todos los textos e icono se configuran desde código con EmptyStateHelper.
+
+    IDs:
+      - iv_empty_icon     : ImageView con el icono/ilustración
+      - tv_empty_title    : Título principal (ej. "Aún no hay movimientos")
+      - tv_empty_subtitle : Subtítulo descriptivo opcional
+      - btn_empty_cta     : Botón de acción principal (CTA)
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_empty_state"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="32dp"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <!-- Ilustración / Icono -->
+    <ImageView
+        android:id="@+id/iv_empty_icon"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginBottom="24dp"
+        android:contentDescription="@null"
+        android:alpha="0.85"
+        tools:src="@drawable/ic_empty_movements" />
+
+    <!-- Título -->
+    <TextView
+        android:id="@+id/tv_empty_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textAppearance="?attr/textAppearanceTitleMedium"
+        android:textColor="?attr/colorOnSurface"
+        android:layout_marginBottom="8dp"
+        tools:text="Aún no hay movimientos" />
+
+    <!-- Subtítulo -->
+    <TextView
+        android:id="@+id/tv_empty_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:layout_marginBottom="32dp"
+        tools:text="Registra tu primer gasto o ingreso para empezar a llevar el control." />
+
+    <!-- Botón CTA -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_empty_cta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="32dp"
+        style="@style/Widget.Material3.Button"
+        tools:text="Añadir movimiento" />
+
+</LinearLayout>

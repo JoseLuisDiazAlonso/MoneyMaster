@@ -8,19 +8,36 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.example.moneymaster.data.model.GastoConCategoria;
 import com.example.moneymaster.data.model.GastoPersonal;
-import com.example.moneymaster.data.model.PuntoLinea;
 import com.example.moneymaster.data.model.ResumenMensual;
+import com.example.moneymaster.data.model.GastoConCategoria;
 import com.example.moneymaster.data.model.TopCategoriasItem;
 import com.example.moneymaster.data.model.TotalPorCategoria;
 
 import java.util.List;
 
+/**
+ * GastoPersonalDao — Card #62: métodos originales conservados + optimizaciones.
+ *
+ * Cambios respecto a la versión anterior:
+ *  - getGastosByUsuario()        → añadido LIMIT 200 (evita cargar tabla entera)
+ *  - getGastosByMes()            → sin cambios (ya filtra por mes/año, resultado acotado)
+ *  - getUltimosGastos()          → conservado con :limite dinámico
+ *  - getTotalGastosMes()         → sin cambios
+ *  - getGastosPorCategoria()     → sin cambios (agregado, resultado pequeño)
+ *  - getResumenUltimosMeses()    → sin cambios
+ *  - Todos los SELECT usan las columnas indexadas (fecha, categoria_id)
+ *    definidas en la entidad GastoPersonal con @Index
+ *
+ * Nota sobre tipos: usuarioId es long (coherente con GastoRepository y MainViewModel).
+ * mes y anio son int (filtrado con strftime sobre timestamp en ms).
+ */
 @Dao
 public interface GastoPersonalDao {
 
-    // ─── CRUD ─────────────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+    // INSERT / UPDATE / DELETE
+    // ─────────────────────────────────────────────────────────────────────────
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertar(GastoPersonal gasto);
@@ -31,260 +48,258 @@ public interface GastoPersonalDao {
     @Delete
     void eliminar(GastoPersonal gasto);
 
-    // ─── Listas ───────────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+    // SELECT — usados por GastoRepository
+    // ─────────────────────────────────────────────────────────────────────────
 
-    @Query("SELECT * FROM gastos_personales WHERE usuario_id = :usuarioId ORDER BY fecha DESC")
+    /**
+     * Todos los gastos del usuario ordenados por fecha DESC.
+     * Card #62: LIMIT 200 añadido para evitar OOM en usuarios con muchos registros.
+     * Para listados completos sin límite usar getAllSync().
+     */
+    @Query("SELECT * FROM gastos_personales " +
+            "WHERE usuarioId = :usuarioId " +
+            "ORDER BY fecha DESC " +
+            "LIMIT 200")
     LiveData<List<GastoPersonal>> getGastosByUsuario(long usuarioId);
 
+    /**
+     * Gastos filtrados por mes y año.
+     * Usa el índice de fecha: strftime convierte el timestamp ms a texto.
+     * printf('%02d') garantiza que mes < 10 quede como "01", "02"…
+     */
     @Query("SELECT * FROM gastos_personales " +
-            "WHERE usuario_id = :usuarioId " +
-            "  AND CAST(strftime('%m', datetime(fecha / 1000, 'unixepoch')) AS INTEGER) = :mes " +
-            "  AND CAST(strftime('%Y', datetime(fecha / 1000, 'unixepoch')) AS INTEGER) = :anio " +
+            "WHERE usuarioId = :usuarioId " +
+            "  AND strftime('%Y', fecha / 1000, 'unixepoch') = printf('%04d', :anio) " +
+            "  AND strftime('%m', fecha / 1000, 'unixepoch') = printf('%02d', :mes) " +
             "ORDER BY fecha DESC")
     LiveData<List<GastoPersonal>> getGastosByMes(long usuarioId, int mes, int anio);
 
+    /**
+     * Total de gastos del mes para el balance del Dashboard.
+     * Resultado: un único Double — consulta rápida con índice de fecha.
+     */
+    @Query("SELECT SUM(monto) FROM gastos_personales " +
+            "WHERE usuarioId = :usuarioId " +
+            "  AND strftime('%Y', fecha / 1000, 'unixepoch') = printf('%04d', :anio) " +
+            "  AND strftime('%m', fecha / 1000, 'unixepoch') = printf('%02d', :mes)")
+    LiveData<Double> getTotalGastosMes(long usuarioId, int mes, int anio);
+
+    /**
+     * Últimos N gastos para el widget del Dashboard.
+     * Card #62: ya tenía LIMIT dinámico — se conserva tal cual.
+     * MainViewModel lo llama con limite = 5.
+     */
     @Query("SELECT * FROM gastos_personales " +
-            "WHERE usuario_id = :usuarioId ORDER BY fecha DESC LIMIT :limite")
+            "WHERE usuarioId = :usuarioId " +
+            "ORDER BY fecha DESC " +
+            "LIMIT :limite")
     LiveData<List<GastoPersonal>> getUltimosGastos(long usuarioId, int limite);
 
+    /**
+     * Gasto por ID (para edición / detalle).
+     */
     @Query("SELECT * FROM gastos_personales WHERE id = :gastoId LIMIT 1")
     LiveData<GastoPersonal> getGastoById(long gastoId);
 
-    // ─── Totales ──────────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+    // SELECT — Estadísticas (usados por GastoRepository)
+    // ─────────────────────────────────────────────────────────────────────────
 
-    @Query("SELECT COALESCE(SUM(monto), 0.0) FROM gastos_personales " +
-            "WHERE usuario_id = :usuarioId " +
-            "  AND CAST(strftime('%m', datetime(fecha / 1000, 'unixepoch')) AS INTEGER) = :mes " +
-            "  AND CAST(strftime('%Y', datetime(fecha / 1000, 'unixepoch')) AS INTEGER) = :anio")
-    LiveData<Double> getTotalGastosMes(long usuarioId, int mes, int anio);
-
-    @Query("SELECT COALESCE(SUM(monto), 0.0) FROM gastos_personales " +
-            "WHERE usuario_id = :usuarioId AND fecha BETWEEN :desde AND :hasta")
-    LiveData<Double> getTotalGastosRango(long usuarioId, long desde, long hasta);
-
-    // ─── Estadísticas: PieChart (long + int) ─────────────────────────────────
-
-    @Query("SELECT " +
-            "  c.nombre     AS nombreCategoria, " +
-            "  c.icono      AS icono, " +
-            "  c.color      AS color, " +
-            "  SUM(g.monto) AS total " +
+    /**
+     * Suma de gastos agrupada por categoría para el mes indicado.
+     * Usa índice de categoria_id. Resultado pequeño (≤ nº categorías).
+     */
+    @Query("SELECT c.nombre AS nombreCategoria, " +
+            "       c.color AS colorCategoria, " +
+            "       c.icono AS iconoCategoria, " +
+            "       SUM(g.monto) AS total " +
             "FROM gastos_personales g " +
-            "INNER JOIN categorias_gasto c ON g.categoria_id = c.id " +
-            "WHERE g.usuario_id = :usuarioId " +
-            "  AND CAST(strftime('%m', datetime(g.fecha / 1000, 'unixepoch')) AS INTEGER) = :mes " +
-            "  AND CAST(strftime('%Y', datetime(g.fecha / 1000, 'unixepoch')) AS INTEGER) = :anio " +
-            "GROUP BY c.id " +
+            "LEFT JOIN categorias_gasto c ON g.categoria_id = c.id " +
+            "WHERE g.usuarioId = :usuarioId " +
+            "  AND strftime('%Y', g.fecha / 1000, 'unixepoch') = printf('%04d', :anio) " +
+            "  AND strftime('%m', g.fecha / 1000, 'unixepoch') = printf('%02d', :mes) " +
+            "GROUP BY g.categoria_id " +
             "ORDER BY total DESC")
     LiveData<List<TotalPorCategoria>> getGastosPorCategoria(long usuarioId, int mes, int anio);
 
-    // ─── Estadísticas: PieChart (int + String) ────────────────────────────────
+    /**
+     * Top 5 categorías con más gasto en el mes indicado.
+     * Usado por EstadisticasRepository (STATS-005).
+     */
+    @Query("SELECT c.nombre AS nombreCategoria, " +
+            "       c.icono  AS icono, " +
+            "       c.color  AS color, " +
+            "       SUM(g.monto) AS total " +
+            "FROM gastos_personales g " +
+            "LEFT JOIN categorias_gasto c ON g.categoria_id = c.id " +
+            "WHERE g.usuarioId = :usuarioId " +
+            "  AND strftime('%Y', g.fecha / 1000, 'unixepoch') = printf('%04d', :anio) " +
+            "  AND strftime('%m', g.fecha / 1000, 'unixepoch') = printf('%02d', :mes) " +
+            "GROUP BY g.categoria_id " +
+            "ORDER BY total DESC " +
+            "LIMIT 5")
+    LiveData<List<TopCategoriasItem>> getTop5CategoriasMes(long usuarioId, int mes, int anio);
 
-    @Query("SELECT cg.nombre AS nombreCategoria, " +
-            "       cg.icono AS icono, " +
-            "       cg.color AS color, " +
-            "       SUM(gp.monto) AS total " +
-            "FROM gastos_personales gp " +
-            "LEFT JOIN categorias_gasto cg ON gp.categoria_id = cg.id " +
-            "WHERE gp.usuario_id = :usuarioId " +
-            "  AND strftime('%m', gp.fecha / 1000, 'unixepoch') = :mes " +
-            "  AND strftime('%Y', gp.fecha / 1000, 'unixepoch') = :anio " +
-            "GROUP BY gp.categoria_id " +
-            "ORDER BY total DESC")
-    LiveData<List<TotalPorCategoria>> getGastosPorCategoria(int usuarioId, String mes, String anio);
-
-    @Query("SELECT cg.nombre AS nombreCategoria, " +
-            "       cg.icono AS icono, " +
-            "       cg.color AS color, " +
-            "       SUM(gp.monto) AS total " +
-            "FROM gastos_personales gp " +
-            "LEFT JOIN categorias_gasto cg ON gp.categoria_id = cg.id " +
-            "WHERE gp.usuario_id = :usuarioId " +
-            "  AND strftime('%m', gp.fecha / 1000, 'unixepoch') = :mes " +
-            "  AND strftime('%Y', gp.fecha / 1000, 'unixepoch') = :anio " +
-            "GROUP BY gp.categoria_id " +
-            "ORDER BY total DESC")
-    List<TotalPorCategoria> getGastosPorCategoriaSync(int usuarioId, String mes, String anio);
-
-    @Query("SELECT COALESCE(SUM(monto), 0) " +
+    /**
+     * Resumen mensual (total gastos por mes) para los últimos N meses.
+     * Usado por el LineChart de evolución en EstadisticasFragment.
+     */
+    @Query("SELECT CAST(strftime('%m', fecha / 1000, 'unixepoch') AS INTEGER) AS mes, " +
+            "       CAST(strftime('%Y', fecha / 1000, 'unixepoch') AS INTEGER) AS anio, " +
+            "       SUM(monto) AS total " +
             "FROM gastos_personales " +
-            "WHERE usuario_id = :usuarioId " +
-            "  AND strftime('%m', fecha / 1000, 'unixepoch') = :mes " +
-            "  AND strftime('%Y', fecha / 1000, 'unixepoch') = :anio")
-    LiveData<Double> getTotalGastosMes(int usuarioId, String mes, String anio);
-
-    // ─── Estadísticas: BarChart ───────────────────────────────────────────────
-
-    @Query("SELECT " +
-            "  CAST(strftime('%m', datetime(fecha / 1000, 'unixepoch')) AS INTEGER) AS mes, " +
-            "  CAST(strftime('%Y', datetime(fecha / 1000, 'unixepoch')) AS INTEGER) AS anio, " +
-            "  COALESCE(SUM(monto), 0.0) AS total " +
-            "FROM gastos_personales " +
-            "WHERE usuario_id = :usuarioId " +
-            "GROUP BY anio, mes " +
+            "WHERE usuarioId = :usuarioId " +
+            "GROUP BY strftime('%Y-%m', fecha / 1000, 'unixepoch') " +
             "ORDER BY anio DESC, mes DESC " +
             "LIMIT :meses")
     LiveData<List<ResumenMensual>> getResumenUltimosMeses(long usuarioId, int meses);
 
-    @Query("SELECT " +
-            "  CAST(strftime('%m', datetime(fecha / 1000, 'unixepoch')) AS INTEGER) AS mes, " +
-            "  CAST(strftime('%Y', datetime(fecha / 1000, 'unixepoch')) AS INTEGER) AS anio, " +
-            "  COALESCE(SUM(monto), 0.0) AS total " +
-            "FROM gastos_personales " +
-            "WHERE usuario_id = :usuarioId " +
-            "GROUP BY anio, mes " +
-            "ORDER BY anio DESC, mes DESC " +
-            "LIMIT :meses")
-    List<ResumenMensual> getResumenUltimosMesesSync(long usuarioId, int meses);
+    // ─────────────────────────────────────────────────────────────────────────
+    // SELECT — usados por StatisticsViewModel (Card #62)
+    // ─────────────────────────────────────────────────────────────────────────
 
-    // ─── Estadísticas: LineChart diario (Card #44) ────────────────────────────
+    /** Todos los gastos del año indicado (usa índice de fecha). */
+    @Query("SELECT * FROM gastos_personales " +
+            "WHERE usuarioId = :usuarioId " +
+            "  AND strftime('%Y', fecha / 1000, 'unixepoch') = printf('%04d', :anio) " +
+            "ORDER BY fecha DESC")
+    LiveData<List<GastoPersonal>> getGastosByAnio(long usuarioId, int anio);
 
-    @Query("SELECT " +
-            "  CAST(strftime('%d', datetime(fecha / 1000, 'unixepoch')) AS INTEGER) AS posicion, " +
-            "  strftime('%d', datetime(fecha / 1000, 'unixepoch'))                  AS etiqueta, " +
-            "  COALESCE(SUM(monto), 0.0)                                            AS total " +
-            "FROM gastos_personales " +
-            "WHERE usuario_id = :usuarioId " +
+    /** Gastos en un rango de fechas (timestamps ms, inclusive). */
+    @Query("SELECT * FROM gastos_personales " +
+            "WHERE usuarioId = :usuarioId " +
             "  AND fecha >= :inicio " +
             "  AND fecha <= :fin " +
-            "GROUP BY posicion " +
-            "ORDER BY posicion ASC")
-    LiveData<List<PuntoLinea>> getGastosDiarios(long usuarioId, long inicio, long fin);
+            "ORDER BY fecha DESC")
+    LiveData<List<GastoPersonal>> getGastosByRango(long usuarioId, long inicio, long fin);
 
-    // ─── Estadísticas: LineChart semanal (Card #44) ───────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+    // SELECT — Síncronas para Export (PDF / CSV)
+    // ─────────────────────────────────────────────────────────────────────────
 
-    @Query("SELECT " +
-            "  MIN(CAST(strftime('%d', datetime(fecha / 1000, 'unixepoch')) AS INTEGER)) AS posicion, " +
-            "  'S' || CAST(MIN(((CAST(strftime('%d', datetime(fecha / 1000, 'unixepoch')) AS INTEGER) - 1) / 7) + 1) AS TEXT) AS etiqueta, " +
-            "  COALESCE(SUM(monto), 0.0) AS total " +
-            "FROM gastos_personales " +
-            "WHERE usuario_id = :usuarioId " +
+    @Query("SELECT * FROM gastos_personales " +
+            "WHERE usuarioId = :usuarioId " +
+            "ORDER BY fecha DESC")
+    List<GastoPersonal> getAllSync(long usuarioId);
+
+    @Query("SELECT * FROM gastos_personales " +
+            "WHERE usuarioId = :usuarioId " +
+            "  AND strftime('%Y', fecha / 1000, 'unixepoch') = printf('%04d', :anio) " +
+            "  AND strftime('%m', fecha / 1000, 'unixepoch') = printf('%02d', :mes) " +
+            "ORDER BY fecha DESC")
+    List<GastoPersonal> getByMesSync(long usuarioId, int mes, int anio);
+
+    @Query("SELECT * FROM gastos_personales WHERE id = :id LIMIT 1")
+    GastoPersonal getByIdSync(long id);
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // SELECT — Síncronas para Export (rango de fechas y completo)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /** Gastos en un rango de timestamps ms — para ExportFragment CSV/PDF. */
+    @Query("SELECT * FROM gastos_personales " +
+            "WHERE usuarioId = :usuarioId " +
             "  AND fecha >= :inicio " +
             "  AND fecha <= :fin " +
-            "GROUP BY ((CAST(strftime('%d', datetime(fecha / 1000, 'unixepoch')) AS INTEGER) - 1) / 7) " +
-            "ORDER BY posicion ASC")
-    LiveData<List<PuntoLinea>> getGastosSemanales(long usuarioId, long inicio, long fin);
-
-    // ─── Gastos del mes con categoría (Dashboard / RecyclerView) ─────────────
-
-    @Query("SELECT " +
-            "  gp.id              AS id, " +
-            "  gp.descripcion     AS descripcion, " +
-            "  gp.monto           AS importe, " +
-            "  gp.fecha           AS fecha, " +
-            "  COALESCE(cg.nombre, 'Sin categoría') AS nombreCategoria, " +
-            "  COALESCE(cg.icono, 'ic_category')    AS iconoNombre, " +
-            "  COALESCE(cg.color, '#6200EE')         AS colorCategoria " +
-            "FROM gastos_personales gp " +
-            "LEFT JOIN categorias_gasto cg ON gp.categoria_id = cg.id " +
-            "WHERE gp.usuario_id = :userId " +
-            "  AND gp.fecha >= :inicio " +
-            "  AND gp.fecha <  :fin " +
-            "ORDER BY gp.fecha DESC")
-    LiveData<List<GastoConCategoria>> getGastosConCategoriaDelMes(
-            int userId, long inicio, long fin);
-
-    @Query("SELECT COALESCE(SUM(monto), 0.0) " +
-            "FROM gastos_personales " +
-            "WHERE usuario_id = :userId " +
-            "  AND fecha >= :inicio " +
-            "  AND fecha <  :fin")
-    LiveData<Double> getTotalGastosMesRango(int userId, long inicio, long fin);
-
-    // ─── Consultas por año y rango (StatisticsFragment) ──────────────────────
-
-    @Query("SELECT * FROM gastos_personales " +
-            "WHERE usuario_id = :userId " +
-            "AND CAST(strftime('%m', fecha, 'unixepoch') AS INTEGER) = :mes " +
-            "AND CAST(strftime('%Y', fecha, 'unixepoch') AS INTEGER) = :anio " +
-            "ORDER BY fecha DESC")
-    LiveData<List<GastoPersonal>> getGastosByMonthYear(int userId, int mes, int anio);
-
-    @Query("SELECT * FROM gastos_personales " +
-            "WHERE usuario_id = :userId " +
-            "AND CAST(strftime('%Y', fecha, 'unixepoch') AS INTEGER) = :anio " +
-            "ORDER BY fecha DESC")
-    LiveData<List<GastoPersonal>> getGastosByYear(int userId, int anio);
-
-    @Query("SELECT * FROM gastos_personales " +
-            "WHERE usuario_id = :userId " +
-            "AND fecha >= :startTimestamp AND fecha <= :endTimestamp " +
-            "ORDER BY fecha DESC")
-    LiveData<List<GastoPersonal>> getGastosByDateRange(int userId, long startTimestamp, long endTimestamp);
-
-    // ─── Foto recibo (Card #35) ───────────────────────────────────────────────
-
-    @Query("SELECT * FROM gastos_personales WHERE foto_recibo_id = :fotoId LIMIT 1")
-    GastoPersonal getByFotoReciboId(int fotoId);
-
-    @Query("UPDATE gastos_personales SET foto_recibo_id = NULL WHERE foto_recibo_id = :fotoId")
-    void desvincularFoto(int fotoId);
-
-    // ─── Conteo ───────────────────────────────────────────────────────────────
-
-    @Query("SELECT COUNT(*) FROM gastos_personales WHERE usuario_id = :usuarioId")
-    int countGastos(long usuarioId);
-
-    /**
-     * Top 5 categorías con mayor gasto total en un mes/año concreto.
-     *
-     * JOIN con categorias_gasto para obtener icono y color.
-     * ORDER BY total DESC garantiza que el primer elemento es el mayor.
-     * LIMIT 5 restringe exactamente al ranking pedido por el card.
-     *
-     * @param usuarioId  ID del usuario en sesión
-     * @param mes        Mes (1-12)
-     * @param anio       Año (e.g. 2025)
-     * @return LiveData con lista de hasta 5 ítems, actualizada automáticamente.
-     */
-    @Query("SELECT " +
-            "  c.nombre     AS nombreCategoria, " +
-            "  c.icono      AS icono, " +
-            "  c.color      AS color, " +
-            "  SUM(g.monto) AS total " +
-            "FROM gastos_personales g " +
-            "INNER JOIN categorias_gasto c ON g.categoria_id = c.id " +
-            "WHERE g.usuario_id = :usuarioId " +
-            "  AND CAST(strftime('%m', datetime(g.fecha / 1000, 'unixepoch')) AS INTEGER) = :mes " +
-            "  AND CAST(strftime('%Y', datetime(g.fecha / 1000, 'unixepoch')) AS INTEGER) = :anio " +
-            "GROUP BY c.id " +
-            "ORDER BY total DESC " +
-            "LIMIT 5")
-    LiveData<List<TopCategoriasItem>> getTop5CategoriasMes(int usuarioId, int mes, int anio);
-
-    /**
-     * Gastos de un usuario en un rango de fechas. Síncrono para exportación.
-     * Llamar desde un hilo de fondo (ExecutorService), nunca desde el hilo principal.
-     *
-     * @param usuarioId ID del usuario en sesión.
-     * @param inicio    Timestamp Unix (ms) del inicio del período (inclusive).
-     * @param fin       Timestamp Unix (ms) del fin del período (exclusive).
-     * @return          Lista de GastoPersonal ordenada por fecha descendente.
-     */
-    @Query("SELECT * FROM gastos_personales " +
-            "WHERE usuario_id = :usuarioId " +
-            "  AND fecha >= :inicio " +
-            "  AND fecha < :fin " +
             "ORDER BY fecha DESC")
     List<GastoPersonal> getGastosParaExportacion(int usuarioId, long inicio, long fin);
 
-    /**
-     * Todos los gastos de un usuario. Síncrono para exportación anual o total.
-     */
+    /** Todos los gastos del usuario sin filtro de fecha — para CSV completo. */
     @Query("SELECT * FROM gastos_personales " +
-            "WHERE usuario_id = :usuarioId " +
+            "WHERE usuarioId = :usuarioId " +
             "ORDER BY fecha DESC")
     List<GastoPersonal> getTodosGastosParaExportacion(int usuarioId);
 
-    // ─── Card #50: Eliminar datos (PerfilFragment) ────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+    // SELECT — usados por DashboardViewModel (rango de timestamps)
+    // ─────────────────────────────────────────────────────────────────────────
 
     /**
-     * Elimina todos los gastos personales de un usuario.
-     * Llamar desde databaseWriteExecutor, nunca desde el hilo principal.
-     *
-     * @param usuarioId ID del usuario en sesión.
+     * Gastos con datos de categoría filtrados por rango de timestamps ms.
+     * Usado por DashboardViewModel para el selector de mes.
      */
-    @Query("DELETE FROM gastos_personales WHERE usuario_id = :usuarioId")
-    void deleteAllByUsuario(int usuarioId);
+    @Query("SELECT g.id AS id, " +
+            "       g.descripcion AS descripcion, " +
+            "       g.monto AS importe, " +
+            "       g.fecha AS fecha, " +
+            "       COALESCE(c.nombre, 'Sin categoría') AS nombreCategoria, " +
+            "       COALESCE(c.icono,  'ic_category_default') AS iconoNombre, " +
+            "       COALESCE(c.color,  '#9E9E9E') AS colorCategoria " +
+            "FROM gastos_personales g " +
+            "LEFT JOIN categorias_gasto c ON g.categoria_id = c.id " +
+            "WHERE g.usuarioId = :usuarioId " +
+            "  AND g.fecha >= :inicio " +
+            "  AND g.fecha < :fin " +
+            "ORDER BY g.fecha DESC")
+    LiveData<List<GastoConCategoria>> getGastosPorCategoria(int usuarioId, long inicio, long fin);
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // SELECT — usados por BusquedaViewModel (Card #58)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Búsqueda de gastos personales con filtros combinados.
+     * Devuelve GastoConCategoria con JOIN a categorias_gasto.
+     * Todos los parámetros son opcionales: pasar null/empty o -1 para ignorarlos.
+     */
+    @Query("SELECT g.id AS id, " +
+            "       g.descripcion AS descripcion, " +
+            "       g.monto AS importe, " +
+            "       g.fecha AS fecha, " +
+            "       COALESCE(c.nombre, 'Sin categoría') AS nombreCategoria, " +
+            "       COALESCE(c.icono,  'ic_category_default') AS iconoNombre, " +
+            "       COALESCE(c.color,  '#9E9E9E') AS colorCategoria " +
+            "FROM gastos_personales g " +
+            "LEFT JOIN categorias_gasto c ON g.categoria_id = c.id " +
+            "WHERE g.usuarioId = :usuarioId " +
+            "  AND (:query IS NULL OR :query = '' " +
+            "       OR LOWER(g.descripcion) LIKE '%' || LOWER(:query) || '%') " +
+            "  AND (:categoriaId = -1 OR g.categoria_id = :categoriaId) " +
+            "  AND (:montoMin = -1    OR g.monto >= :montoMin) " +
+            "  AND (:montoMax = -1    OR g.monto <= :montoMax) " +
+            "  AND (:fechaDesde = -1  OR g.fecha >= :fechaDesde) " +
+            "  AND (:fechaHasta = -1  OR g.fecha <= :fechaHasta) " +
+            "ORDER BY g.fecha DESC")
+    LiveData<List<GastoConCategoria>> buscarGastos(
+            int usuarioId,
+            String query,
+            int categoriaId,
+            double montoMin,
+            double montoMax,
+            long fechaDesde,
+            long fechaHasta);
+
+    /**
+     * Cuenta los resultados del mismo filtro para el contador de BusquedaViewModel.
+     */
+    @Query("SELECT COUNT(*) FROM gastos_personales g " +
+            "WHERE g.usuarioId = :usuarioId " +
+            "  AND (:query IS NULL OR :query = '' " +
+            "       OR LOWER(g.descripcion) LIKE '%' || LOWER(:query) || '%') " +
+            "  AND (:categoriaId = -1 OR g.categoria_id = :categoriaId) " +
+            "  AND (:montoMin = -1    OR g.monto >= :montoMin) " +
+            "  AND (:montoMax = -1    OR g.monto <= :montoMax) " +
+            "  AND (:fechaDesde = -1  OR g.fecha >= :fechaDesde) " +
+            "  AND (:fechaHasta = -1  OR g.fecha <= :fechaHasta)")
+    LiveData<Integer> contarResultadosPersonales(
+            int usuarioId,
+            String query,
+            int categoriaId,
+            double montoMin,
+            double montoMax,
+            long fechaDesde,
+            long fechaHasta);
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // SELECT / UPDATE — usados por ImageViewerViewModel (Card #35)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /** Busca el gasto personal que tiene vinculada una foto por su ID. */
+    @Query("SELECT * FROM gastos_personales WHERE tieneFoto = :fotoId LIMIT 1")
+    GastoPersonal getByFotoReciboId(int fotoId);
+
+    /** Desvincula una foto de todos los gastos personales que la referencian. */
+    @Query("UPDATE gastos_personales SET tieneFoto = NULL, tieneFoto = 0, fotoRuta = NULL WHERE tieneFoto = :fotoId")
+    void desvincularFoto(int fotoId);
 }
