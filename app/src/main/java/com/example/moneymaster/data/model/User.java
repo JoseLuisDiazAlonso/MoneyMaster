@@ -35,6 +35,15 @@ public class User {
     @ColumnInfo(name = "fecha_registro")
     public long fechaRegistro;
 
+    // ── Recuperación de contraseña ────────────────────────
+    /** Índice de la pregunta de seguridad seleccionada (0, 1 o 2). */
+    @ColumnInfo(name = "security_question", defaultValue = "0")
+    public int securityQuestion = 0;
+
+    /** Hash SHA-256 + salt de la respuesta (formato "salt:hash", igual que passwordHash). */
+    @ColumnInfo(name = "security_answer_hash")
+    public String securityAnswerHash;
+
     // Constructor vacío requerido por Room
     public User() {}
 

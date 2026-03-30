@@ -3,6 +3,7 @@ package com.example.moneymaster;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextWatcher;
+import android.widget.ArrayAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,6 +20,7 @@ import java.util.concurrent.Executors;
 /**
  * Clase para validar el nombre, email, contraseña y validación de contraseña.
  * Card #9 — Registro de usuario.
+ * Actualización: pregunta de seguridad para recuperación de contraseña.
  */
 public class ActivityRegister extends AppCompatActivity {
 
@@ -34,10 +36,10 @@ public class ActivityRegister extends AppCompatActivity {
         binding = ActivityRegisterBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Corrección Card #62: getDatabase() en lugar de getInstance()
         db      = AppDatabase.getDatabase(this);
         session = new SessionManager(this);
 
+        setupSecurityQuestionDropdown();
         setupListeners();
     }
 
@@ -45,6 +47,19 @@ public class ActivityRegister extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         executor.shutdown();
+    }
+
+    // ── Poblar dropdown con las 3 preguntas de seguridad ──
+    private void setupSecurityQuestionDropdown() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_dropdown_item_1line,
+                ForgotPasswordActivity.SECURITY_QUESTIONS
+        );
+        binding.actvSecurityQuestion.setAdapter(adapter);
+        // Seleccionar la primera por defecto
+        binding.actvSecurityQuestion.setText(
+                ForgotPasswordActivity.SECURITY_QUESTIONS[0], false);
     }
 
     private void setupListeners() {
@@ -55,6 +70,8 @@ public class ActivityRegister extends AppCompatActivity {
         binding.etPassword.addTextChangedListener(clearErrorTextWatcher(binding.tilPassword));
         binding.etPasswordConfirm.addTextChangedListener(
                 clearErrorTextWatcher(binding.tisPasswordConfirm));
+        binding.etSecurityAnswer.addTextChangedListener(
+                clearErrorTextWatcher(binding.tilSecurityAnswer));
     }
 
     private void attemptRegister() {
@@ -62,6 +79,7 @@ public class ActivityRegister extends AppCompatActivity {
         String email           = binding.etEmail.getText().toString().trim();
         String password        = binding.etPassword.getText().toString();
         String passwordConfirm = binding.etPasswordConfirm.getText().toString();
+        String answer          = binding.etSecurityAnswer.getText().toString().trim();
 
         boolean valid = true;
 
@@ -91,19 +109,39 @@ public class ActivityRegister extends AppCompatActivity {
             valid = false;
         }
 
+        if (answer.isEmpty()) {
+            binding.tilSecurityAnswer.setError("La respuesta es obligatoria");
+            valid = false;
+        }
+
         if (valid) {
-            processRegistration(nombre, email, password);
+            // Calcular índice de la pregunta seleccionada
+            String selectedQuestion = binding.actvSecurityQuestion.getText().toString();
+            int questionIndex = 0;
+            for (int i = 0; i < ForgotPasswordActivity.SECURITY_QUESTIONS.length; i++) {
+                if (ForgotPasswordActivity.SECURITY_QUESTIONS[i].equals(selectedQuestion)) {
+                    questionIndex = i;
+                    break;
+                }
+            }
+            processRegistration(nombre, email, password, answer, questionIndex);
         }
     }
 
-    private void processRegistration(String nombre, String email, String password) {
+    private void processRegistration(String nombre, String email, String password,
+                                     String answer, int questionIndex) {
         executor.execute(() -> {
             try {
                 String passwordHash = SecurityUtils.hashPassword(password);
 
-                long userId = db.usuarioDao().insertUser(
-                        new User(nombre, email, passwordHash)
-                );
+                // Hashear respuesta normalizada (insensible a mayúsculas y espacios)
+                String answerHash = SecurityUtils.hashPassword(answer.toLowerCase());
+
+                User newUser = new User(nombre, email, passwordHash);
+                newUser.securityQuestion   = questionIndex;
+                newUser.securityAnswerHash = answerHash;
+
+                long userId = db.usuarioDao().insertUser(newUser);
 
                 // Insertar categorías del sistema si no existen
                 sembrarCategoriasSiNecesario();

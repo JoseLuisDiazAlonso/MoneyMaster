@@ -27,6 +27,9 @@
         android:theme="@style/Theme.MoneyMaster"
         tools:targetApi="31">
         <activity
+            android:name=".ForgotPasswordActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.BaseActivity"
             android:exported="false" />
         <activity
@@ -72,9 +75,9 @@
         <activity
             android:name=".ui.auth.LoginActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize" /> <!-- Recuperar Contraseña ← NUEVO -->
+            android:windowSoftInputMode="adjustResize" /> <!-- Recuperar Contraseña -->
         <activity
-            android:name=".ui.auth.RecuperarContrasenaActivity"
+            android:name=".ui.auth.ForgotPasswordActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" /> <!-- Pantalla principal -->
         <activity
@@ -86,7 +89,7 @@
         <activity
             android:name=".ui.expense.AddExpenseActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize" /> <!-- FileProvider (añadir dentro de <application>) -->
+            android:windowSoftInputMode="adjustResize" /> <!-- FileProvider -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

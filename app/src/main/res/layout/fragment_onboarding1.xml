@@ -1,65 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.onboarding.fragment_onboarding1">
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/colorSurface">
+        android:fillViewport="true">
 
-        <!--Imagen Ilustrativa-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:background="?attr/colorSurface"
+            android:paddingTop="48dp"
+            android:paddingBottom="48dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp">
 
-        <ImageView
-            android:id="@+id/iconContainer"
-            android:layout_width="238dp"
-            android:layout_height="182dp"
-            android:layout_marginTop="104dp"
-            android:src="@drawable/iv_illustration"
-            android:background="@drawable/bg_rounded_shadow"
-            android:elevation="8dp"
-            android:padding="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <!--Imagen Ilustrativa-->
+            <ImageView
+                android:id="@+id/iconContainer"
+                android:layout_width="200dp"
+                android:layout_height="160dp"
+                android:src="@drawable/iv_illustration"
+                android:background="@drawable/bg_rounded_shadow"
+                android:elevation="8dp"
+                android:padding="20dp"
+                android:scaleType="fitCenter" />
 
+            <!--Texto de Título-->
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:gravity="center"
+                android:text="Controla tus finanzas"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="28sp"
+                android:textStyle="bold" />
 
-        <!--Texto de Título-->
+            <!--Texto Descriptivo-->
+            <TextView
+                android:id="@+id/tvDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:lineSpacingExtra="4dp"
+                android:text="Lleva un registro completo de tus gastos e ingresos en un solo lugar"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="369dp"
-            android:layout_height="49dp"
-            android:layout_marginTop="44dp"
-            android:gravity="center"
-            android:text="Controla tus finanzas"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iconContainer" />
+        </LinearLayout>
 
-        <!--Texto Descriptivo-->
-        <TextView
-            android:id="@+id/tvDescription"
-            android:layout_width="288dp"
-            android:layout_height="92dp"
-            android:layout_marginTop="28dp"
-            android:gravity="center"
-            android:lineSpacingExtra="4dp"
-            android:text="Lleva un registro completo de tus gastos e ingresos en un solo lugar"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.495"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+    </ScrollView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

@@ -12,12 +12,14 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.moneymaster.ActivityRegister;
+import com.example.moneymaster.ForgotPasswordActivity;
 import com.example.moneymaster.MainActivity;
 import com.example.moneymaster.R;
 import com.example.moneymaster.data.database.AppDatabase;
 import com.example.moneymaster.data.model.User;
 import com.example.moneymaster.utils.SecurityUtils;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -59,6 +61,15 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         initViews();
         setupListeners();
+
+        // Mostrar confirmación si viene de un reset exitoso
+        if (getIntent().getBooleanExtra("password_reset_success", false)) {
+            Snackbar.make(
+                    findViewById(android.R.id.content),
+                    "Contraseña actualizada. Ya puedes iniciar sesión.",
+                    Snackbar.LENGTH_LONG
+            ).show();
+        }
     }
 
     // ── Listeners ─────────────────────────────────────────
@@ -68,8 +79,9 @@ public class LoginActivity extends AppCompatActivity {
         tvGoToRegister.setOnClickListener(v ->
                 startActivity(new Intent(this, ActivityRegister.class)));
 
+        // ← Cambiado: RecuperarContrasenaActivity → ForgotPasswordActivity
         tvForgotPassword.setOnClickListener(v ->
-                startActivity(new Intent(this, RecuperarContrasenaActivity.class)));
+                startActivity(new Intent(this, ForgotPasswordActivity.class)));
 
         etEmail.addTextChangedListener(new SimpleTextWatcher() {
             @Override
@@ -83,7 +95,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 tilPassword.setError(null);
-                hideGeneralError();
+                // Solo ocultar el error general si el usuario está escribiendo (count > 0)
+                if (count > 0) hideGeneralError();
             }
         });
     }
@@ -98,7 +111,6 @@ public class LoginActivity extends AppCompatActivity {
         tilPassword.setError(null);
         hideGeneralError();
 
-        // Validar campos vacíos
         if (TextUtils.isEmpty(email)) {
             tilEmail.setError("El email es obligatorio");
             etEmail.requestFocus();
@@ -109,8 +121,6 @@ public class LoginActivity extends AppCompatActivity {
             etPassword.requestFocus();
             return;
         }
-
-        // Validar formato email
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             tilEmail.setError("Formato de email no válido");
             etEmail.requestFocus();
@@ -119,7 +129,6 @@ public class LoginActivity extends AppCompatActivity {
 
         setLoadingState(true);
 
-        // Consultar DB en hilo de fondo
         executor.execute(() -> {
             User user = db.usuarioDao().getByEmail(email);
 
@@ -129,7 +138,6 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                // SecurityUtils ya separa el salt:hash internamente
                 boolean passwordOk = SecurityUtils.verifyPassword(
                         password,
                         user.passwordHash
@@ -161,8 +169,8 @@ public class LoginActivity extends AppCompatActivity {
     // ── Error ─────────────────────────────────────────────
     private void handleLoginError() {
         setLoadingState(false);
+        etPassword.setText("");  // limpiar ANTES de mostrar el error
         showGeneralError("Correo o contraseña incorrectos");
-        etPassword.setText("");
         etPassword.requestFocus();
     }
 
