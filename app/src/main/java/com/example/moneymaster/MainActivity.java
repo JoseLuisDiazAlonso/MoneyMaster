@@ -3,18 +3,18 @@ package com.example.moneymaster;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.moneymaster.databinding.ActivityMainBinding;
-import com.example.moneymaster.ui.dialogs.ExportDialogFragment;
 import com.example.moneymaster.ui.estadisticas.EstadisticasFragment;
 import com.example.moneymaster.ui.expenses.AddExpenseActivity;
 import com.example.moneymaster.ui.groups.GroupsFragment;
 import com.example.moneymaster.ui.PerfilFragment;
+import com.example.moneymaster.utils.SessionManager;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class MainActivity extends AppCompatActivity {
@@ -64,19 +64,30 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_export) {
-            ExportDialogFragment.newInstance()
-                    .show(getSupportFragmentManager(), ExportDialogFragment.TAG);
-            return true;
-
-        } else if (id == R.id.action_logout) {
+        if (item.getItemId() == R.id.action_logout) {
+            mostrarDialogCerrarSesion();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
+
+    private void mostrarDialogCerrarSesion() {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Cerrar sesión")
+                .setMessage("¿Seguro que quieres cerrar sesión?")
+                .setPositiveButton("Cerrar sesión", (dialog, which) -> {
+                    new SessionManager(this).clearSession();
+                    Intent intent = new Intent(this,
+                            com.example.moneymaster.ui.auth.LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                            | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
     // ── BottomNavigation ──────────────────────────────────────────────────────
 
     private void setupBottomNavigation() {
@@ -141,11 +152,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showFab() {
+        // FIX: restaurar visibilidad antes de animar
+        binding.fabAddExpense.setVisibility(View.VISIBLE);
         binding.fabAddExpense.show();
     }
 
     public void hideFab() {
         binding.fabAddExpense.hide();
+        // FIX: eliminar área táctil para no bloquear FABs de otros fragments
+        binding.fabAddExpense.setVisibility(View.GONE);
     }
 
     // ── Ciclo de vida ─────────────────────────────────────────────────────────

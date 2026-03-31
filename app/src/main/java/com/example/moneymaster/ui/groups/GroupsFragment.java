@@ -58,8 +58,9 @@ public class GroupsFragment extends Fragment {
     }
 
     private void setupFab() {
+        android.util.Log.d("GROUPS_DEBUG", "setupFab llamado");
         binding.fabAddGroup.setOnClickListener(v -> {
-            // CreateGroupActivity ya existe desde sprints anteriores
+            android.util.Log.d("GROUPS_DEBUG", "FAB pulsado");
             Intent intent = new Intent(requireContext(), CreateGroupActivity.class);
             startActivity(intent);
         });

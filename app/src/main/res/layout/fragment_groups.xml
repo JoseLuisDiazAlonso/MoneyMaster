@@ -57,13 +57,6 @@
             android:textAppearance="?attr/textAppearanceBodyMedium"
             android:textColor="?attr/colorOnSurfaceVariant" />
 
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Crear primer grupo"
-            app:icon="@drawable/ic_add" />
-
     </LinearLayout>
 
     <!-- FAB anclado al CoordinatorLayout -->

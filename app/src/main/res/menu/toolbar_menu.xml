@@ -11,10 +11,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!-- NUEVO Card #49: opción de exportación en el overflow -->
-    <item
-        android:id="@+id/action_export"
-        android:title="Exportar"
-        app:showAsAction="never" />
+
     <item
         android:id="@+id/action_logout"
         android:title="Cerrar sesión"

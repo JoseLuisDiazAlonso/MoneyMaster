@@ -15,45 +15,22 @@ import com.example.moneymaster.data.model.GastoGrupo;
 
 import java.util.List;
 
-/**
- * BusquedaViewModel — Card #58
- *
- * ViewModel compartido que gestiona el estado de búsqueda y filtros.
- * Puede usarse tanto para gastos personales (HomeFragment) como para
- * gastos de grupo (GroupExpensesFragment).
- *
- * Uso:
- *   BusquedaViewModel vm = new ViewModelProvider(this).get(BusquedaViewModel.class);
- *
- *   // Para gastos personales:
- *   vm.initPersonal();
- *   vm.getResultadosPersonales().observe(...)
- *
- *   // Para gastos de grupo:
- *   vm.initGrupo(grupoId);
- *   vm.getResultadosGrupo().observe(...)
- *
- *   // Aplicar filtro:
- *   vm.aplicarFiltro(new FiltroGasto.Builder().query("gasolina").build());
- */
 public class BusquedaViewModel extends AndroidViewModel {
 
-    private static final String PREFS_NAME  = "moneymaster_session";
-    private static final String KEY_USER_ID = "usuario_id";
+    // FIX: claves corregidas para coincidir con SessionManager
+    private static final String PREFS_NAME  = "MoneyMasterSession";
+    private static final String KEY_USER_ID = "userId";
 
     private final AppDatabase db;
     private final int         usuarioId;
     private int               grupoId = -1;
 
-    // Estado actual del filtro — cualquier cambio relanza las queries
     private final MutableLiveData<FiltroGasto> filtroActual =
             new MutableLiveData<>(FiltroGasto.empty());
 
-    // Resultados para gastos personales
     private LiveData<List<GastoConCategoria>> resultadosPersonales;
     private LiveData<Integer>                 contadorPersonales;
 
-    // Resultados para gastos de grupo
     private LiveData<List<GastoGrupo>>        resultadosGrupo;
     private LiveData<Integer>                 contadorGrupo;
 
@@ -61,12 +38,12 @@ public class BusquedaViewModel extends AndroidViewModel {
         super(application);
         db = AppDatabase.getDatabase(application);
         SharedPreferences prefs = application.getSharedPreferences(PREFS_NAME, 0);
-        usuarioId = (int) prefs.getLong(KEY_USER_ID, -1);
+        // FIX: getInt en lugar de getLong
+        usuarioId = prefs.getInt(KEY_USER_ID, -1);
     }
 
     // ─── Inicialización ───────────────────────────────────────────────────────
 
-    /** Inicializa las queries para gastos personales. Llamar en HomeFragment. */
     public void initPersonal() {
         resultadosPersonales = Transformations.switchMap(filtroActual, f ->
                 db.gastoPersonalDao().buscarGastos(
@@ -89,7 +66,6 @@ public class BusquedaViewModel extends AndroidViewModel {
                         f.fechaHasta));
     }
 
-    /** Inicializa las queries para gastos de grupo. Llamar en GroupExpensesFragment. */
     public void initGrupo(int grupoId) {
         this.grupoId = grupoId;
 
@@ -138,12 +114,10 @@ public class BusquedaViewModel extends AndroidViewModel {
 
     // ─── Actualización de filtros ─────────────────────────────────────────────
 
-    /** Aplica un nuevo filtro completo. */
     public void aplicarFiltro(FiltroGasto filtro) {
         filtroActual.setValue(filtro);
     }
 
-    /** Actualiza solo el texto de búsqueda, manteniendo el resto de filtros. */
     public void setQuery(String query) {
         FiltroGasto actual = filtroActual.getValue();
         FiltroGasto.Builder builder = actual != null
@@ -151,12 +125,10 @@ public class BusquedaViewModel extends AndroidViewModel {
         filtroActual.setValue(builder.query(query).build());
     }
 
-    /** Limpia todos los filtros volviendo al estado vacío. */
     public void limpiarFiltros() {
         filtroActual.setValue(FiltroGasto.empty());
     }
 
-    /** Devuelve el filtro actual (no reactivo, para leer valor inmediato). */
     public FiltroGasto getFiltroSnapshot() {
         FiltroGasto f = filtroActual.getValue();
         return f != null ? f : FiltroGasto.empty();

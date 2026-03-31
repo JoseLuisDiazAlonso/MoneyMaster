@@ -12,7 +12,7 @@ import com.example.moneymaster.R;
 import com.example.moneymaster.data.model.CategoriaIngreso;
 import com.example.moneymaster.data.model.IngresoPersonal;
 import com.example.moneymaster.databinding.ActivityAddIncomeBinding;
-import com.example.moneymaster.ui.adapters.IncomeDropdownAdapter;
+import com.example.moneymaster.ui.adapter.IncomeDropdownAdapter; // FIX: singular
 import com.example.moneymaster.utils.SessionManager;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointBackward;
@@ -88,6 +88,11 @@ public class AddIncomeActivity extends AppCompatActivity {
         binding.autoCompleteCategory.setOnItemClickListener(
                 (parent, view, position, id) -> {
                     selectedCategory = categoryAdapter.getItem(position);
+                    // FIX: mostrar el nombre en lugar del toString() del objeto
+                    if (selectedCategory != null) {
+                        binding.autoCompleteCategory.setText(
+                                selectedCategory.nombre, false);
+                    }
                     binding.tilCategory.setError(null);
                 });
     }
@@ -202,8 +207,6 @@ public class AddIncomeActivity extends AppCompatActivity {
 
         binding.btnSave.setEnabled(false);
 
-        // Corrección Card #62: usa AddIncomeViewModel.SaveCallback
-        // en lugar del eliminado IngresoPersonalRepository.SaveCallback
         viewModel.insertIngreso(ingreso, new AddIncomeViewModel.SaveCallback() {
             @Override
             public void onSuccess() {

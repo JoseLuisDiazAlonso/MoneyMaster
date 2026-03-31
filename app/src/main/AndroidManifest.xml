@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <!-- Permiso de internet para enviar emails -->
+
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
 
-    <uses-permission android:name="android.permission.INTERNET" /> <!-- Permiso de Cámara -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -27,38 +27,9 @@
         android:theme="@style/Theme.MoneyMaster"
         tools:targetApi="31">
         <activity
-            android:name=".ForgotPasswordActivity"
+            android:name=".ui.detalle.MovimientoDetalleActivity"
             android:exported="false" />
-        <activity
-            android:name=".ui.BaseActivity"
-            android:exported="false" />
-        <activity
-            android:name=".AcercaDeActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ImageViewerActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.groups.GroupDetailActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CreateGroupActivity"
-            android:exported="false" />
-        <activity
-            android:name=".AddIncomeActivity"
-            android:exported="false"
-            android:theme="@style/Theme.MoneyMaster" />
-        <activity
-            android:name=".AddExpenseActivity"
-            android:exported="false"
-            android:theme="@style/Theme.MoneyMaster" /> <!-- Registro de usuario -->
-        <activity
-            android:name=".ActivityRegister"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" /> <!-- Onboarding -->
-        <activity
-            android:name=".activity_onboarding"
-            android:exported="false" /> <!-- Splash Screen — punto de entrada de la app -->
+        <!-- Splash Screen — punto de entrada de la app -->
         <activity
             android:name=".ui.onboarding.Splash"
             android:exported="true"
@@ -68,7 +39,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Onboarding slides -->
+        </activity> <!-- Onboarding -->
         <activity
             android:name=".ui.onboarding.OnboardingActivity"
             android:exported="false" /> <!-- Login -->
@@ -76,6 +47,9 @@
             android:name=".ui.auth.LoginActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" /> <!-- Recuperar Contraseña -->
+        <activity
+            android:name=".ForgotPasswordActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.auth.ForgotPasswordActivity"
             android:exported="false"
@@ -85,11 +59,37 @@
             android:exported="false"
             android:label="@string/app_name"
             android:theme="@style/Theme.MoneyMaster"
-            android:windowSoftInputMode="adjustResize" /> <!-- Activity Add Expense -->
+            android:windowSoftInputMode="adjustResize" /> <!-- Registro de usuario -->
         <activity
-            android:name=".ui.expense.AddExpenseActivity"
+            android:name=".ActivityRegister"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize" /> <!-- FileProvider -->
+            android:windowSoftInputMode="adjustResize" /> <!-- Add Expense -->
+        <activity
+            android:name=".ui.expenses.AddExpenseActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" /> <!-- Add Income -->
+        <activity
+            android:name=".ui.income.AddIncomeActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" /> <!-- Grupos -->
+        <activity
+            android:name=".ui.groups.CreateGroupActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.groups.GroupDetailActivity"
+            android:exported="false" /> <!-- Perfil / Acerca de -->
+        <activity
+            android:name=".AcercaDeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.BaseActivity"
+            android:exported="false" /> <!-- Visor de imágenes -->
+        <activity
+            android:name=".ui.viewer.ImageViewerActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MoneyMaster" /> <!-- FileProvider -->
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -99,24 +99,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
-        <activity
-            android:name=".ui.income.AddIncomeActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".ui.groups.CreateGroupActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".ui.viewer.ImageViewerActivity"
-            android:exported="false"
-            android:theme="@style/Theme.MoneyMaster"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".ui.expenses.AddExpenseActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

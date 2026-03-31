@@ -57,4 +57,7 @@ public interface CategoriaIngresoDao {
             "WHERE activo = 1 " +
             "  AND (usuario_id IS NULL OR usuario_id = :usuarioId)")
     List<CategoriaIngreso> getCategoriasParaExportacion(int usuarioId);
+
+    @Query("SELECT * FROM categorias_ingreso WHERE id = :id LIMIT 1")
+    CategoriaIngreso getByIdSync(int id);
 }

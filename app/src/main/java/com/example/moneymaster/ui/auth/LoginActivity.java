@@ -18,6 +18,7 @@ import com.example.moneymaster.R;
 import com.example.moneymaster.data.database.AppDatabase;
 import com.example.moneymaster.data.model.User;
 import com.example.moneymaster.utils.SecurityUtils;
+import com.example.moneymaster.utils.SessionManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
@@ -40,13 +41,9 @@ public class LoginActivity extends AppCompatActivity {
     private SharedPreferences prefs;
     private ExecutorService executor;
 
-    // Constantes SharedPreferences
-    private static final String PREFS_NAME       = "MoneyMasterPrefs";
-    private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
-    private static final String KEY_USER_ID      = "userId";
-    private static final String KEY_USER_NAME    = "userName";
-    private static final String KEY_USER_EMAIL   = "userEmail";
-    private static final String KEY_REMEMBER_ME  = "rememberMe";
+    // Constantes SharedPreferences (solo para "Recuérdame")
+    private static final String PREFS_NAME      = "MoneyMasterPrefs";
+    private static final String KEY_REMEMBER_ME = "rememberMe";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +59,6 @@ public class LoginActivity extends AppCompatActivity {
         initViews();
         setupListeners();
 
-        // Mostrar confirmación si viene de un reset exitoso
         if (getIntent().getBooleanExtra("password_reset_success", false)) {
             Snackbar.make(
                     findViewById(android.R.id.content),
@@ -73,13 +69,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     // ── Listeners ─────────────────────────────────────────
+
     private void setupListeners() {
         btnLogin.setOnClickListener(v -> attemptLogin());
 
         tvGoToRegister.setOnClickListener(v ->
                 startActivity(new Intent(this, ActivityRegister.class)));
 
-        // ← Cambiado: RecuperarContrasenaActivity → ForgotPasswordActivity
         tvForgotPassword.setOnClickListener(v ->
                 startActivity(new Intent(this, ForgotPasswordActivity.class)));
 
@@ -95,16 +91,16 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 tilPassword.setError(null);
-                // Solo ocultar el error general si el usuario está escribiendo (count > 0)
                 if (count > 0) hideGeneralError();
             }
         });
     }
 
     // ── Lógica de login ───────────────────────────────────
+
     private void attemptLogin() {
-        String email     = etEmail.getText().toString().trim();
-        String password  = etPassword.getText().toString();
+        String email    = etEmail.getText().toString().trim();
+        String password = etPassword.getText().toString();
         boolean remember = cbRememberMe.isChecked();
 
         tilEmail.setError(null);
@@ -153,28 +149,30 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     // ── Éxito ─────────────────────────────────────────────
+
     private void handleLoginSuccess(User user, boolean remember) {
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(KEY_IS_LOGGED_IN, true);
-        editor.putBoolean(KEY_REMEMBER_ME, remember);
-        editor.putInt(KEY_USER_ID, user.id);
-        editor.putString(KEY_USER_NAME, user.fullName);
-        editor.putString(KEY_USER_EMAIL, user.email);
-        editor.apply();
+        // FIX: SessionManager centraliza la sesión en "MoneyMasterSession"
+        // para que todos los fragments y ViewModels lean del mismo fichero
+        new SessionManager(this).saveSession(user.id, user.email, user.fullName);
+
+        // "Recuérdame" se sigue guardando en MoneyMasterPrefs — solo lo usa LoginActivity
+        prefs.edit().putBoolean(KEY_REMEMBER_ME, remember).apply();
 
         setLoadingState(false);
         navigateToMainActivity();
     }
 
     // ── Error ─────────────────────────────────────────────
+
     private void handleLoginError() {
         setLoadingState(false);
-        etPassword.setText("");  // limpiar ANTES de mostrar el error
+        etPassword.setText("");
         showGeneralError("Correo o contraseña incorrectos");
         etPassword.requestFocus();
     }
 
     // ── Helpers UI ────────────────────────────────────────
+
     private void showGeneralError(String message) {
         tvLoginError.setText(message);
         tvLoginError.setVisibility(View.VISIBLE);
@@ -190,6 +188,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     // ── Vistas ────────────────────────────────────────────
+
     private void initViews() {
         tilEmail         = findViewById(R.id.tilEmail);
         tilPassword      = findViewById(R.id.tilPassword);
@@ -203,11 +202,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     // ── Sesión ────────────────────────────────────────────
-    private boolean checkExistingSession() {
-        boolean isLoggedIn = prefs.getBoolean(KEY_IS_LOGGED_IN, false);
-        boolean rememberMe = prefs.getBoolean(KEY_REMEMBER_ME, false);
 
-        if (isLoggedIn && rememberMe) {
+    private boolean checkExistingSession() {
+        boolean rememberMe = prefs.getBoolean(KEY_REMEMBER_ME, false);
+        SessionManager session = new SessionManager(this);
+
+        // FIX: leer isLoggedIn desde SessionManager en lugar de MoneyMasterPrefs
+        if (session.isLoggedIn() && rememberMe) {
             navigateToMainActivity();
             return true;
         }
