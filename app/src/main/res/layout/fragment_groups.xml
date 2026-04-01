@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- fragment_groups.xml -->
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -8,65 +7,65 @@
     android:layout_height="match_parent"
     tools:context=".ui.groups.GroupsFragment">
 
-    <!-- RecyclerView principal -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewGroups"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingBottom="88dp"
-        android:paddingTop="8dp"
-        android:paddingHorizontal="16dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_group"
-        tools:itemCount="4" />
+        android:layout_height="match_parent">
 
-    <!-- Empty state: se muestra cuando la lista está vacía -->
-    <LinearLayout
-        android:id="@+id/layoutEmptyState"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="32dp"
-        android:visibility="gone"
-        tools:visibility="visible">
-
-        <ImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:alpha="0.4"
-            app:srcCompat="@drawable/ic_group"
-            app:tint="?attr/colorOnSurfaceVariant"
-            android:contentDescription="Sin grupos" />
-
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Sin grupos todavía"
-            android:textAppearance="?attr/textAppearanceTitleMedium"
-            android:textColor="?attr/colorOnSurface" />
+            android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:text="Crea un grupo para compartir y dividir gastos con otras personas"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="?attr/colorOnSurfaceVariant" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewGroups"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingBottom="88dp"
+                android:paddingTop="8dp"
+                android:paddingHorizontal="16dp"
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/item_group"
+                tools:itemCount="4" />
 
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/layoutEmptyState"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="32dp"
+                android:visibility="gone">
 
-    <!-- FAB anclado al CoordinatorLayout -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:contentDescription="Crear grupo"
-        app:srcCompat="@drawable/ic_add" />
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:alpha="0.4"
+                    app:srcCompat="@drawable/ic_group"
+                    app:tint="?attr/colorOnSurfaceVariant"
+                    android:contentDescription="Sin grupos" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="Sin grupos todavía"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textColor="?attr/colorOnSurface" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:text="Crea un grupo para compartir y dividir gastos con otras personas"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

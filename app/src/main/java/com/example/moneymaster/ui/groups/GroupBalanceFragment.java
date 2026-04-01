@@ -12,24 +12,20 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.moneymaster.databinding.FragmentGroupBalanceBinding;
-import com.example.moneymaster.ui.groups.adapter.MiembroBalanceAdapter;
 import com.example.moneymaster.ui.groups.adapter.DeudaAdapter;
+import com.example.moneymaster.ui.groups.adapter.MiembroBalanceAdapter;
+import com.example.moneymaster.ui.groups.model.DeudaItem;
 
-/**
- * Fragment que muestra el balance del grupo:
- *   - Sección 1: CardView por miembro con balance neto (verde/rojo/gris)
- *   - Sección 2: Lista de transacciones sugeridas con botón "Marcar como pagado"
- *
- * Recibe grupoId como argumento de Bundle (clave ARG_GRUPO_ID).
- */
+import java.util.List;
+
 public class GroupBalanceFragment extends Fragment {
 
     public static final String ARG_GRUPO_ID = "grupoId";
 
     private FragmentGroupBalanceBinding binding;
-    private GroupBalanceViewModel viewModel;
-    private MiembroBalanceAdapter miembroBalanceAdapter;
-    private DeudaAdapter deudaAdapter;
+    private GroupBalanceViewModel       viewModel;
+    private MiembroBalanceAdapter       miembroBalanceAdapter;
+    private DeudaAdapter                deudaAdapter;
 
     public static GroupBalanceFragment newInstance(int grupoId) {
         GroupBalanceFragment f = new GroupBalanceFragment();
@@ -66,50 +62,55 @@ public class GroupBalanceFragment extends Fragment {
         observeData();
     }
 
-    // ─── Setup ────────────────────────────────────────────────────────────────
-
     private void setupRecyclerViews() {
-        // RecyclerView balances por miembro
         miembroBalanceAdapter = new MiembroBalanceAdapter();
         binding.recyclerViewMiembrosBalance.setLayoutManager(
                 new LinearLayoutManager(requireContext()));
         binding.recyclerViewMiembrosBalance.setAdapter(miembroBalanceAdapter);
         binding.recyclerViewMiembrosBalance.setNestedScrollingEnabled(false);
 
-        // RecyclerView deudas sugeridas
-        deudaAdapter = new DeudaAdapter(posicion ->
-                viewModel.marcarPagada(posicion));
+        deudaAdapter = new DeudaAdapter(posicion -> viewModel.marcarPagada(posicion));
         binding.recyclerViewDeudas.setLayoutManager(
                 new LinearLayoutManager(requireContext()));
         binding.recyclerViewDeudas.setAdapter(deudaAdapter);
         binding.recyclerViewDeudas.setNestedScrollingEnabled(false);
     }
 
-    // ─── Observadores ─────────────────────────────────────────────────────────
-
     private void observeData() {
-        // Balances por miembro
         viewModel.getBalancesMiembros().observe(getViewLifecycleOwner(), balances -> {
             miembroBalanceAdapter.submitList(balances);
             binding.recyclerViewMiembrosBalance.setVisibility(
                     balances == null || balances.isEmpty() ? View.GONE : View.VISIBLE);
         });
 
-        // Deudas sugeridas
         viewModel.getDeudas().observe(getViewLifecycleOwner(), deudas -> {
-            // Filtrar las ya pagadas para la lista
+            if (deudas == null || deudas.isEmpty()) {
+                binding.recyclerViewDeudas.setVisibility(View.GONE);
+                binding.layoutSaldado.setVisibility(View.GONE);
+                binding.layoutSinDeudas.setVisibility(View.VISIBLE);
+                return;
+            }
+
+            boolean todasPagadas = todasPagadas(deudas);
             deudaAdapter.submitList(deudas);
 
-            boolean hayDeudas = deudas != null && !deudas.isEmpty();
-            boolean todasPagadas = hayDeudas && deudas.stream().allMatch(d -> d.pagado);
-
-            binding.recyclerViewDeudas.setVisibility(
-                    hayDeudas && !todasPagadas ? View.VISIBLE : View.GONE);
-            binding.layoutSaldado.setVisibility(
-                    todasPagadas ? View.VISIBLE : View.GONE);
-            binding.layoutSinDeudas.setVisibility(
-                    !hayDeudas ? View.VISIBLE : View.GONE);
+            if (todasPagadas) {
+                binding.recyclerViewDeudas.setVisibility(View.GONE);
+                binding.layoutSaldado.setVisibility(View.VISIBLE);
+                binding.layoutSinDeudas.setVisibility(View.GONE);
+            } else {
+                binding.recyclerViewDeudas.setVisibility(View.VISIBLE);
+                binding.layoutSaldado.setVisibility(View.GONE);
+                binding.layoutSinDeudas.setVisibility(View.GONE);
+            }
         });
+    }
+
+    private boolean todasPagadas(List<DeudaItem> deudas) {
+        for (DeudaItem d : deudas) {
+            if (!d.pagado) return false;
+        }
+        return true;
     }
 
     @Override

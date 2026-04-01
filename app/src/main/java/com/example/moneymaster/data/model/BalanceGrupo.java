@@ -14,18 +14,6 @@ import androidx.room.PrimaryKey;
                         parentColumns = "id",
                         childColumns = "grupo_id",
                         onDelete = ForeignKey.CASCADE
-                ),
-                @ForeignKey(
-                        entity = User.class,
-                        parentColumns = "id",
-                        childColumns = "usuario_deudor_id",
-                        onDelete = ForeignKey.CASCADE
-                ),
-                @ForeignKey(
-                        entity = User.class,
-                        parentColumns = "id",
-                        childColumns = "usuario_acreedor_id",
-                        onDelete = ForeignKey.CASCADE
                 )
         },
         indices = {
@@ -44,9 +32,11 @@ public class BalanceGrupo {
     @ColumnInfo(name = "grupo_id")
     public int grupoId;
 
+    /** ID del miembro deudor — referencia a miembros_grupo.id, sin FK para permitir miembros sin cuenta. */
     @ColumnInfo(name = "usuario_deudor_id")
     public int usuarioDeudorId;
 
+    /** ID del miembro acreedor — referencia a miembros_grupo.id, sin FK para permitir miembros sin cuenta. */
     @ColumnInfo(name = "usuario_acreedor_id")
     public int usuarioAcreedorId;
 
@@ -58,5 +48,4 @@ public class BalanceGrupo {
 
     @ColumnInfo(name = "liquidado", defaultValue = "0")
     public int liquidado = 0;
-    public int usuarioId;
 }

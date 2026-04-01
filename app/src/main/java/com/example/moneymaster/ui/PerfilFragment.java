@@ -1,7 +1,6 @@
 package com.example.moneymaster.ui;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -34,18 +33,15 @@ import com.google.android.material.textfield.TextInputLayout;
 
 public class PerfilFragment extends Fragment {
 
-    // ── SharedPreferences ─────────────────────────────────────────────────────
     private static final String PREFS_NAME       = "MoneyMasterPrefs";
     private static final String KEY_USER_ID      = "userId";
     private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
     private static final String KEY_REMEMBER_ME  = "rememberMe";
 
-    // ── Vistas ────────────────────────────────────────────────────────────────
     private TextView tvNombreActual;
     private TextView tvEmailActual;
     private TextView tvVersionActual;
 
-    // ── Launcher SAF para restore ─────────────────────────────────────────────
     private final ActivityResultLauncher<String[]> pickFileLauncher =
             registerForActivityResult(
                     new ActivityResultContracts.OpenDocument(),
@@ -68,14 +64,12 @@ public class PerfilFragment extends Fragment {
         configurarClickListeners(view);
     }
 
-    // ── Binding ───────────────────────────────────────────────────────────────
     private void bindViews(View view) {
         tvNombreActual  = view.findViewById(R.id.tvNombreActual);
         tvEmailActual   = view.findViewById(R.id.tvEmailActual);
         tvVersionActual = view.findViewById(R.id.tvVersionActual);
     }
 
-    // ── Carga de datos ────────────────────────────────────────────────────────
     private void cargarDatosUsuario() {
         int userId = obtenerUsuarioId();
         if (userId == -1) return;
@@ -102,7 +96,6 @@ public class PerfilFragment extends Fragment {
         }
     }
 
-    // ── Click listeners ───────────────────────────────────────────────────────
     private void configurarClickListeners(View view) {
         view.findViewById(R.id.itemNombre)
                 .setOnClickListener(v -> mostrarDialogEditarNombre());
@@ -112,11 +105,8 @@ public class PerfilFragment extends Fragment {
                 .setOnClickListener(v -> mostrarDialogEliminarDatos());
         view.findViewById(R.id.itemCerrarSesion)
                 .setOnClickListener(v -> mostrarDialogCerrarSesion());
-        view.findViewById(R.id.itemContacto)
-                .setOnClickListener(v -> abrirContacto());
     }
 
-    // ── Restore ───────────────────────────────────────────────────────────────
     private void confirmarRestore(Uri uri) {
         new MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Restaurar backup")
@@ -139,7 +129,6 @@ public class PerfilFragment extends Fragment {
         });
     }
 
-    // ── Eliminar todos los datos ──────────────────────────────────────────────
     private void mostrarDialogEliminarDatos() {
         View dialogView = LayoutInflater.from(requireContext())
                 .inflate(R.layout.dialog_confirmar_eliminar, null);
@@ -192,7 +181,6 @@ public class PerfilFragment extends Fragment {
         });
     }
 
-    // ── Diálogo: editar nombre ────────────────────────────────────────────────
     private void mostrarDialogEditarNombre() {
         View dialogView = LayoutInflater.from(requireContext())
                 .inflate(R.layout.dialog_editar_nombre, null);
@@ -236,7 +224,6 @@ public class PerfilFragment extends Fragment {
         });
     }
 
-    // ── Diálogo: cambiar contraseña ───────────────────────────────────────────
     private void mostrarDialogCambiarPassword() {
         View dialogView = LayoutInflater.from(requireContext())
                 .inflate(R.layout.dialog_cambiar_password, null);
@@ -300,7 +287,6 @@ public class PerfilFragment extends Fragment {
         });
     }
 
-    // ── Diálogo: cerrar sesión ────────────────────────────────────────────────
     private void mostrarDialogCerrarSesion() {
         new MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Cerrar sesión")
@@ -317,20 +303,6 @@ public class PerfilFragment extends Fragment {
         startActivity(intent);
     }
 
-    // ── Contacto / soporte ────────────────────────────────────────────────────
-    private void abrirContacto() {
-        Intent intent = new Intent(Intent.ACTION_SENDTO);
-        intent.setData(Uri.parse("mailto:soporte@moneymaster.app"));
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Soporte MoneyMaster");
-        if (intent.resolveActivity(requireContext().getPackageManager()) != null) {
-            startActivity(intent);
-        } else {
-            Toast.makeText(requireContext(),
-                    "No hay cliente de email disponible", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    // ── Reinicio de app (tras restore) ────────────────────────────────────────
     private void reiniciarApp() {
         Intent intent = requireContext().getPackageManager()
                 .getLaunchIntentForPackage(requireContext().getPackageName());
@@ -341,7 +313,6 @@ public class PerfilFragment extends Fragment {
         android.os.Process.killProcess(android.os.Process.myPid());
     }
 
-    // ── Utilidades ────────────────────────────────────────────────────────────
     private int obtenerUsuarioId() {
         return requireContext()
                 .getSharedPreferences(PREFS_NAME, 0)

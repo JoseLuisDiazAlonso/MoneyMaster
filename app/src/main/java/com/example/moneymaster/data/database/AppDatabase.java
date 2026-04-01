@@ -20,13 +20,12 @@ import com.example.moneymaster.data.model.*;
                 CategoriaIngreso.class,
                 Grupo.class,
                 GastoGrupo.class,
-                FotoRecibo.class,
                 User.class,
                 PreferenciasUsuario.class,
                 BalanceGrupo.class,
                 MiembroGrupo.class
         },
-        version = 3,
+        version = 4,
         exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -36,19 +35,16 @@ public abstract class AppDatabase extends RoomDatabase {
     public static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(4);
 
-    public abstract GastoPersonalDao gastoPersonalDao();
-    public abstract IngresoPersonalDao ingresoPersonalDao();
-    public abstract CategoriaGastoDao categoriaGastoDao();
+    public abstract GastoPersonalDao    gastoPersonalDao();
+    public abstract IngresoPersonalDao  ingresoPersonalDao();
+    public abstract CategoriaGastoDao   categoriaGastoDao();
     public abstract CategoriaIngresoDao categoriaIngresoDao();
-    public abstract GrupoDao grupoDao();
-    public abstract GastoGrupoDao gastoGrupoDao();
-    public abstract FotoReciboDao fotoReciboDao();
-    public abstract UserDao usuarioDao();
+    public abstract GrupoDao            grupoDao();
+    public abstract GastoGrupoDao       gastoGrupoDao();
+    public abstract UserDao             usuarioDao();
     public abstract PreferenciasUsuarioDao preferenciasUsuarioDao();
-    public abstract BalanceGrupoDao balanceGrupoDao();
-    public abstract MiembroGrupoDao miembroGrupoDao();
-
-    // ── Singleton ─────────────────────────────────────────────────────────────
+    public abstract BalanceGrupoDao     balanceGrupoDao();
+    public abstract MiembroGrupoDao     miembroGrupoDao();
 
     public static AppDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
@@ -67,10 +63,6 @@ public abstract class AppDatabase extends RoomDatabase {
         return INSTANCE;
     }
 
-    /**
-     * Limpia la referencia estática a la instancia.
-     * Llamar SOLO desde BackupManager.restoreBackup() después de cerrar la BD.
-     */
     public static synchronized void resetInstance() {
         INSTANCE = null;
     }

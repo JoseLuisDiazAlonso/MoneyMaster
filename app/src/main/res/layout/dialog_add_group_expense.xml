@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- dialog_add_group_expense.xml -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -52,7 +51,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
-        android:hint="Descripcion (opcional)"
+        android:hint="Descripción (opcional)"
         app:startIconDrawable="@drawable/ic_description">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -65,32 +64,32 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Dropdown: quien pago -->
+    <!-- Quién pagó (texto libre) -->
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:id="@+id/inputLayoutPagador"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
-        android:hint="Quien pago *"
-        >
+        android:hint="Quién pagó *">
 
-        <AutoCompleteTextView
-            android:id="@+id/autoCompletePagador"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextPagador"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="none"
-            android:focusable="false"
-            tools:text="Ana" />
+            android:inputType="textPersonName|textCapWords"
+            android:maxLength="50"
+            android:imeOptions="actionNext" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Dropdown: categoria -->
+    <!-- Dropdown: categoría -->
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
-        android:hint="Categoria (opcional)"
+        android:hint="Categoría (opcional)"
         app:startIconDrawable="@drawable/ic_category">
 
         <AutoCompleteTextView
@@ -99,6 +98,8 @@
             android:layout_height="wrap_content"
             android:inputType="none"
             android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:cursorVisible="false"
             tools:text="Restaurantes" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -108,7 +109,7 @@
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="16dp"
         android:hint="Fecha"
         app:startIconDrawable="@drawable/ic_calendar">
 
@@ -122,7 +123,7 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Botones -->
+    <!-- Botones acción -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -136,60 +137,6 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:text="Cancelar" />
-
-        <!-- Card #33 — Sección foto de recibo -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Foto del recibo (opcional)"
-            android:textAppearance="?attr/textAppearanceLabelMedium"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnFotoGrupo"
-            style="@style/Widget.Material3.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Añadir foto del recibo"
-            app:icon="@drawable/ic_photo_camera"
-            android:layout_marginBottom="12dp" />
-
-        <!-- Preview foto (oculta hasta seleccionar) -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardFotoPreviewGrupo"
-            android:layout_width="match_parent"
-            android:layout_height="160dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp"
-            android:layout_marginBottom="16dp"
-            android:visibility="gone">
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/ivFotoPreviewGrupo"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:contentDescription="@string/cd_foto_recibo" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnEliminarFotoGrupo"
-                    style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top|end"
-                    android:layout_margin="8dp"
-                    app:icon="@drawable/ic_close"
-                    android:contentDescription="@string/cd_eliminar_foto" />
-
-            </FrameLayout>
-
-        </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonGuardarGasto"

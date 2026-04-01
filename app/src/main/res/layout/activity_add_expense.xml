@@ -114,60 +114,6 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- ── Sección foto ───────────────────────────────────────── -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/label_foto_recibo"
-                android:textAppearance="?attr/textAppearanceLabelLarge"
-                android:textColor="?attr/colorOnSurfaceVariant"
-                android:layout_marginBottom="8dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnFoto"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/btn_anadir_foto"
-                app:icon="@drawable/ic_photo_camera"
-                android:layout_marginBottom="12dp" />
-
-            <!-- Preview foto (oculta hasta seleccionar) -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardFotoPreview"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                android:layout_marginBottom="24dp"
-                android:visibility="gone">
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <ImageView
-                        android:id="@+id/ivFotoPreview"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
-                        android:contentDescription="@string/cd_foto_recibo" />
-
-                    <!-- Botón eliminar foto -->
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnEliminarFoto"
-                        style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="top|end"
-                        android:layout_margin="8dp"
-                        app:icon="@drawable/ic_close"
-                        android:contentDescription="@string/cd_eliminar_foto" />
-
-                </FrameLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
             <!-- ── Guardar ────────────────────────────────────────────── -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnGuardar"
@@ -181,6 +127,5 @@
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

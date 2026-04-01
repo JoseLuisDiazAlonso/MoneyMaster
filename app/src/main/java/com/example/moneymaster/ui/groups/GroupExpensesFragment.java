@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.moneymaster.data.database.AppDatabase;
-import com.example.moneymaster.data.model.FotoRecibo;
 import com.example.moneymaster.data.model.GastoGrupo;
 import com.example.moneymaster.databinding.FragmentGroupExpensesBinding;
 import com.example.moneymaster.ui.adapter.GroupExpenseAdapter;
@@ -100,13 +99,6 @@ public class GroupExpensesFragment extends Fragment {
                         "Gasto: " + gasto.descripcion,
                         Toast.LENGTH_SHORT).show());
 
-        // Card #33 — click en miniatura abre FotoViewerDialog
-        expenseAdapter.setOnFotoClickListener((gasto, rutaFoto) -> {
-            FotoViewerDialog dialog = FotoViewerDialog.newInstance(rutaFoto, gasto.id);
-            dialog.setOnEliminarFotoListener(gastoId ->
-                    viewModel.eliminarFotoDeGasto(gastoId));
-            dialog.show(getChildFragmentManager(), "FotoViewer");
-        });
 
         binding.recyclerViewExpenses.setLayoutManager(
                 new LinearLayoutManager(requireContext()));
@@ -183,14 +175,6 @@ public class GroupExpensesFragment extends Fragment {
             AppDatabase db = AppDatabase.getDatabase(requireContext());
             Map<Integer, String> rutas = new HashMap<>();
 
-            for (GastoGrupo g : gastos) {
-                if (g.foto_recibo_id != null) {
-                    FotoRecibo foto = db.fotoReciboDao().getById(g.foto_recibo_id);
-                    if (foto != null && foto.rutaArchivo != null) {
-                        rutas.put(g.foto_recibo_id, foto.rutaArchivo);
-                    }
-                }
-            }
 
             requireActivity().runOnUiThread(() ->
                     expenseAdapter.setRutasFoto(rutas));

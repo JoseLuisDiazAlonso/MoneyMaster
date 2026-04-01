@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import com.example.moneymaster.databinding.ActivityMainBinding;
 import com.example.moneymaster.ui.estadisticas.EstadisticasFragment;
 import com.example.moneymaster.ui.expenses.AddExpenseActivity;
+import com.example.moneymaster.ui.groups.CreateGroupActivity;
 import com.example.moneymaster.ui.groups.GroupsFragment;
 import com.example.moneymaster.ui.PerfilFragment;
 import com.example.moneymaster.utils.SessionManager;
@@ -20,7 +21,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-    private Fragment currentFragment;
 
     private static final String TAG_HOME    = "HOME";
     private static final String TAG_GROUPS  = "GROUPS";
@@ -35,10 +35,9 @@ public class MainActivity extends AppCompatActivity {
 
         setupToolbar();
         setupBottomNavigation();
-        setupFab();
 
         if (savedInstanceState == null) {
-            loadFragment(new HomeFragment(), TAG_HOME);
+            navigateTo(TAG_HOME);
             binding.bottomNavigationView.setSelectedItemId(R.id.nav_home);
         }
     }
@@ -93,49 +92,46 @@ public class MainActivity extends AppCompatActivity {
     private void setupBottomNavigation() {
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
-
-            if (id == R.id.nav_home) {
-                loadFragment(new HomeFragment(), TAG_HOME);
-                showFab();
-                return true;
-
-            } else if (id == R.id.nav_groups) {
-                loadFragment(new GroupsFragment(), TAG_GROUPS);
-                hideFab();
-                return true;
-
-            } else if (id == R.id.nav_stats) {
-                loadFragment(new EstadisticasFragment(), TAG_STATS);
-                hideFab();
-                return true;
-
-            } else if (id == R.id.nav_profile) {
-                loadFragment(new PerfilFragment(), TAG_PROFILE);
-                hideFab();
-                return true;
-            }
-
-            return false;
+            if      (id == R.id.nav_home)    navigateTo(TAG_HOME);
+            else if (id == R.id.nav_groups)  navigateTo(TAG_GROUPS);
+            else if (id == R.id.nav_stats)   navigateTo(TAG_STATS);
+            else if (id == R.id.nav_profile) navigateTo(TAG_PROFILE);
+            else return false;
+            return true;
         });
     }
 
-    private void loadFragment(Fragment fragment, String tag) {
-        Fragment existingFragment =
-                getSupportFragmentManager().findFragmentByTag(tag);
+    private void navigateTo(String tag) {
+        Fragment fragment;
+        switch (tag) {
+            case TAG_GROUPS:  fragment = new GroupsFragment();      break;
+            case TAG_STATS:   fragment = new EstadisticasFragment(); break;
+            case TAG_PROFILE: fragment = new PerfilFragment();       break;
+            default:          fragment = new HomeFragment();         break;
+        }
+
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragmentContainer,
-                        existingFragment != null ? existingFragment : fragment,
-                        tag)
+                .replace(R.id.fragmentContainer, fragment, tag)
                 .commit();
-        currentFragment = fragment;
+
+        switch (tag) {
+            case TAG_HOME:
+                binding.fabAddExpense.setVisibility(View.VISIBLE);
+                binding.fabAddExpense.setOnClickListener(v -> mostrarDialogTipoMovimiento());
+                break;
+            case TAG_GROUPS:
+                binding.fabAddExpense.setVisibility(View.VISIBLE);
+                binding.fabAddExpense.setOnClickListener(v ->
+                        startActivity(new Intent(this, CreateGroupActivity.class)));
+                break;
+            default:
+                binding.fabAddExpense.setVisibility(View.GONE);
+                break;
+        }
     }
 
     // ── FAB ───────────────────────────────────────────────────────────────────
-
-    private void setupFab() {
-        binding.fabAddExpense.setOnClickListener(v -> mostrarDialogTipoMovimiento());
-    }
 
     private void mostrarDialogTipoMovimiento() {
         new MaterialAlertDialogBuilder(this)
@@ -152,14 +148,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showFab() {
-        // FIX: restaurar visibilidad antes de animar
         binding.fabAddExpense.setVisibility(View.VISIBLE);
-        binding.fabAddExpense.show();
     }
 
     public void hideFab() {
-        binding.fabAddExpense.hide();
-        // FIX: eliminar área táctil para no bloquear FABs de otros fragments
         binding.fabAddExpense.setVisibility(View.GONE);
     }
 

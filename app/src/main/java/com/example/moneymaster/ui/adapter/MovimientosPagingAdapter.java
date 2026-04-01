@@ -131,11 +131,6 @@ public class MovimientosPagingAdapter
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         holder.tvFecha.setText(sdf.format(new Date(gasto.fecha)));
 
-        // Icono según foto
-        if (holder.ivIcono != null) {
-            holder.ivIcono.setImageResource(
-                    gasto.tieneFoto == 1 ? R.drawable.ic_photo_camera : R.drawable.ic_attach_money);
-        }
 
         // Click
         holder.itemView.setOnClickListener(v -> {

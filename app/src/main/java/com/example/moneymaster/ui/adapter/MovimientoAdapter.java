@@ -23,7 +23,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.moneymaster.R;
 import com.example.moneymaster.data.model.MovimientoReciente;
 import com.example.moneymaster.databinding.ItemMovimientoBinding;
-import com.example.moneymaster.ui.viewer.ImageViewerActivity;
+
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -141,44 +141,10 @@ public class MovimientoAdapter extends ListAdapter<MovimientoReciente, Movimient
             binding.tvFecha.setText(DATE_FORMAT.format(new Date(item.getFecha())));
 
             bindIcono(ctx, item);
-            bindFotoMiniatura(ctx, item); // Card #35
+
             bindClickPrincipal(item);
         }
 
-        // ─── Card #35: miniatura abre ImageViewerActivity ─────────────────
-
-        private void bindFotoMiniatura(Context ctx, MovimientoReciente item) {
-            String ruta   = item.getFotoRuta();
-            int    fotoId = item.getFotoId();
-
-            if (ruta != null && !ruta.isEmpty() && fotoId > 0) {
-                binding.ivFotoMiniatura.setVisibility(View.VISIBLE);
-
-                Glide.with(ctx)
-                        .load(ruta)
-                        .apply(new RequestOptions()
-                                .centerCrop()
-                                .transform(new RoundedCorners(16))
-                                .placeholder(R.drawable.ic_receipt_long)
-                                .error(R.drawable.ic_receipt_long))
-                        .into(binding.ivFotoMiniatura);
-
-                binding.ivFotoMiniatura.setOnClickListener(v -> {
-                    if (fotoClickListener != null) {
-                        // Notificar al Fragment/Activity para que abra el visor
-                        fotoClickListener.onFotoClick(fotoId, ruta);
-                    } else {
-                        // Fallback directo si no hay listener registrado
-                        ImageViewerActivity.start(ctx, fotoId, ruta);
-                    }
-                });
-
-            } else {
-                binding.ivFotoMiniatura.setVisibility(View.GONE);
-                Glide.with(ctx).clear(binding.ivFotoMiniatura);
-                binding.ivFotoMiniatura.setOnClickListener(null);
-            }
-        }
 
         private void bindClickPrincipal(MovimientoReciente item) {
             binding.getRoot().setOnClickListener(v -> {

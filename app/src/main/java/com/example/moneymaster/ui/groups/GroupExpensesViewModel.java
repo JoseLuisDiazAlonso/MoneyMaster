@@ -8,12 +8,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 
 import com.example.moneymaster.data.database.AppDatabase;
-import com.example.moneymaster.data.model.FotoRecibo;
 import com.example.moneymaster.data.model.GastoGrupo;
 import com.example.moneymaster.data.model.Grupo;
 import com.example.moneymaster.data.model.MiembroGrupo;
 import com.example.moneymaster.ui.groups.model.MemberBalanceItem;
-import com.example.moneymaster.utils.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -118,38 +116,5 @@ public class GroupExpensesViewModel extends AndroidViewModel {
                 db.gastoGrupoDao().eliminar(gasto));
     }
 
-    // ─── Card #33: eliminar foto manteniendo el gasto ─────────────────────────
 
-    /**
-     * Desvincula la foto de un gasto de grupo y elimina el archivo físico.
-     * El gasto permanece en la base de datos con fotoReciboId = null.
-     *
-     * Flujo:
-     *   1. Busca GastoGrupo por ID
-     *   2. Guarda fotoReciboId antes de nullearlo
-     *   3. Actualiza GastoGrupo con fotoReciboId = null
-     *   4. Elimina FotoRecibo de Room + archivo físico del disco
-     */
-    public void eliminarFotoDeGasto(int gastoId) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            GastoGrupo gasto = db.gastoGrupoDao().getGastoById(gastoId).getValue();
-            if (gasto == null || gasto.foto_recibo_id == null) return;
-
-            int fotoId = gasto.foto_recibo_id;
-
-            // 1. Desvincular foto del gasto
-            gasto.foto_recibo_id = null;
-            db.gastoGrupoDao().actualizar(gasto);
-
-            // 2. Eliminar FotoRecibo + archivo físico
-            FotoRecibo foto = db.fotoReciboDao().getById(fotoId);
-            if (foto != null) {
-                ImageUtils.eliminarFoto(foto.rutaArchivo);
-                if (foto.miniaturaRuta != null) {
-                    ImageUtils.eliminarFoto(foto.miniaturaRuta);
-                }
-                db.fotoReciboDao().eliminar(foto);
-            }
-        });
-    }
 }

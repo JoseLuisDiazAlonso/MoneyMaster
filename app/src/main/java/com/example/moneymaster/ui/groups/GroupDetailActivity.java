@@ -135,7 +135,7 @@ public class GroupDetailActivity extends AppCompatActivity {
             switch (position) {
                 case 0:  return GroupExpensesFragment.newInstance(grupoId);
                 case 1:  return GroupBalanceFragment.newInstance(grupoId);
-                case 2:  return PhotoBoardFragment.newInstance(grupoId);
+
                 default: return GroupExpensesFragment.newInstance(grupoId);
             }
         }

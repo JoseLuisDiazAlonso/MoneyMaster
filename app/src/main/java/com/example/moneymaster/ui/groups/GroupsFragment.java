@@ -1,6 +1,5 @@
 package com.example.moneymaster.ui.groups;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.moneymaster.databinding.FragmentGroupsBinding;
 import com.example.moneymaster.ui.adapter.GroupAdapter;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.List;
 
@@ -35,10 +35,8 @@ public class GroupsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         setupViewModel();
         setupRecyclerView();
-        setupFab();
         observeGroups();
     }
 
@@ -48,22 +46,26 @@ public class GroupsFragment extends Fragment {
 
     private void setupRecyclerView() {
         adapter = new GroupAdapter(group ->
-                // Card #34 — navegar al detalle del grupo con tabs
-                GroupDetailActivity.start(requireContext(), group.id, group.nombre)
-        );
+                GroupDetailActivity.start(requireContext(), group.id, group.nombre));
+
+        adapter.setOnGroupDeleteListener(group ->
+                new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Eliminar grupo")
+                        .setMessage("¿Eliminar \"" + group.nombre + "\"? "
+                                + "Se borrarán todos sus gastos y balances.")
+                        .setNegativeButton("Cancelar", (d, w) ->
+                                adapter.notifyDataSetChanged())
+                        .setPositiveButton("Eliminar", (d, w) ->
+                                viewModel.eliminarGrupo(group))
+                        .setCancelable(false)
+                        .show());
 
         binding.recyclerViewGroups.setLayoutManager(
                 new LinearLayoutManager(requireContext()));
         binding.recyclerViewGroups.setAdapter(adapter);
-    }
+        binding.recyclerViewGroups.setNestedScrollingEnabled(false);
 
-    private void setupFab() {
-        android.util.Log.d("GROUPS_DEBUG", "setupFab llamado");
-        binding.fabAddGroup.setOnClickListener(v -> {
-            android.util.Log.d("GROUPS_DEBUG", "FAB pulsado");
-            Intent intent = new Intent(requireContext(), CreateGroupActivity.class);
-            startActivity(intent);
-        });
+        adapter.createSwipeToDelete().attachToRecyclerView(binding.recyclerViewGroups);
     }
 
     private void observeGroups() {

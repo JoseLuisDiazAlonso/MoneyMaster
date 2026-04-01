@@ -177,18 +177,6 @@ public class AddExpenseActivityTest {
         }
     }
 
-    // ─── Botón foto ───────────────────────────────────────────────────────────
-
-    @Test
-    public void addExpenseActivity_botonFoto_estaVisible() {
-        try (ActivityScenario<AddExpenseActivity> scenario =
-                     ActivityScenario.launch(intent)) {
-
-            onView(withId(R.id.btnFoto))
-                    .check(matches(isDisplayed()));
-        }
-    }
-
     // ─── Navegación hacia atrás ───────────────────────────────────────────────
 
     @Test

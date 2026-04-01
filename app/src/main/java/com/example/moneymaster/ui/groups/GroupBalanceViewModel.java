@@ -25,11 +25,8 @@ public class GroupBalanceViewModel extends AndroidViewModel {
     private LiveData<List<GastoGrupo>>   gastosSource;
     private LiveData<List<MiembroGrupo>> miembrosSource;
 
-    // Balance neto por miembro
     private final MediatorLiveData<List<MiembroBalanceItem>> balancesMiembros
             = new MediatorLiveData<>();
-
-    // Deudas calculadas (transacciones sugeridas)
     private final MediatorLiveData<List<DeudaItem>> deudas
             = new MediatorLiveData<>();
 
@@ -38,10 +35,6 @@ public class GroupBalanceViewModel extends AndroidViewModel {
         db = AppDatabase.getDatabase(application);
     }
 
-    /**
-     * Inicializa el ViewModel con el ID del grupo.
-     * Llamar desde onViewCreated() antes de observar LiveData.
-     */
     public void init(int grupoId) {
         if (this.grupoId == grupoId) return;
         this.grupoId = grupoId;
@@ -49,14 +42,11 @@ public class GroupBalanceViewModel extends AndroidViewModel {
         gastosSource   = db.gastoGrupoDao().getGastosByGrupo(grupoId);
         miembrosSource = db.miembroGrupoDao().getMiembrosByGrupo(grupoId);
 
-        // Recalcular cuando cambia cualquier fuente
         balancesMiembros.addSource(gastosSource,   g -> recalcular());
         balancesMiembros.addSource(miembrosSource, m -> recalcular());
         deudas.addSource(gastosSource,   g -> recalcular());
         deudas.addSource(miembrosSource, m -> recalcular());
     }
-
-    // ─── LiveData públicos ────────────────────────────────────────────────────
 
     public LiveData<List<MiembroBalanceItem>> getBalancesMiembros() {
         return balancesMiembros;
@@ -65,8 +55,6 @@ public class GroupBalanceViewModel extends AndroidViewModel {
     public LiveData<List<DeudaItem>> getDeudas() {
         return deudas;
     }
-
-    // ─── Recálculo reactivo ───────────────────────────────────────────────────
 
     private void recalcular() {
         List<GastoGrupo>   listaGastos   = gastosSource   != null ? gastosSource.getValue()   : null;
@@ -79,25 +67,28 @@ public class GroupBalanceViewModel extends AndroidViewModel {
         }
         if (listaGastos == null) listaGastos = new ArrayList<>();
 
-        // Paso 1: balances netos
         List<MiembroBalanceItem> balances =
                 BalanceCalculator.calcularBalancesMiembros(listaMiembros, listaGastos);
         balancesMiembros.setValue(balances);
-
-        // Paso 2: deudas mínimas
         deudas.setValue(BalanceCalculator.calcularDeudas(balances));
     }
 
-    // ─── Marcar deuda como pagada (en memoria) ────────────────────────────────
-
-    /**
-     * Marca una deuda como pagada en la lista actual.
-     * La lista se actualiza reactivamente mediante setValue.
-     */
     public void marcarPagada(int posicion) {
-        List<DeudaItem> lista = deudas.getValue();
-        if (lista == null || posicion < 0 || posicion >= lista.size()) return;
-        lista.get(posicion).pagado = true;
-        deudas.setValue(new ArrayList<>(lista)); // copia para forzar observer
+        List<DeudaItem> listaActual = deudas.getValue();
+        if (listaActual == null || posicion < 0 || posicion >= listaActual.size()) return;
+
+        List<DeudaItem> nuevaLista = new ArrayList<>();
+        for (int i = 0; i < listaActual.size(); i++) {
+            DeudaItem original = listaActual.get(i);
+            boolean esPagado = (i == posicion) || original.pagado;
+            nuevaLista.add(new DeudaItem(
+                    original.nombreDeudor,
+                    original.colorDeudor,
+                    original.nombreAcreedor,
+                    original.monto,
+                    esPagado
+            ));
+        }
+        deudas.setValue(nuevaLista);
     }
 }

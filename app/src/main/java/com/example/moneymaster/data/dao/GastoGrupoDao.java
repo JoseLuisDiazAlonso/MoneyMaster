@@ -43,12 +43,6 @@ public interface GastoGrupoDao {
     @Query("SELECT * FROM gastos_grupo WHERE id = :gastoId LIMIT 1")
     LiveData<GastoGrupo> getGastoById(long gastoId);
 
-    @Query("UPDATE gastos_grupo SET tieneFoto = NULL WHERE foto_recibo_id = :fotoId")
-    void desvincularFoto(int fotoId);
-
-    @Query("SELECT * FROM gastos_grupo WHERE foto_recibo_id = :fotoId LIMIT 1")
-    GastoGrupo getByFotoReciboId(int fotoId);
-
     @Query("SELECT * FROM gastos_grupo WHERE id = :gastoId LIMIT 1")
     GastoGrupo getById(int gastoId);
 

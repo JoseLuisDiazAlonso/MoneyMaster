@@ -15,17 +15,10 @@ import androidx.room.PrimaryKey;
                         parentColumns = "id",
                         childColumns = "grupoId",
                         onDelete = ForeignKey.CASCADE
-                ),
-                @ForeignKey(
-                        entity = User.class,
-                        parentColumns = "id",
-                        childColumns = "usuarioId",
-                        onDelete = ForeignKey.CASCADE
                 )
         },
         indices = {
-                @Index(value = {"grupoId", "usuarioId"}, unique = true),
-                @Index(value = "usuarioId")
+                @Index(value = "grupoId")
         }
 )
 public class MiembroGrupo {
@@ -40,8 +33,9 @@ public class MiembroGrupo {
     @ColumnInfo(name = "grupoId")
     public int grupoId;
 
+    /** Ya no es FK — es simplemente un identificador opcional del usuario de la app. */
     @ColumnInfo(name = "usuarioId")
-    public int usuarioId;
+    public int usuarioId = 0;
 
     /** Nombre visible del miembro en el grupo. Ej: "Ana", "Pedro". */
     @Nullable

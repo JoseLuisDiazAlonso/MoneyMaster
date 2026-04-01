@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.example.moneymaster.data.model.GroupWithDetails;
+import com.example.moneymaster.data.model.Grupo;
 import com.example.moneymaster.data.repository.GrupoRepository;
 
 import java.util.List;
@@ -24,5 +25,12 @@ public class GroupsViewModel extends AndroidViewModel {
 
     public LiveData<List<GroupWithDetails>> getGroupsWithDetails() {
         return groupsWithDetails;
+    }
+
+    public void eliminarGrupo(GroupWithDetails group) {
+        Grupo g = new Grupo();
+        g.id = group.id;
+        g.nombre = group.nombre;
+        grupoRepository.eliminarGrupo(g);
     }
 }

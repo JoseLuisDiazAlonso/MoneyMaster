@@ -26,19 +26,13 @@ public interface MiembroGrupoDao {
 
     /** Miembros activos de un grupo — LiveData para la UI. */
     @Query("SELECT * FROM miembros_grupo WHERE grupoId = :grupoId AND activo = 1")
-    LiveData<List<MiembroGrupo>> getMiembrosByGrupo(long grupoId);
+    LiveData<List<MiembroGrupo>> getMiembrosByGrupo(int grupoId);
 
-    /** Versión síncrona para cálculo de balances en background thread. */
+    /** Versión síncrona para background thread. */
     @Query("SELECT * FROM miembros_grupo WHERE grupoId = :grupoId AND activo = 1")
-    List<MiembroGrupo> getMiembrosByGrupoSync(long grupoId);
+    List<MiembroGrupo> getMiembrosByGrupoSync(int grupoId);
 
-    /** Comprueba si un usuario ya pertenece al grupo. */
-    @Query("SELECT COUNT(*) FROM miembros_grupo " +
-            "WHERE grupoId = :grupoId AND usuarioId= :usuarioId AND activo = 1")
-    int esMiembro(long grupoId, long usuarioId);
-
-    /** Rol del usuario en el grupo (admin / miembro). */
-    @Query("SELECT rol FROM miembros_grupo " +
-            "WHERE grupoId = :grupoId AND usuarioId = :usuarioId LIMIT 1")
-    String getRolEnGrupo(long grupoId, long usuarioId);
+    /** Número de miembros activos de un grupo. */
+    @Query("SELECT COUNT(*) FROM miembros_grupo WHERE grupoId = :grupoId AND activo = 1")
+    int contarMiembros(int grupoId);
 }

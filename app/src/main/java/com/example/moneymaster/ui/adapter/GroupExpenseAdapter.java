@@ -169,28 +169,6 @@ public class GroupExpenseAdapter
             binding.textViewExpenseAmount.setText(
                     currencyFormat.format(gasto.monto));
 
-            // Miniatura foto (Card #33)
-            if (binding.ivFotoMiniatura != null) {
-                String ruta = (rutasFoto != null && gasto.foto_recibo_id != null)
-                        ? rutasFoto.get(gasto.foto_recibo_id) : null;
-
-                if (ruta != null && !ruta.isEmpty()) {
-                    binding.ivFotoMiniatura.setVisibility(View.VISIBLE);
-                    Glide.with(binding.getRoot().getContext())
-                            .load(ruta)
-                            .centerCrop()
-                            .into(binding.ivFotoMiniatura);
-
-                    binding.ivFotoMiniatura.setOnClickListener(v -> {
-                        int pos = getAdapterPosition();
-                        if (fotoClickListener != null && pos != RecyclerView.NO_ID) {
-                            fotoClickListener.onFotoClick(items.get(pos), ruta);
-                        }
-                    });
-                } else {
-                    binding.ivFotoMiniatura.setVisibility(View.GONE);
-                }
-            }
         }
     }
 }

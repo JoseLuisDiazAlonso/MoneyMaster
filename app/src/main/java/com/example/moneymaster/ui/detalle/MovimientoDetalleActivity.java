@@ -11,7 +11,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.example.moneymaster.ui.viewer.ImageViewerActivity;
+
 import com.example.moneymaster.R;
 import com.example.moneymaster.data.database.AppDatabase;
 import com.example.moneymaster.data.model.CategoriaGasto;
@@ -123,7 +123,7 @@ public class MovimientoDetalleActivity extends AppCompatActivity {
         }
 
         cargarCategoriaGasto(gasto.categoria_id);
-        mostrarFoto(gasto.fotoRuta);
+
     }
 
     // ── Mostrar ingreso ───────────────────────────────────────────────────────
@@ -146,7 +146,7 @@ public class MovimientoDetalleActivity extends AppCompatActivity {
         }
 
         cargarCategoriaIngreso(ingreso.categoria_id);
-        mostrarFoto(ingreso.fotoRuta);
+
     }
 
     // ── Categoría gasto ───────────────────────────────────────────────────────
@@ -210,19 +210,4 @@ public class MovimientoDetalleActivity extends AppCompatActivity {
                 resId != 0 ? resId : R.drawable.ic_category_default);
     }
 
-    private void mostrarFoto(String fotoRuta) {
-        if (fotoRuta != null && !fotoRuta.isEmpty()) {
-            binding.cardFoto.setVisibility(View.VISIBLE);
-            Glide.with(this)
-                    .load(fotoRuta)
-                    .centerCrop()
-                    .into(binding.ivFoto);
-
-            // FIX: ImageViewerActivity en paquete raíz
-            binding.ivFoto.setOnClickListener(v ->
-                    ImageViewerActivity.start(this, 0, fotoRuta));
-        } else {
-            binding.cardFoto.setVisibility(View.GONE);
-        }
-    }
 }
