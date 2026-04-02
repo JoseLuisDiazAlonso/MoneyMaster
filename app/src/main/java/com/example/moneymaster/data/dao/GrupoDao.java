@@ -55,4 +55,7 @@ public interface GrupoDao {
 
     @Query("DELETE FROM grupos WHERE creador_id = :usuarioId")
     void deleteAllByUsuario(int usuarioId);
+
+    @Query("SELECT * FROM grupos WHERE id = :id LIMIT 1")
+    Grupo getGrupoByIdSync(int id);
 }

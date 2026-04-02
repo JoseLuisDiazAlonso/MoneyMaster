@@ -15,17 +15,6 @@ import com.example.moneymaster.ui.groups.model.MemberInputItem;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Adapter para el RecyclerView dinámico de entrada de miembros.
- *
- * Cada fila muestra:
- *   - Un círculo de color (inicial del nombre o "?" si vacío)
- *   - Un EditText para escribir el nombre del miembro
- *   - Un botón "×" para eliminar la fila
- *
- * Patrón importante: el TextWatcher se desvincula/vincula en onBindViewHolder
- * para evitar actualizaciones cruzadas al reciclar vistas.
- */
 public class MemberInputAdapter extends RecyclerView.Adapter<MemberInputAdapter.MemberViewHolder> {
 
     public interface OnRemoveClickListener {
@@ -50,12 +39,10 @@ public class MemberInputAdapter extends RecyclerView.Adapter<MemberInputAdapter.
         if (position >= 0 && position < items.size()) {
             items.remove(position);
             notifyItemRemoved(position);
-            // Actualizar posiciones restantes para que el color de avatar sea correcto
             notifyItemRangeChanged(position, items.size() - position);
         }
     }
 
-    /** Devuelve los nombres tal como están (pueden contener vacíos). */
     public List<String> getMemberNames() {
         List<String> nombres = new ArrayList<>();
         for (MemberInputItem item : items) nombres.add(item.nombre);
@@ -129,10 +116,10 @@ public class MemberInputAdapter extends RecyclerView.Adapter<MemberInputAdapter.
                 @Override
                 public void afterTextChanged(Editable s) {
                     item.nombre = s.toString();
-                    // Actualizar inicial del avatar en tiempo real
                     String ini = item.nombre.isEmpty()
                             ? String.valueOf(getAdapterPosition() + 1)
                             : String.valueOf(item.nombre.charAt(0)).toUpperCase();
+                    binding.textViewMemberInitial.setText(ini);
                 }
             };
             binding.editTextMemberName.addTextChangedListener(currentWatcher);
@@ -142,9 +129,10 @@ public class MemberInputAdapter extends RecyclerView.Adapter<MemberInputAdapter.
 
             // Botón eliminar
             binding.buttonRemoveMember.setOnClickListener(v -> {
-                String ini = item.nombre.isEmpty()
-                        ? String.valueOf(getAdapterPosition() + 1)
-                        : String.valueOf(item.nombre.charAt(0)).toUpperCase();
+                int pos = getAdapterPosition();
+                if (pos != RecyclerView.NO_ID && removeListener != null) {
+                    removeListener.onRemove(pos);
+                }
             });
         }
     }

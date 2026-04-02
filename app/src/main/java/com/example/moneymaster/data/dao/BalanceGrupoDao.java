@@ -74,4 +74,7 @@ public interface BalanceGrupoDao {
     @Query("SELECT * FROM balance_grupo " +
             "WHERE grupo_id = :grupoId AND usuario_acreedor_id = :usuarioId AND liquidado = 0")
     LiveData<List<BalanceGrupo>> getLoqueMeDeben(long grupoId, long usuarioId);
+
+    @Query("SELECT * FROM balance_grupo WHERE grupo_id = :grupoId ORDER BY monto_pendiente DESC")
+    List<BalanceGrupo> getBalancesByGrupoSync(long grupoId);
 }

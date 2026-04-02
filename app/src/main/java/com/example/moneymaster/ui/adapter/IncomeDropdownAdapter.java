@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,9 +26,44 @@ public class IncomeDropdownAdapter extends ArrayAdapter<CategoriaIngreso> {
     private final List<CategoriaIngreso> allCategories = new ArrayList<>();
     private final LayoutInflater         inflater;
 
+    // Filter que nunca filtra — siempre devuelve todos los items
+    private final Filter noOpFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            FilterResults results = new FilterResults();
+            results.values = allCategories;
+            results.count  = allCategories.size();
+            return results;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            clear();
+            if (results.values != null) {
+                addAll((List<CategoriaIngreso>) results.values);
+            }
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public CharSequence convertResultToString(Object resultValue) {
+            if (resultValue instanceof CategoriaIngreso) {
+                return ((CategoriaIngreso) resultValue).nombre;
+            }
+            return super.convertResultToString(resultValue);
+        }
+    };
+
     public IncomeDropdownAdapter(@NonNull Context context) {
         super(context, R.layout.item_category_dropdown, new ArrayList<>());
         this.inflater = LayoutInflater.from(context);
+    }
+
+    @NonNull
+    @Override
+    public Filter getFilter() {
+        return noOpFilter;
     }
 
     @NonNull
@@ -37,15 +73,17 @@ public class IncomeDropdownAdapter extends ArrayAdapter<CategoriaIngreso> {
     }
 
     @Override
-    public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getDropDownView(int position, @Nullable View convertView,
+                                @NonNull ViewGroup parent) {
         return buildView(position, convertView, parent);
     }
 
-    private View buildView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    private View buildView(int position, @Nullable View convertView,
+                           @NonNull ViewGroup parent) {
         ViewHolder holder;
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.item_category_dropdown, parent, false);
+            convertView       = inflater.inflate(R.layout.item_category_dropdown, parent, false);
             holder            = new ViewHolder();
             holder.iconFrame  = convertView.findViewById(R.id.view_icon_bg);
             holder.icon       = convertView.findViewById(R.id.img_category_icon);

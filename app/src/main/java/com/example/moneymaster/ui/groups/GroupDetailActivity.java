@@ -16,18 +16,6 @@ import com.example.moneymaster.R;
 import com.example.moneymaster.databinding.ActivityGroupDetailBinding;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-/**
- * Activity contenedora del detalle de un grupo.
- * Muestra tres pestañas mediante ViewPager2 + TabLayout:
- *   0 — Gastos   (GroupExpensesFragment)
- *   1 — Balance  (GroupBalanceFragment)
- *   2 — Fotos    (PhotoBoardFragment)
- *
- * Card #39: añade botón Compartir en la Toolbar.
- *
- * Uso:
- *   GroupDetailActivity.start(context, grupoId, grupoNombre);
- */
 public class GroupDetailActivity extends AppCompatActivity {
 
     private static final String EXTRA_GRUPO_ID     = "grupoId";
@@ -35,7 +23,6 @@ public class GroupDetailActivity extends AppCompatActivity {
 
     private ActivityGroupDetailBinding binding;
 
-    // grupoId y grupoNombre como campos para usarlos en mostrarDialogCompartir()
     private int    grupoId;
     private String grupoNombre;
 
@@ -80,12 +67,11 @@ public class GroupDetailActivity extends AppCompatActivity {
                     switch (position) {
                         case 0: tab.setText("Gastos");  break;
                         case 1: tab.setText("Balance"); break;
-                        case 2: tab.setText("Fotos");   break;
                     }
                 }).attach();
     }
 
-    // ─── Menú Toolbar — Card #39 ──────────────────────────────────────────────
+    // ─── Menú Toolbar ─────────────────────────────────────────────────────────
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -106,13 +92,8 @@ public class GroupDetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // ─── Compartir — Card #39 ────────────────────────────────────────────────
+    // ─── Compartir ────────────────────────────────────────────────────────────
 
-    /**
-     * Abre CompartirGrupoDialog pasando solo el grupoId y el nombre.
-     * El Dialog carga los datos de Room por sí mismo en hilo de fondo,
-     * por lo que no necesitamos un ViewModel completo aquí.
-     */
     private void mostrarDialogCompartir() {
         CompartirGrupoDialog dialog = CompartirGrupoDialog.newInstance(grupoId, grupoNombre);
         dialog.show(getSupportFragmentManager(), CompartirGrupoDialog.TAG);
@@ -135,12 +116,11 @@ public class GroupDetailActivity extends AppCompatActivity {
             switch (position) {
                 case 0:  return GroupExpensesFragment.newInstance(grupoId);
                 case 1:  return GroupBalanceFragment.newInstance(grupoId);
-
                 default: return GroupExpensesFragment.newInstance(grupoId);
             }
         }
 
         @Override
-        public int getItemCount() { return 3; }
+        public int getItemCount() { return 2; }
     }
 }

@@ -27,20 +27,18 @@ import com.example.moneymaster.ui.auth.LoginActivity;
 import com.example.moneymaster.utils.BackupManager;
 import com.example.moneymaster.utils.ResetManager;
 import com.example.moneymaster.utils.SecurityUtils;
+import com.example.moneymaster.utils.SessionManager;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class PerfilFragment extends Fragment {
 
-    private static final String PREFS_NAME       = "MoneyMasterPrefs";
-    private static final String KEY_USER_ID      = "userId";
-    private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
-    private static final String KEY_REMEMBER_ME  = "rememberMe";
-
     private TextView tvNombreActual;
     private TextView tvEmailActual;
     private TextView tvVersionActual;
+
+    private SessionManager sessionManager;
 
     private final ActivityResultLauncher<String[]> pickFileLauncher =
             registerForActivityResult(
@@ -58,6 +56,7 @@ public class PerfilFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        sessionManager = new SessionManager(requireContext());
         bindViews(view);
         cargarDatosUsuario();
         cargarVersion();
@@ -71,12 +70,12 @@ public class PerfilFragment extends Fragment {
     }
 
     private void cargarDatosUsuario() {
-        int userId = obtenerUsuarioId();
+        long userId = sessionManager.getUserId();
         if (userId == -1) return;
 
         AppDatabase.databaseWriteExecutor.execute(() -> {
             User user = AppDatabase.getDatabase(requireContext())
-                    .usuarioDao().getById(userId);
+                    .usuarioDao().getById((int) userId);
             if (user != null && isAdded()) {
                 requireActivity().runOnUiThread(() -> {
                     tvNombreActual.setText(user.fullName);
@@ -168,7 +167,7 @@ public class PerfilFragment extends Fragment {
             if (!isAdded()) return;
             requireActivity().runOnUiThread(() -> {
                 if (ok) {
-                    limpiarSesion();
+                    sessionManager.clearSession();
                     Intent intent = new Intent(requireContext(), LoginActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                             Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -205,11 +204,11 @@ public class PerfilFragment extends Fragment {
     }
 
     private void guardarNombre(String nuevoNombre) {
-        int userId = obtenerUsuarioId();
+        long userId = sessionManager.getUserId();
         if (userId == -1) return;
         AppDatabase.databaseWriteExecutor.execute(() -> {
             AppDatabase db = AppDatabase.getDatabase(requireContext());
-            User user = db.usuarioDao().getById(userId);
+            User user = db.usuarioDao().getById((int) userId);
             if (user != null) {
                 user.fullName = nuevoNombre;
                 db.usuarioDao().updateUser(user);
@@ -264,11 +263,11 @@ public class PerfilFragment extends Fragment {
 
     private void cambiarPassword(String actual, String nueva,
                                  AlertDialog dialog, TextInputLayout tilActual) {
-        int userId = obtenerUsuarioId();
+        long userId = sessionManager.getUserId();
         if (userId == -1) return;
         AppDatabase.databaseWriteExecutor.execute(() -> {
             AppDatabase db = AppDatabase.getDatabase(requireContext());
-            User user = db.usuarioDao().getById(userId);
+            User user = db.usuarioDao().getById((int) userId);
             if (user == null) return;
             boolean valida = SecurityUtils.verifyPassword(actual, user.passwordHash);
             if (!isAdded()) return;
@@ -297,7 +296,7 @@ public class PerfilFragment extends Fragment {
     }
 
     private void cerrarSesion() {
-        limpiarSesion();
+        sessionManager.clearSession();
         Intent intent = new Intent(requireContext(), LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
@@ -311,19 +310,5 @@ public class PerfilFragment extends Fragment {
             requireContext().startActivity(intent);
         }
         android.os.Process.killProcess(android.os.Process.myPid());
-    }
-
-    private int obtenerUsuarioId() {
-        return requireContext()
-                .getSharedPreferences(PREFS_NAME, 0)
-                .getInt(KEY_USER_ID, -1);
-    }
-
-    private void limpiarSesion() {
-        requireContext().getSharedPreferences(PREFS_NAME, 0).edit()
-                .putBoolean(KEY_IS_LOGGED_IN, false)
-                .putBoolean(KEY_REMEMBER_ME, false)
-                .remove(KEY_USER_ID)
-                .apply();
     }
 }
