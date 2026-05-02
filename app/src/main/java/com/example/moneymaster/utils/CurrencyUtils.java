@@ -3,24 +3,15 @@ package com.example.moneymaster.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-/**
- * Utilidades globales para el manejo de moneda en MoneyMaster.
- *
- * Uso:
- *   String simbolo = CurrencyUtils.getCurrencySymbol(context);
- *   String formateado = CurrencyUtils.formatAmount(context, 1234.56);
- *
- * La moneda se persiste en SharedPreferences "moneymaster_config"
- * con las claves KEY_MONEDA y KEY_MONEDA_NOMBRE.
- */
+
 public class CurrencyUtils {
 
-    // ── SharedPreferences ─────────────────────────────────────────────────────
+    //SharedPreferences
     public static final String PREFS_CONFIG      = "moneymaster_config";
     public static final String KEY_MONEDA        = "moneda_simbolo";
     public static final String KEY_MONEDA_NOMBRE = "moneda_nombre";
 
-    // ── Catálogo de monedas disponibles ───────────────────────────────────────
+    //Catálogo de monedas disponibles
     public static final String[] NOMBRES  = {
             "Euro", "Dólar USD", "Libra esterlina",
             "Yen japonés", "Franco suizo", "Peso mexicano",
@@ -33,12 +24,11 @@ public class CurrencyUtils {
             "CA$", "A$"
     };
 
-    // ── Valores por defecto ───────────────────────────────────────────────────
+    //Valores por defecto
     private static final String DEFAULT_SIMBOLO = "€";
     private static final String DEFAULT_NOMBRE  = "Euro";
 
-    // ── API pública ───────────────────────────────────────────────────────────
-
+    //API pública
     /**
      * Devuelve el símbolo de moneda actualmente seleccionado.
      * Método global que debe usarse en toda la app para mostrar montos.
@@ -116,7 +106,7 @@ public class CurrencyUtils {
         return 0;
     }
 
-    // ── Privado ───────────────────────────────────────────────────────────────
+    //Privado
     private static SharedPreferences getPrefs(Context context) {
         return context.getSharedPreferences(PREFS_CONFIG, Context.MODE_PRIVATE);
     }

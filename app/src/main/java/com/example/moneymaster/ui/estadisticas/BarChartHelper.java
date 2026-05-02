@@ -24,26 +24,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Helper que encapsula TODA la configuración de MPAndroidChart para el BarChart
- * del módulo de Estadísticas (Card #43).
- *
- * Muestra barras agrupadas (gastos en rojo, ingresos en verde) para los
- * últimos N meses. El eje X muestra etiquetas como "Ene", "Feb 25", etc.
- *
- * Uso básico:
- * <pre>
- *   BarChartHelper helper = new BarChartHelper(context, barChart);
- *   helper.setOnBarClickListener((etiqueta, gastos, ingresos) -> mostrarDetalle(...));
- *
- *   // Observar ambos LiveData y llamar actualizarDatos cuando ambos estén disponibles
- *   viewModel.resumenGastosMeses.observe(this,  gastos   -> helper.setGastos(gastos));
- *   viewModel.resumenIngresosMeses.observe(this, ingresos -> helper.setIngresos(ingresos));
- * </pre>
- */
+
 public class BarChartHelper {
 
-    // ─── Colores ──────────────────────────────────────────────────────────────
+    //Colores
     private static final int COLOR_GASTOS   = Color.parseColor("#E53935"); // rojo Material
     private static final int COLOR_INGRESOS = Color.parseColor("#43A047"); // verde Material
     private static final int COLOR_GASTOS_T = Color.parseColor("#80E53935"); // rojo semitransparente
@@ -58,7 +42,7 @@ public class BarChartHelper {
 
     private OnBarClickListener barClickListener;
 
-    // ─── Interfaz de click ────────────────────────────────────────────────────
+    //Interfaz de click
     public interface OnBarClickListener {
         /**
          * @param etiquetaMes etiqueta del mes clicado (p. ej. "Mar 25")
@@ -68,7 +52,7 @@ public class BarChartHelper {
         void onBarClick(String etiquetaMes, double totalGastos, double totalIngresos);
     }
 
-    // ─── Constructor ──────────────────────────────────────────────────────────
+    //Constructor
 
     public BarChartHelper(Context context, BarChart barChart) {
         this.context  = context;
@@ -76,7 +60,7 @@ public class BarChartHelper {
         configurarBarChart();
     }
 
-    // ─── Configuración inicial ────────────────────────────────────────────────
+    //Configuración inicial
 
     private void configurarBarChart() {
         // Aspecto general
@@ -145,7 +129,7 @@ public class BarChartHelper {
         });
     }
 
-    // ─── Actualización de datos ───────────────────────────────────────────────
+    //Actualización de datos
 
     /**
      * Recibe la nueva lista de gastos mensuales desde el ViewModel.
@@ -249,14 +233,14 @@ public class BarChartHelper {
         barChart.invalidate();
     }
 
-    // ─── Estado vacío ─────────────────────────────────────────────────────────
+    //Estado vacío
 
     private void mostrarEstadoVacio() {
         barChart.setData(null);
         barChart.invalidate();
     }
 
-    // ─── Helpers internos ─────────────────────────────────────────────────────
+    //Helpers internos
 
     /**
      * Convierte una lista de ResumenMensual en un mapa indexado por "anio-mes"
@@ -294,7 +278,7 @@ public class BarChartHelper {
         return lista.get(index).total;
     }
 
-    // ─── Setter ───────────────────────────────────────────────────────────────
+    //Setter
 
     public void setOnBarClickListener(OnBarClickListener listener) {
         this.barClickListener = listener;

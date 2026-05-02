@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.moneymaster.data.model.GastoGrupo;
 import com.example.moneymaster.databinding.ItemGroupExpenseBinding;
-import com.example.moneymaster.util.SwipeDeleteManager;
+import com.example.moneymaster.utils.SwipeDeleteManager;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -58,8 +58,7 @@ public class GroupExpenseAdapter
         notifyDataSetChanged();
     }
 
-    // ─── DiffUtil ─────────────────────────────────────────────────────────────
-
+    //DiffUtil
     public void submitList(List<GastoGrupo> newList) {
         List<GastoGrupo> safeNew = newList != null ? newList : new ArrayList<>();
         DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
@@ -87,7 +86,7 @@ public class GroupExpenseAdapter
         result.dispatchUpdatesTo(this);
     }
 
-    // ─── SwipeDeleteManager.AdapterContract ──────────────────────────────────
+    //SwipeDeleteManager.AdapterContract
 
     @Override
     public GastoGrupo getItemAt(int position) {
@@ -110,7 +109,7 @@ public class GroupExpenseAdapter
         notifyItemInserted(safePos);
     }
 
-    // ─── RecyclerView.Adapter ─────────────────────────────────────────────────
+    //RecyclerView.Adapter
 
     @NonNull
     @Override
@@ -128,7 +127,7 @@ public class GroupExpenseAdapter
     @Override
     public int getItemCount() { return items.size(); }
 
-    // ─── ViewHolder ───────────────────────────────────────────────────────────
+    //ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 

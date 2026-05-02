@@ -14,7 +14,6 @@
         android:paddingBottom="32dp"
         tools:context=".ActivityRegister">
 
-        <!--Logo de la aplicación-->
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="110dp"
@@ -30,14 +29,13 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/icono" />
 
-        <!--Texto Crear Cuenta-->
         <TextView
             android:id="@+id/textView"
             android:layout_width="313dp"
             android:layout_height="48dp"
             android:layout_marginTop="24dp"
             android:fontFamily="sans-serif"
-            android:text="MONEY MASTER"
+            android:text="@string/money_master"
             android:textAlignment="center"
             android:textSize="32dp"
             android:textStyle="bold"
@@ -52,7 +50,7 @@
             android:layout_height="36dp"
             android:layout_marginTop="26dp"
             android:fontFamily="sans-serif"
-            android:text="Crear cuenta"
+            android:text="@string/crear_cuenta"
             android:textAlignment="center"
             android:textSize="24dp"
             android:textStyle="bold"
@@ -61,7 +59,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-        <!--Input Nombre-->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilNombre"
             android:layout_width="325dp"
@@ -80,12 +77,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
-                android:hint="Nombre"
+                android:hint="@string/nombre"
                 android:paddingLeft="20dp" />
-
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!--Input Email-->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilEmail"
             android:layout_width="325dp"
@@ -104,12 +99,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
-                android:hint="Email"
+                android:hint="@string/email"
                 android:paddingLeft="20dp" />
-
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!--Input Contraseña-->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilPassword"
             android:layout_width="325dp"
@@ -128,13 +121,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
-                android:hint="Contraseña"
+                android:hint="@string/contrase_a"
                 android:inputType="textPassword"
                 android:paddingLeft="20dp" />
-
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!--Input Repetir Contraseña-->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tisPasswordConfirm"
             android:layout_width="325dp"
@@ -153,17 +144,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
-                android:hint="Repetir Contraseña"
+                android:hint="@string/repetir_contrase_a"
                 android:inputType="textPassword"
                 android:paddingLeft="20dp" />
-
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- ═══════════════════════════════════════════════════
-             PREGUNTA DE SEGURIDAD
-        ════════════════════════════════════════════════════ -->
-
-        <!--Separador-->
         <View
             android:id="@+id/dividerSecurity"
             android:layout_width="325dp"
@@ -174,14 +159,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tisPasswordConfirm" />
 
-        <!--Título sección-->
         <TextView
             android:id="@+id/tvSecurityTitle"
             android:layout_width="325dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             android:fontFamily="sans-serif"
-            android:text="Pregunta de seguridad"
+            android:text="@string/pregunta_de_seguridad"
             android:textSize="16dp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -194,14 +178,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:fontFamily="sans-serif"
-            android:text="Úsala para recuperar tu contraseña si la olvidas"
+            android:text="@string/sala_para_recuperar_tu_contrase_a_si_la_olvidas"
             android:textSize="12dp"
             android:textColor="#88000000"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvSecurityTitle" />
 
-        <!--Dropdown pregunta-->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilSecurityQuestion"
             android:layout_width="325dp"
@@ -219,14 +202,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
-                android:hint="Selecciona una pregunta"
+                android:hint="@string/selecciona_una_pregunta"
                 android:focusable="false"
                 android:inputType="none"
                 android:paddingLeft="20dp" />
-
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!--Input respuesta-->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilSecurityAnswer"
             android:layout_width="325dp"
@@ -244,20 +225,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
-                android:hint="Tu respuesta"
+                android:hint="@string/tu_respuesta"
                 android:inputType="textCapSentences"
                 android:paddingLeft="20dp" />
-
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!--Botón Registrar — constraintTop actualizado a tilSecurityAnswer-->
         <Button
             android:id="@+id/btnRegistrar"
             android:layout_width="220dp"
             android:layout_height="46dp"
             android:layout_marginTop="20dp"
             android:gravity="center"
-            android:text="Registrarse"
+            android:text="@string/registrarse"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tilSecurityAnswer" />

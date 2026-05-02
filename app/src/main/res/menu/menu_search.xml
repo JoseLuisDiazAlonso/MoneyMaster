@@ -1,28 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Menú del toolbar con SearchView y botón de filtros avanzados.
-    Usar en el Fragment:
-      binding.toolbar.inflateMenu(R.menu.menu_search);
-    O referenciar directamente desde SearchBarHelper.setup().
-
-    Requiere en res/menu/menu_search.xml
--->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Icono de búsqueda — expande a SearchView al pulsar -->
     <item
         android:id="@+id/action_search"
-        android:icon="@drawable/ic_search"
-        android:title="Buscar"
-        app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="ifRoom|collapseActionView" />
+        android:title="@string/search_hint"
+        app:showAsAction="always"
+        app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
-    <!-- Icono de filtros avanzados — abre SearchFilterBottomSheet -->
     <item
         android:id="@+id/action_filter"
-        android:icon="@drawable/ic_filter_list"
-        android:title="Filtros"
-        app:showAsAction="ifRoom" />
+        android:title="@string/filtros"
+        app:showAsAction="always" />
 
 </menu>

@@ -18,6 +18,7 @@ import com.example.moneymaster.data.model.CategoriaGasto;
 import com.example.moneymaster.data.model.GastoPersonal;
 import com.example.moneymaster.databinding.ActivityAddExpenseBinding;
 import com.example.moneymaster.ui.ViewModel.GastoViewModel;
+import com.example.moneymaster.ui.categories.CategoryAdapter;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.text.SimpleDateFormat;
@@ -51,8 +52,6 @@ public class AddExpenseActivity extends AppCompatActivity {
         actualizarCampoFecha();
     }
 
-    // ── Toolbar ───────────────────────────────────────────────────────────────
-
     private void configurarToolbar() {
         setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
@@ -60,8 +59,6 @@ public class AddExpenseActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(R.string.title_add_expense);
         }
     }
-
-    // ── ViewModel + categorías ────────────────────────────────────────────────
 
     private void configurarViewModels() {
         gastoViewModel = new ViewModelProvider(this).get(GastoViewModel.class);
@@ -78,7 +75,7 @@ public class AddExpenseActivity extends AppCompatActivity {
                     categoriasList = lista;
                 } else {
                     Toast.makeText(this,
-                            "No hay categorías disponibles", Toast.LENGTH_LONG).show();
+                            getString(R.string.sin_categorias), Toast.LENGTH_LONG).show();
                 }
             });
         });
@@ -93,27 +90,28 @@ public class AddExpenseActivity extends AppCompatActivity {
 
     private void mostrarDialogCategoria() {
         if (categoriasList.isEmpty()) {
-            Toast.makeText(this, "Cargando categorías...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.cargando), Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // FIX: resolver claves cat_* al nombre traducido antes de mostrar
         String[] nombres = new String[categoriasList.size()];
         for (int i = 0; i < categoriasList.size(); i++) {
-            nombres[i] = categoriasList.get(i).nombre;
+            nombres[i] = CategoryAdapter.resolverNombre(this, categoriasList.get(i).nombre);
         }
 
         new MaterialAlertDialogBuilder(this)
-                .setTitle("Seleccionar categoría")
+                .setTitle(R.string.hint_categoria)
                 .setItems(nombres, (dialog, which) -> {
                     categoriaSeleccionada = categoriasList.get(which);
-                    binding.etCategoria.setText(categoriaSeleccionada.nombre);
+                    // FIX: mostrar nombre traducido en el campo
+                    binding.etCategoria.setText(
+                            CategoryAdapter.resolverNombre(this, categoriaSeleccionada.nombre));
                     binding.tilCategoria.setError(null);
                 })
-                .setNegativeButton("Cancelar", null)
+                .setNegativeButton(R.string.cancelar, null)
                 .show();
     }
-
-    // ── DatePicker ────────────────────────────────────────────────────────────
 
     private void configurarDatePicker() {
         View.OnClickListener abrirPicker = v -> new DatePickerDialog(
@@ -132,11 +130,9 @@ public class AddExpenseActivity extends AppCompatActivity {
     }
 
     private void actualizarCampoFecha() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", new Locale("es", "ES"));
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
         binding.etFecha.setText(sdf.format(fechaSeleccionada.getTime()));
     }
-
-    // ── Validación y guardado ─────────────────────────────────────────────────
 
     private void configurarBotonGuardar() {
         binding.btnGuardar.setOnClickListener(v -> {
@@ -208,8 +204,6 @@ public class AddExpenseActivity extends AppCompatActivity {
             finish();
         }, 300);
     }
-
-    // ── Navegación ────────────────────────────────────────────────────────────
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

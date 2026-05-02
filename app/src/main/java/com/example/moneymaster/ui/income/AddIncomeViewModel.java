@@ -12,16 +12,7 @@ import com.example.moneymaster.data.repository.IngresoRepository;
 
 import java.util.List;
 
-/**
- * AddIncomeViewModel — corregido Card #62.
- *
- * Cambios:
- *  - Eliminado IngresoPersonalRepository (no existe) → usa IngresoRepository.
- *  - Eliminado CategoriaIngresoRepository (no existe) → IngresoRepository
- *    ya expone getCategorias(usuarioId) que devuelve sistema + propias del usuario.
- *  - El callback de inserción simplificado: la operación es fire-and-forget
- *    ejecutada en databaseWriteExecutor, igual que el resto del proyecto.
- */
+
 public class AddIncomeViewModel extends AndroidViewModel {
 
     public interface SaveCallback {

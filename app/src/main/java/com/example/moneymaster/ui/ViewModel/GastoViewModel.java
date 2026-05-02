@@ -15,15 +15,7 @@ import com.example.moneymaster.data.repository.GastoRepository;
 import java.util.Calendar;
 import java.util.List;
 
-/**
- * ViewModel de la pantalla de Gastos.
- *
- * Maneja:
- * - CRUD de gastos personales
- * - Filtro por mes/año (selector en la toolbar)
- * - Lista de categorías para el spinner del formulario
- * - Gasto seleccionado para el formulario de edición
- */
+
 public class GastoViewModel extends AndroidViewModel {
 
     private final GastoRepository repository;
@@ -31,7 +23,7 @@ public class GastoViewModel extends AndroidViewModel {
     private final MutableLiveData<Long>  usuarioIdLive  = new MutableLiveData<>();
     private final MutableLiveData<int[]> filtroMesAnio  = new MutableLiveData<>();
 
-    // ─── LiveData públicos ────────────────────────────────────────────────────
+    //LiveData públicos
 
     /** Lista completa sin filtro de mes. */
     public final LiveData<List<GastoPersonal>> todosLosGastos;
@@ -49,7 +41,7 @@ public class GastoViewModel extends AndroidViewModel {
     private final MutableLiveData<GastoPersonal> gastoSeleccionado = new MutableLiveData<>();
     public LiveData<GastoPersonal> getGastoSeleccionado() { return gastoSeleccionado; }
 
-    // ─── Constructor ──────────────────────────────────────────────────────────
+    //Constructor
 
     public GastoViewModel(@NonNull Application application) {
         super(application);
@@ -78,7 +70,7 @@ public class GastoViewModel extends AndroidViewModel {
                 repository::getCategorias);
     }
 
-    // ─── Setters ──────────────────────────────────────────────────────────────
+    //Setters
 
     public void setUsuarioId(long id) {
         if (!Long.valueOf(id).equals(usuarioIdLive.getValue())) {
@@ -99,7 +91,7 @@ public class GastoViewModel extends AndroidViewModel {
         gastoSeleccionado.setValue(null);
     }
 
-    // ─── CRUD Gastos ──────────────────────────────────────────────────────────
+    //CRUD Gastos
 
     public void insertar(GastoPersonal gasto) {
         repository.insertar(gasto);
@@ -113,7 +105,7 @@ public class GastoViewModel extends AndroidViewModel {
         repository.eliminar(gasto);
     }
 
-    // ─── CRUD Categorías ──────────────────────────────────────────────────────
+    //CRUD Categorías
 
     public void insertarCategoria(CategoriaGasto categoria) {
         repository.insertarCategoria(categoria);

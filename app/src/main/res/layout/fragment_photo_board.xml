@@ -29,13 +29,13 @@
             android:alpha="0.4"
             app:srcCompat="@drawable/ic_photo_camera"
             app:tint="?attr/colorOnSurfaceVariant"
-            android:contentDescription="Sin fotos" />
+            android:contentDescription="@string/sin_fotos" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Sin fotos todavía"
+            android:text="@string/sin_fotos_todav_a"
             android:textAppearance="?attr/textAppearanceTitleMedium"
             android:textColor="?attr/colorOnSurface" />
 
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:gravity="center"
-            android:text="Las fotos de recibos del grupo aparecerán aquí"
+            android:text="@string/las_fotos_de_recibos_del_grupo_aparecer_n_aqu"
             android:textAppearance="?attr/textAppearanceBodyMedium"
             android:textColor="?attr/colorOnSurfaceVariant" />
 

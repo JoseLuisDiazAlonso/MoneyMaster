@@ -1,6 +1,7 @@
 package com.example.moneymaster.ui.categories;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -14,19 +15,34 @@ import java.util.List;
 
 public class CategoriesViewModel extends AndroidViewModel {
 
+    private static final String TAG = "SEED";
+
     private final CategoriaRepository repository;
 
     private final LiveData<List<CategoriaGasto>> categoriasGasto;
     private final LiveData<List<CategoriaIngreso>> categoriasIngreso;
 
-    // TODO: sustituir 1L por el ID real del usuario de la sesión activa
     private static final long USUARIO_ID = 1L;
 
     public CategoriesViewModel(@NonNull Application application) {
         super(application);
         repository = new CategoriaRepository(application);
-        categoriasGasto  = repository.getCategoriasGasto(USUARIO_ID);
+
+        // LOG para depuración
+        Log.d(TAG, "CategoriesViewModel creado con USUARIO_ID=" + USUARIO_ID);
+
+        categoriasGasto   = repository.getCategoriasGasto(USUARIO_ID);
         categoriasIngreso = repository.getCategoriasIngreso(USUARIO_ID);
+
+        // Observar el primer valor que llegue para loguearlo
+        categoriasGasto.observeForever(lista -> {
+            if (lista != null) {
+                Log.d(TAG, "Categorías gasto recibidas: " + lista.size());
+                for (CategoriaGasto c : lista) {
+                    Log.d(TAG, "  gasto nombre='" + c.nombre + "' es_sistema=" + c.esSistema);
+                }
+            }
+        });
     }
 
     public LiveData<List<CategoriaGasto>> getCategoriasGasto() {

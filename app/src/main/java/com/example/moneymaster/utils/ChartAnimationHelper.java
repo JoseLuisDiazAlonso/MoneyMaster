@@ -5,22 +5,7 @@ import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 
-/**
- * ChartAnimationHelper
- *
- * Centraliza las animaciones de entrada de los gráficos MPAndroidChart
- * utilizados en EstadisticasFragment (Sprint 6).
- *
- * Debe llamarse DESPUÉS de setData() y ANTES o en el mismo momento
- * que invalidate()/notifyDataSetChanged().
- *
- * Animaciones disponibles por tipo:
- *  - PieChart  → animateY (rotación + aparición desde arriba)
- *  - BarChart  → animateXY (barras crecen desde la base con fade)
- *  - LineChart → animateX (línea se dibuja de izquierda a derecha)
- *
- * Card #55 - Sprint 9 UX
- */
+
 public class ChartAnimationHelper {
 
     // Duraciones estándar

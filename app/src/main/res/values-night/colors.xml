@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Colores Material Design 3 — Tema OSCURO -->
+
+    <!-- Primary: verde más suave y luminoso para fondos oscuros -->
+    <color name="md_theme_primary">#6CDBAA</color>
+    <color name="md_theme_onPrimary">#003826</color>
+    <color name="md_theme_primaryContainer">#005138</color>
+    <color name="md_theme_onPrimaryContainer">#89F8C7</color>
+
+    <!-- Secondary -->
+    <color name="md_theme_secondary">#B3CCBE</color>
+    <color name="md_theme_onSecondary">#1F352A</color>
+    <color name="md_theme_secondaryContainer">#354B40</color>
+    <color name="md_theme_onSecondaryContainer">#CFE9D9</color>
+
+    <!-- Background: gris muy oscuro, no negro puro -->
+    <color name="md_theme_background">#191C1A</color>
+    <color name="md_theme_onBackground">#E1E3E0</color>
+
+    <!-- Surface: ligeramente más claro que background -->
+    <color name="md_theme_surface">#191C1A</color>
+    <color name="md_theme_onSurface">#E1E3E0</color>
+
+    <!-- Colores funcionales adaptados al tema oscuro -->
+    <color name="md_theme_error">#FFB4AB</color>
+    <color name="success">#6CDBAA</color>
+    <color name="warning">#FFB74D</color>
+    <color name="income_green">#81C784</color>
+    <color name="expense_red">#EF9A9A</color>
+    <color name="balance_positive_bg">#1B3A1D</color>
+    <color name="balance_negative_bg">#3E1414</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- Variante pressed -->
+    <color name="income_green_dark">#66BB6A</color>
+
+    <!-- Colores para dialog compartir -->
+    <color name="blue_50">#1A2C3D</color>
+    <color name="green_50">#1B3A1D</color>
+    <color name="green_700">#4CAF50</color>
+    <color name="purple_50">#2E1A35</color>
+    <color name="purple_700">#CE93D8</color>
+
+    <color name="md_theme_light_tertiaryContainer">#633B48</color>
+    <color name="md_theme_dark_tertiaryContainer">#633B48</color>
+</resources>

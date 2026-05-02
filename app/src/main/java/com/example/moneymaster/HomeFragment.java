@@ -23,7 +23,7 @@ import com.example.moneymaster.ui.detalle.MovimientoDetalleActivity;
 import com.example.moneymaster.ui.search.BusquedaViewModel;
 import com.example.moneymaster.ui.search.FiltroGasto;
 import com.example.moneymaster.ui.search.SearchFilterBottomSheet;
-import com.example.moneymaster.util.SwipeDeleteManager;
+import com.example.moneymaster.utils.SwipeDeleteManager;
 import com.example.moneymaster.utils.SessionManager;
 
 import java.util.ArrayList;
@@ -67,7 +67,7 @@ public class HomeFragment extends Fragment {
         observeData();
     }
 
-    // ── RecyclerView ──────────────────────────────────────────────────────────
+    //RecyclerView
 
     private void setupRecyclerView() {
         adapter = new MovimientosAdapter(requireContext());
@@ -85,7 +85,7 @@ public class HomeFragment extends Fragment {
         binding.rvMovimientos.setAdapter(adapter);
     }
 
-    // ── Swipe delete ──────────────────────────────────────────────────────────
+    //Swipe delete
 
     private void setupSwipeDelete() {
         swipeDeleteManager = new SwipeDeleteManager<>(
@@ -98,7 +98,7 @@ public class HomeFragment extends Fragment {
         swipeDeleteManager.attach();
     }
 
-    // ── Botones ───────────────────────────────────────────────────────────────
+    //Botones
 
     private void setupBotones() {
         binding.btnVerTodos.setOnClickListener(v -> mostrarTodosLosMeses());
@@ -118,7 +118,7 @@ public class HomeFragment extends Fragment {
         binding.btnFiltros.setAlpha(0.6f);
     }
 
-    // ── SearchView + filtros ──────────────────────────────────────────────────
+    //SearchView + filtros
 
     private void setupSearch() {
         binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -186,7 +186,7 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    // ── Selector de mes ───────────────────────────────────────────────────────
+    //Selector de mes
 
     private void setupMesSelector() {
         binding.btnMesAnterior.setOnClickListener(
@@ -195,7 +195,7 @@ public class HomeFragment extends Fragment {
                 v -> dashboardViewModel.mesSiguiente());
     }
 
-    // ── Observadores ─────────────────────────────────────────────────────────
+    //Observadores
 
     private void observeData() {
 
@@ -261,7 +261,7 @@ public class HomeFragment extends Fragment {
                 });
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+    //Helpers
 
     private void mostrarMovimientos(List<MovimientoReciente> lista) {
         if (lista == null) lista = new ArrayList<>();

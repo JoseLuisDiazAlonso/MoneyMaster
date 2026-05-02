@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="?attr/colorSurface">
 
-    <!-- RecyclerView con la lista de categorías -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewCategories"
         android:layout_width="match_parent"
@@ -16,7 +15,6 @@
         android:clipToPadding="false"
         android:scrollbars="none" />
 
-    <!-- Estado vacío: visible cuando no hay categorías -->
     <LinearLayout
         android:id="@+id/layoutEmptyState"
         android:layout_width="match_parent"
@@ -32,13 +30,13 @@
             android:src="@drawable/ic_category_default"
             app:tint="?attr/colorOnSurfaceVariant"
             android:alpha="0.4"
-            android:contentDescription="Sin categorías" />
+            android:contentDescription="@null" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Sin categorías"
+            android:text="@string/sin_categorias"
             android:textAppearance="?attr/textAppearanceTitleMedium"
             android:textColor="?attr/colorOnSurfaceVariant" />
 
@@ -46,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Pulsa + para crear tu primera categoría personalizada"
+            android:text="@string/pulsa_para_crear_categoria"
             android:textAppearance="?attr/textAppearanceBodyMedium"
             android:textColor="?attr/colorOnSurfaceVariant"
             android:gravity="center"
@@ -54,14 +52,13 @@
 
     </LinearLayout>
 
-    <!-- FAB para añadir nueva categoría -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddCategory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:contentDescription="Añadir categoría"
+        android:contentDescription="@string/anadir_categoria_cd"
         android:src="@drawable/ic_add"
         app:fabSize="normal" />
 

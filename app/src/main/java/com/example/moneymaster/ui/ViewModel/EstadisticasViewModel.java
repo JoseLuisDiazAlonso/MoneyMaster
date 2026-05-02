@@ -17,32 +17,7 @@ import com.example.moneymaster.data.repository.EstadisticasRepository;
 import java.util.Calendar;
 import java.util.List;
 
-/**
- * ViewModel de la pantalla de Estadísticas.
- *
- * LiveData que expone:
- *
- *   Resumen numérico del mes activo:
- *     · totalGastosMes   → Double  (para tv_total_gastos)
- *     · totalIngresosMes → Double  (para tv_total_ingresos)
- *     · balanceMes       → Double  (ingresos - gastos, para tv_balance)
- *
- *   STATS-005 Top 5 categorías:
- *     · top5CategoriasMes → List<TopCategoriasItem>
- *
- *   STATS-002 PieChart (se usa en cards futuros):
- *     · gastosPorCategoria   → List<TotalPorCategoria>
- *     · ingresosPorCategoria → List<TotalPorCategoria>
- *
- *   STATS-003 BarChart (se usa en cards futuros):
- *     · resumenGastosMeses   → List<ResumenMensual>
- *     · resumenIngresosMeses → List<ResumenMensual>
- *
- * Patrón de reactividad:
- *   filtroMes (MutableLiveData<int[]>) actúa como disparador central.
- *   Todos los LiveData dependientes del mes usan Transformations.switchMap
- *   sobre filtroMes, por lo que se re-ejecutan automáticamente al cambiar de mes.
- */
+
 public class EstadisticasViewModel extends AndroidViewModel {
 
     private final EstadisticasRepository repository;
@@ -69,23 +44,23 @@ public class EstadisticasViewModel extends AndroidViewModel {
      */
     public final MediatorLiveData<Double> balanceMes = new MediatorLiveData<>();
 
-    // ─── LiveData públicos: STATS-005 Top 5 ──────────────────────────────────
+    //LiveData públicos: STATS-005 Top 5
 
     public final LiveData<List<TopCategoriasItem>> top5CategoriasMes;
 
-    // ─── LiveData públicos: STATS-002 PieChart ────────────────────────────────
+    //LiveData públicos: STATS-002 PieChart
 
     public final LiveData<List<TotalPorCategoria>> gastosPorCategoria;
     public final LiveData<List<TotalPorCategoria>> ingresosPorCategoria;
 
-    // ─── LiveData públicos: STATS-003 BarChart ────────────────────────────────
+    //LiveData públicos: STATS-003 BarChart
 
     public final LiveData<List<ResumenMensual>> resumenGastosMeses;
     public final LiveData<List<ResumenMensual>> resumenIngresosMeses;
 
-    // =========================================================================
+
     // Constructor
-    // =========================================================================
+
 
     public EstadisticasViewModel(@NonNull Application application) {
         super(application);
@@ -98,7 +73,7 @@ public class EstadisticasViewModel extends AndroidViewModel {
                 cal.get(Calendar.YEAR)
         });
 
-        // ── Totales del mes ───────────────────────────────────────────────────
+        //Totales del mes
         totalGastosMes = Transformations.switchMap(filtroMes, filtro -> {
             Long uid = usuarioIdLive.getValue();
             if (uid == null || filtro == null) return new MutableLiveData<>(0.0);
@@ -111,19 +86,19 @@ public class EstadisticasViewModel extends AndroidViewModel {
             return repository.getTotalIngresosMes(uid.intValue(), filtro[0], filtro[1]);
         });
 
-        // ── Balance = ingresos - gastos ───────────────────────────────────────
+        //Balance = ingresos - gastos
         // MediatorLiveData se actualiza cuando cambia cualquiera de los dos
         balanceMes.addSource(totalGastosMes,   g -> recalcularBalance());
         balanceMes.addSource(totalIngresosMes, i -> recalcularBalance());
 
-        // ── STATS-005: Top 5 categorías ───────────────────────────────────────
+        //STATS-005: Top 5 categorías
         top5CategoriasMes = Transformations.switchMap(filtroMes, filtro -> {
             Long uid = usuarioIdLive.getValue();
             if (uid == null || filtro == null) return new MutableLiveData<>(null);
             return repository.getTop5CategoriasMes(uid.intValue(), filtro[0], filtro[1]);
         });
 
-        // ── STATS-002: PieChart ───────────────────────────────────────────────
+        //STATS-002: PieChart
         gastosPorCategoria = Transformations.switchMap(filtroMes, filtro -> {
             Long uid = usuarioIdLive.getValue();
             if (uid == null || filtro == null) return new MutableLiveData<>(null);
@@ -136,7 +111,7 @@ public class EstadisticasViewModel extends AndroidViewModel {
             return repository.getIngresosPorCategoria(uid.intValue(), filtro[0], filtro[1]);
         });
 
-        // ── STATS-003: BarChart ───────────────────────────────────────────────
+        //STATS-003: BarChart
         resumenGastosMeses = Transformations.switchMap(mesesHistorial, meses -> {
             Long uid = usuarioIdLive.getValue();
             if (uid == null) return new MutableLiveData<>(null);
@@ -150,9 +125,9 @@ public class EstadisticasViewModel extends AndroidViewModel {
         });
     }
 
-    // =========================================================================
+
     // Setters públicos
-    // =========================================================================
+
 
     /**
      * Establece el ID del usuario en sesión.
@@ -188,9 +163,9 @@ public class EstadisticasViewModel extends AndroidViewModel {
         mesesHistorial.setValue(meses);
     }
 
-    // =========================================================================
+
     // Helpers privados
-    // =========================================================================
+
 
     /**
      * Recalcula el balance neto del mes: ingresos - gastos.

@@ -6,13 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-/**
- * AddIncomeViewModelFactory
- * ─────────────────────────────────────────────────────────────────────────
- * Factory necesaria porque AddIncomeViewModel recibe usuarioId en el
- * constructor, y ViewModelProvider estándar solo puede crear ViewModels
- * sin parámetros. Con esta factory se le pasa el ID correctamente.
- */
+
 public class AddIncomeViewModelFactory implements ViewModelProvider.Factory {
 
     private final Application application;

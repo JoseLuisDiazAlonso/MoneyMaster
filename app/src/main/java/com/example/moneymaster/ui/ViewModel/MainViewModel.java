@@ -17,18 +17,7 @@ import com.example.moneymaster.data.repository.IngresoRepository;
 import java.util.Calendar;
 import java.util.List;
 
-/**
- * ViewModel del Dashboard.
- *
- * Expone el balance neto del mes mediante MediatorLiveData,
- * que se recalcula automáticamente cada vez que cambian los totales
- * de gastos o ingresos — sin ningún polling manual desde la Activity.
- *
- * Uso desde la Activity:
- *   viewModel = new ViewModelProvider(this).get(MainViewModel.class);
- *   viewModel.setUsuarioId(sessionManager.getUsuarioId());
- *   viewModel.balanceMes.observe(this, balance -> tvBalance.setText(...));
- */
+
 public class MainViewModel extends AndroidViewModel {
 
     private final GastoRepository gastoRepository;
@@ -40,7 +29,7 @@ public class MainViewModel extends AndroidViewModel {
     // Disparador: cuando cambia el usuarioId todos los switchMap reaccionan
     private final MutableLiveData<Long> usuarioIdLive = new MutableLiveData<>();
 
-    // ─── LiveData públicos ────────────────────────────────────────────────────
+    //LiveData públicos
 
     public final LiveData<Double> totalGastosMes;
     public final LiveData<Double> totalIngresosMes;
@@ -57,7 +46,7 @@ public class MainViewModel extends AndroidViewModel {
     /** Últimas 3 transacciones de ingreso. */
     public final LiveData<List<IngresoPersonal>> ultimosIngresos;
 
-    // ─── Constructor ──────────────────────────────────────────────────────────
+    //Constructor
 
     public MainViewModel(@NonNull Application application) {
         super(application);
@@ -85,7 +74,7 @@ public class MainViewModel extends AndroidViewModel {
         balanceMes.addSource(totalGastosMes,   v -> recalcularBalance());
     }
 
-    // ─── API pública ──────────────────────────────────────────────────────────
+    //API pública
 
     public void setUsuarioId(long id) {
         if (!Long.valueOf(id).equals(usuarioIdLive.getValue())) {
@@ -96,7 +85,7 @@ public class MainViewModel extends AndroidViewModel {
     public int getMesActual()  { return mesActual; }
     public int getAnioActual() { return anioActual; }
 
-    // ─── Privado ──────────────────────────────────────────────────────────────
+    //Privado
 
     private void recalcularBalance() {
         double i = totalIngresosMes.getValue() != null ? totalIngresosMes.getValue() : 0.0;

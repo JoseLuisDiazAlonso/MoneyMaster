@@ -7,44 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Card #64 – Manejo de memoria y leaks
- *
- * Helper para gestionar el ciclo de vida del ExecutorService compartido
- * en los ViewModels.
- *
- * PROBLEMA DETECTADO:
- * Los ViewModels usan AppDatabase.databaseWriteExecutor para operaciones
- * en segundo plano. Si un ViewModel crea su propio ExecutorService sin
- * cerrarlo en onCleared(), los hilos permanecen vivos reteniendo referencias
- * al ViewModel (y transitivamente al Application context).
- *
- * SOLUCIÓN:
- * Usar ExecutorLifecycleHelper.shutdown() desde onCleared() de cualquier
- * ViewModel que gestione su propio executor.
- *
- * PATRÓN RECOMENDADO EN VIEWMODEL:
- * <pre>
- *   public class MiViewModel extends AndroidViewModel {
- *
- *       // Usar siempre el executor compartido de la base de datos:
- *       private final ExecutorService executor =
- *           AppDatabase.databaseWriteExecutor;
- *
- *       // Si necesitas un executor propio (casos excepcionales):
- *       private final ExecutorService localExecutor =
- *           Executors.newSingleThreadExecutor();
- *
- *       {@literal @}Override
- *       protected void onCleared() {
- *           super.onCleared();
- *           // NO cerrar AppDatabase.databaseWriteExecutor (compartido)
- *           // SÍ cerrar executors locales:
- *           ExecutorLifecycleHelper.shutdown(localExecutor, "MiViewModel");
- *       }
- *   }
- * </pre>
- */
+
 public class ExecutorLifecycleHelper {
 
     private static final String TAG = "ExecutorLifecycle";

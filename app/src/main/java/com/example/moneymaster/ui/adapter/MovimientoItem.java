@@ -2,21 +2,13 @@ package com.example.moneymaster.ui.adapter;
 
 import java.util.Objects;
 
-/**
- * Modelo de presentación (UI model) para un movimiento financiero.
- *
- * Desacopla las entidades Room (GastoPersonal / IngresoPersonal) del adaptador.
- * El Fragment/ViewModel transforma las entidades en MovimientoItem antes
- * de pasarlas al adapter — patrón habitual en MVVM.
- *
- * Contiene todos los campos necesarios para renderizar un ítem en la lista.
- */
+
 public class MovimientoItem {
 
-    // ─── Tipo de movimiento ─────────────────────────────────────────────────
+    //Tipo de movimiento
     public enum Tipo { GASTO, INGRESO }
 
-    // ─── Campos ─────────────────────────────────────────────────────────────
+    //Campos
     private final int    id;
     private final Tipo   tipo;
     private final String titulo;
@@ -27,7 +19,7 @@ public class MovimientoItem {
     private final String categoriaIcono; // nombre del drawable, p.ej. "ic_comida"
     private final String categoriaColor; // hex string, p.ej. "#FF5733"
 
-    // ─── Constructor ────────────────────────────────────────────────────────
+    //Constructor
     public MovimientoItem(int id, Tipo tipo, String titulo, String descripcion,
                           double cantidad, long fecha,
                           String categoriaNombre, String categoriaIcono,
@@ -43,7 +35,7 @@ public class MovimientoItem {
         this.categoriaColor  = categoriaColor;
     }
 
-    // ─── Getters ─────────────────────────────────────────────────────────────
+    //Getters
     public int    getId()              { return id; }
     public Tipo   getTipo()            { return tipo; }
     public String getTitulo()          { return titulo; }
@@ -54,7 +46,7 @@ public class MovimientoItem {
     public String getCategoriaIcono()  { return categoriaIcono; }
     public String getCategoriaColor()  { return categoriaColor; }
 
-    // ─── equals & hashCode — requeridos por DiffUtil ─────────────────────────
+    //equals & hashCode — requeridos por DiffUtil
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -77,7 +69,7 @@ public class MovimientoItem {
                 categoriaNombre, categoriaIcono, categoriaColor);
     }
 
-    // ─── Factory methods — para convertir desde entidades Room ───────────────
+    //Factory methods — para convertir desde entidades Room
 
     /**
      * Crea un MovimientoItem desde un GastoPersonal + datos de categoría.

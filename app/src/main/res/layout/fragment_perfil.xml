@@ -12,13 +12,11 @@
         android:orientation="vertical"
         android:paddingBottom="24dp">
 
-        <!-- ══════════════════════════════════════════
-             SECCIÓN: PERFIL
-        ══════════════════════════════════════════ -->
+        <!-- SECCIÓN: PERFIL-->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Perfil"
+            android:text="@string/perfil"
             android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
             android:textColor="?attr/colorPrimary"
             android:paddingStart="16dp"
@@ -59,8 +57,8 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_person"
-                        android:tint="?attr/colorOnSurfaceVariant"
-                        android:contentDescription="@null" />
+                        android:contentDescription="@null"
+                        app:tint="?attr/colorOnSurfaceVariant" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -72,14 +70,14 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Nombre de usuario"
+                            android:text="@string/nombre_de_usuario"
                             android:textAppearance="@style/TextAppearance.Material3.BodyLarge" />
 
                         <TextView
                             android:id="@+id/tvNombreActual"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Cargando..."
+                            android:text="@string/cargando"
                             android:textAppearance="@style/TextAppearance.Material3.BodySmall"
                             android:textColor="?attr/colorOnSurfaceVariant" />
                     </LinearLayout>
@@ -88,8 +86,8 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/ic_chevron_right"
-                        android:tint="?attr/colorOnSurfaceVariant"
-                        android:contentDescription="@null" />
+                        android:contentDescription="@null"
+                        app:tint="?attr/colorOnSurfaceVariant" />
                 </LinearLayout>
 
                 <View
@@ -111,8 +109,8 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_email"
-                        android:tint="?attr/colorOnSurfaceVariant"
-                        android:contentDescription="@null" />
+                        android:contentDescription="@null"
+                        app:tint="?attr/colorOnSurfaceVariant" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -124,14 +122,14 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Email"
+                            android:text="@string/email"
                             android:textAppearance="@style/TextAppearance.Material3.BodyLarge" />
 
                         <TextView
                             android:id="@+id/tvEmailActual"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Cargando..."
+                            android:text="@string/cargando"
                             android:textAppearance="@style/TextAppearance.Material3.BodySmall"
                             android:textColor="?attr/colorOnSurfaceVariant" />
                     </LinearLayout>
@@ -160,14 +158,14 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_lock"
-                        android:tint="?attr/colorOnSurfaceVariant"
-                        android:contentDescription="@null" />
+                        android:contentDescription="@null"
+                        app:tint="?attr/colorOnSurfaceVariant" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Cambiar contraseña"
+                        android:text="@string/cambiar_contrase_a"
                         android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
                         android:layout_marginStart="16dp" />
 
@@ -175,20 +173,72 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/ic_chevron_right"
-                        android:tint="?attr/colorOnSurfaceVariant"
-                        android:contentDescription="@null" />
+                        android:contentDescription="@null"
+                        app:tint="?attr/colorOnSurfaceVariant" />
                 </LinearLayout>
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- ══════════════════════════════════════════
-             SECCIÓN: DATOS
-        ══════════════════════════════════════════ -->
+        <!--SECCIÓN: APARIENCIA  -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Datos"
+            android:text="@string/apariencia"
+            android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+            android:textColor="?attr/colorPrimary"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="4dp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="4dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="?attr/colorOutlineVariant"
+            app:cardCornerRadius="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_dark_mode"
+                    android:contentDescription="@null"
+                    app:tint="?attr/colorOnSurfaceVariant" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/modo_oscuro"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+                    android:layout_marginStart="16dp" />
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switchDarkMode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- SECCIÓN: DATO  -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/datos"
             android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
             android:textColor="?attr/colorPrimary"
             android:paddingStart="16dp"
@@ -229,14 +279,14 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_delete"
-                        android:tint="@color/expense_red"
-                        android:contentDescription="@null" />
+                        android:contentDescription="@null"
+                        app:tint="@color/expense_red" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Eliminar todos los datos"
+                        android:text="@string/eliminar_todos_los_datos"
                         android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
                         android:textColor="@color/expense_red"
                         android:layout_marginStart="16dp" />
@@ -245,8 +295,8 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/ic_chevron_right"
-                        android:tint="@color/expense_red"
-                        android:contentDescription="@null" />
+                        android:contentDescription="@null"
+                        app:tint="@color/expense_red" />
                 </LinearLayout>
 
                 <View
@@ -272,14 +322,14 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_logout"
-                        android:tint="@color/expense_red"
-                        android:contentDescription="@null" />
+                        android:contentDescription="@null"
+                        app:tint="@color/expense_red" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Cerrar sesión"
+                        android:text="@string/cerrar_sesi_n"
                         android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
                         android:textColor="@color/expense_red"
                         android:layout_marginStart="16dp" />
@@ -288,20 +338,18 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/ic_chevron_right"
-                        android:tint="@color/expense_red"
-                        android:contentDescription="@null" />
+                        android:contentDescription="@null"
+                        app:tint="@color/expense_red" />
                 </LinearLayout>
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- ══════════════════════════════════════════
-             SECCIÓN: ACERCA DE
-        ══════════════════════════════════════════ -->
+        <!-- SECCIÓN: ACERCA DE  -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Acerca de"
+            android:text="@string/acerca_de"
             android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
             android:textColor="?attr/colorPrimary"
             android:paddingStart="16dp"
@@ -325,7 +373,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Versión (solo lectura) -->
+                <!-- Versión -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="64dp"
@@ -338,8 +386,8 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_info"
-                        android:tint="?attr/colorOnSurfaceVariant"
-                        android:contentDescription="@null" />
+                        android:contentDescription="@null"
+                        app:tint="?attr/colorOnSurfaceVariant" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -351,14 +399,14 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Versión"
+                            android:text="@string/versi_n"
                             android:textAppearance="@style/TextAppearance.Material3.BodyLarge" />
 
                         <TextView
                             android:id="@+id/tvVersionActual"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="1.0.0"
+                            android:text="@string/_1_0_0"
                             android:textAppearance="@style/TextAppearance.Material3.BodySmall"
                             android:textColor="?attr/colorOnSurfaceVariant" />
                     </LinearLayout>

@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorSurface">
@@ -15,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@drawable/ic_arrow_back"
-            app:title="Detalle"
+            app:title="@string/detalle"
             app:titleTextColor="@android:color/white"
             android:background="?attr/colorPrimary" />
 
@@ -33,7 +34,6 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- ── Cabecera: icono + categoría + importe ── -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -49,7 +49,6 @@
                     android:gravity="center"
                     android:padding="24dp">
 
-                    <!-- Icono categoría -->
                     <FrameLayout
                         android:layout_width="72dp"
                         android:layout_height="72dp"
@@ -66,11 +65,10 @@
                             android:layout_width="36dp"
                             android:layout_height="36dp"
                             android:layout_gravity="center"
-                            android:contentDescription="Icono categoría" />
+                            android:contentDescription="@string/label_categoria" />
 
                     </FrameLayout>
 
-                    <!-- Nombre categoría -->
                     <TextView
                         android:id="@+id/tvCategoria"
                         android:layout_width="wrap_content"
@@ -78,21 +76,19 @@
                         android:textAppearance="?attr/textAppearanceTitleMedium"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:layout_marginBottom="8dp"
-                        android:text="Categoría" />
+                        tools:text="Categoría" />
 
-                    <!-- Importe -->
                     <TextView
                         android:id="@+id/tvImporte"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?attr/textAppearanceHeadlineMedium"
                         android:textStyle="bold"
-                        android:text="0,00 €" />
+                        tools:text="0,00 €" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- ── Datos del movimiento ── -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -107,7 +103,6 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <!-- Fecha -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -121,13 +116,13 @@
                             android:src="@drawable/ic_calendar"
                             android:layout_marginEnd="12dp"
                             app:tint="?attr/colorOnSurfaceVariant"
-                            android:contentDescription="Fecha" />
+                            android:contentDescription="@null" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Fecha"
+                            android:text="@string/label_fecha"
                             android:textAppearance="?attr/textAppearanceBodyMedium"
                             android:textColor="?attr/colorOnSurfaceVariant" />
 
@@ -137,7 +132,7 @@
                             android:layout_height="wrap_content"
                             android:textAppearance="?attr/textAppearanceBodyMedium"
                             android:textStyle="bold"
-                            android:text="--" />
+                            tools:text="--" />
 
                     </LinearLayout>
 
@@ -146,7 +141,6 @@
                         android:layout_height="1dp"
                         android:background="?attr/colorOutlineVariant" />
 
-                    <!-- Tipo -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -160,13 +154,13 @@
                             android:src="@drawable/ic_swap_horiz"
                             android:layout_marginEnd="12dp"
                             app:tint="?attr/colorOnSurfaceVariant"
-                            android:contentDescription="Tipo" />
+                            android:contentDescription="@null" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Tipo"
+                            android:text="@string/label_tipo"
                             android:textAppearance="?attr/textAppearanceBodyMedium"
                             android:textColor="?attr/colorOnSurfaceVariant" />
 
@@ -176,7 +170,7 @@
                             android:layout_height="wrap_content"
                             android:textAppearance="?attr/textAppearanceBodyMedium"
                             android:textStyle="bold"
-                            android:text="--" />
+                            tools:text="--" />
 
                     </LinearLayout>
 
@@ -185,7 +179,6 @@
                         android:layout_height="1dp"
                         android:background="?attr/colorOutlineVariant" />
 
-                    <!-- Descripción -->
                     <LinearLayout
                         android:id="@+id/layoutDescripcion"
                         android:layout_width="match_parent"
@@ -201,13 +194,13 @@
                             android:src="@drawable/ic_description"
                             android:layout_marginEnd="12dp"
                             app:tint="?attr/colorOnSurfaceVariant"
-                            android:contentDescription="Descripción" />
+                            android:contentDescription="@null" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Descripción"
+                            android:text="@string/label_descripcion"
                             android:textAppearance="?attr/textAppearanceBodyMedium"
                             android:textColor="?attr/colorOnSurfaceVariant" />
 
@@ -219,14 +212,13 @@
                             android:gravity="end"
                             android:textAppearance="?attr/textAppearanceBodyMedium"
                             android:textStyle="bold"
-                            android:text="--" />
+                            tools:text="--" />
 
                     </LinearLayout>
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- ── Foto del recibo ── -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardFoto"
                 android:layout_width="match_parent"
@@ -246,7 +238,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Foto del recibo"
+                        android:text="@string/foto_del_recibo"
                         android:textAppearance="?attr/textAppearanceTitleSmall"
                         android:textStyle="bold"
                         android:layout_marginBottom="12dp" />
@@ -257,7 +249,7 @@
                         android:layout_height="220dp"
                         android:scaleType="centerCrop"
                         android:background="?attr/colorSurfaceVariant"
-                        android:contentDescription="Foto recibo" />
+                        android:contentDescription="@string/foto_del_recibo" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

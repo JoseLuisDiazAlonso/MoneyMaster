@@ -2,16 +2,7 @@ package com.example.moneymaster.utils;
 
 import android.util.LruCache;
 
-/**
- * QueryCache — Card #62: caché en memoria para resultados de consultas frecuentes.
- *
- * Uso:
- *   QueryCache.getInstance().put("total_mes_2025-01_userId1", 1234.56);
- *   Double cached = QueryCache.getInstance().get("total_mes_2025-01_userId1");
- *
- * Se invalida automáticamente al insertar/actualizar/borrar a través de los repositorios.
- * El LruCache descarta entradas menos usadas cuando supera maxSize.
- */
+
 public class QueryCache {
 
     // ── Claves de prefijo para organizar las entradas ─────────────────────

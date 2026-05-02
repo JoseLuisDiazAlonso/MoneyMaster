@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:paddingHorizontal="24dp"
         android:paddingBottom="8dp"
-        android:text="Compartir resumen del grupo"
+        android:text="@string/compartir_resumen_del_grupo"
         android:textAppearance="?attr/textAppearanceTitleMedium"
         android:textColor="?attr/colorOnSurface" />
 
@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:paddingHorizontal="24dp"
         android:paddingBottom="20dp"
-        android:text="Comparte el resumen por WhatsApp u otras apps"
+        android:text="@string/comparte_el_resumen_por_whatsapp_u_otras_apps"
         android:textAppearance="?attr/textAppearanceBodySmall"
         android:textColor="?attr/colorOnSurfaceVariant" />
 
@@ -68,7 +68,7 @@
                 android:layout_gravity="center"
                 app:srcCompat="@drawable/ic_text_snippet"
                 app:tint="?attr/colorPrimary"
-                android:contentDescription="Compartir como texto" />
+                android:contentDescription="@string/compartir_como_texto" />
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -81,14 +81,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Compartir por texto"
+                android:text="@string/compartir_por_texto"
                 android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:textColor="?attr/colorOnSurface" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Resumen con emojis listo para WhatsApp"
+                android:text="@string/resumen_con_emojis_listo_para_whatsapp"
                 android:textAppearance="?attr/textAppearanceBodySmall"
                 android:textColor="?attr/colorOnSurfaceVariant" />
 
@@ -126,7 +126,7 @@
             android:id="@+id/tvLoadingMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Preparando resumen…"
+            android:text="@string/preparando_resumen"
             android:textAppearance="?attr/textAppearanceBodyMedium"
             android:textColor="?attr/colorOnSurface" />
 

@@ -31,7 +31,7 @@ public class GruposFragment_EmptyState_integration extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // ── Card #56: Inicializar EmptyStateHelper ────────────────────────
+        //Inicializar EmptyStateHelper
         EmptyStateBinding emptyBinding = EmptyStateBinding.bind(
                 binding.getRoot().findViewById(R.id.layout_empty_state));
 

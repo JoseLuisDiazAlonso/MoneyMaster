@@ -31,7 +31,7 @@ import java.util.Locale;
 
 public class MovimientoAdapter extends ListAdapter<MovimientoReciente, MovimientoAdapter.MovimientoViewHolder> {
 
-    // ─── Callbacks ────────────────────────────────────────────────────────────
+    //Callbacks
 
     public interface OnMovimientoClickListener {
         void onMovimientoClick(MovimientoReciente item);
@@ -41,7 +41,7 @@ public class MovimientoAdapter extends ListAdapter<MovimientoReciente, Movimient
         void onMovimientoDelete(MovimientoReciente item, int position);
     }
 
-    // Card #35 — ahora recibe fotoId además de ruta para abrir ImageViewerActivity
+    //ahora recibe fotoId además de ruta para abrir ImageViewerActivity
     public interface OnFotoClickListener {
         void onFotoClick(int fotoId, String fotoRuta);
     }
@@ -68,7 +68,7 @@ public class MovimientoAdapter extends ListAdapter<MovimientoReciente, Movimient
                 }
             };
 
-    // ─── Constructor ─────────────────────────────────────────────────────────
+    //Constructor
 
     public MovimientoAdapter(OnMovimientoClickListener clickListener,
                              OnMovimientoDeleteListener deleteListener) {
@@ -81,7 +81,7 @@ public class MovimientoAdapter extends ListAdapter<MovimientoReciente, Movimient
         this.fotoClickListener = listener;
     }
 
-    // ─── Ciclo de vida del adapter ────────────────────────────────────────────
+    //Ciclo de vida del adapter
 
     @NonNull
     @Override
@@ -113,9 +113,9 @@ public class MovimientoAdapter extends ListAdapter<MovimientoReciente, Movimient
         animSet.start();
     }
 
-    // ═════════════════════════════════════════════════════════════════════════
+
     //  ViewHolder
-    // ═════════════════════════════════════════════════════════════════════════
+
 
     public class MovimientoViewHolder extends RecyclerView.ViewHolder {
 

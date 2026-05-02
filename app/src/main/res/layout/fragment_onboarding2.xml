@@ -21,38 +21,35 @@
             android:paddingLeft="24dp"
             android:paddingRight="24dp">
 
-            <!--Imagen Ilustrativa para el Onboarding-->
             <ImageView
                 android:id="@+id/imageOnboarding"
                 android:layout_width="200dp"
                 android:layout_height="160dp"
                 android:src="@drawable/finance"
-                android:contentDescription="Onboarding Image"
+                android:contentDescription="@string/onboarding2_title"
                 android:background="@drawable/bg_rounded_shadow"
                 android:elevation="8dp"
                 android:padding="20dp"
                 android:scaleType="fitCenter" />
 
-            <!--Texto para el Título-->
             <TextView
                 android:id="@+id/tvTitle2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:text="Visualiza tus finanzas"
+                android:text="@string/onboarding2_title"
                 android:textColor="?attr/colorOnSurface"
                 android:gravity="center"
                 android:textSize="28sp"
                 android:textStyle="bold" />
 
-            <!--Texto Descriptivo-->
             <TextView
                 android:id="@+id/tvDescription2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:gravity="center"
-                android:text="Accede a gráficos y estadísticas detalladas de tus movimientos"
+                android:text="@string/onboarding2_description"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="16sp"
                 android:lineSpacingExtra="4dp" />

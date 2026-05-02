@@ -2,37 +2,11 @@ package com.example.moneymaster.utils;
 
 import androidx.fragment.app.Fragment;
 
-/**
- * Card #65 – Control de errores global
- *
- * Envuelve operaciones críticas en try-catch con logging automático
- * y feedback al usuario, evitando duplicar bloques try-catch en toda la app.
- *
- * Uso en ViewModel (operación sin UI):
- * <pre>
- *   SafeExecutor.run("GastoViewModel", "guardarGasto", () -> {
- *       gastoDao.insert(gasto);
- *   });
- * </pre>
- *
- * Uso en Fragment (operación con feedback al usuario):
- * <pre>
- *   SafeExecutor.runWithUi(this, "GastoFragment", "exportarPDF", () -> {
- *       pdfService.exportar(gastos);
- *   }, "Error al exportar el PDF");
- * </pre>
- *
- * Uso con valor de retorno:
- * <pre>
- *   String path = SafeExecutor.runForResult("FotoManager", "comprimir",
- *       () -> imageOptimizer.compressImage(ruta), null);
- * </pre>
- */
+
 public class SafeExecutor {
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // Interfaces
-    // ─────────────────────────────────────────────────────────────────────────
 
     @FunctionalInterface
     public interface Operation {
@@ -44,9 +18,9 @@ public class SafeExecutor {
         T execute() throws Exception;
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // Sin UI (ViewModel / Repository / hilo de fondo)
-    // ─────────────────────────────────────────────────────────────────────────
+
 
     /**
      * Ejecuta la operación logueando cualquier excepción como ERROR.
@@ -78,9 +52,9 @@ public class SafeExecutor {
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // Con UI (Fragment — ejecutar siempre en hilo principal)
-    // ─────────────────────────────────────────────────────────────────────────
+
 
     /**
      * Ejecuta la operación y muestra un Snackbar de error si falla.

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- fragment_group_expenses.xml -->
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -18,7 +17,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- ── Header: nombre y total del grupo ── -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -46,7 +44,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Total del grupo"
+                        android:text="@string/total_del_grupo"
                         android:textAppearance="?attr/textAppearanceBodySmall"
                         android:textColor="?attr/colorOnSecondaryContainer"
                         android:alpha="0.7" />
@@ -65,13 +63,12 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- ── Sección: Balances por miembro ── -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginBottom="8dp"
-                android:text="Lo que ha pagado cada uno"
+                android:text="@string/lo_que_ha_pagado_cada_uno"
                 android:textAppearance="?attr/textAppearanceTitleSmall"
                 android:textColor="?attr/colorPrimary" />
 
@@ -86,18 +83,16 @@
                 tools:listitem="@layout/item_member_balance"
                 tools:itemCount="3" />
 
-            <!-- ── Sección: Gastos ── -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"
-                android:text="Gastos del grupo"
+                android:text="@string/gastos_del_grupo"
                 android:textAppearance="?attr/textAppearanceTitleSmall"
                 android:textColor="?attr/colorPrimary" />
 
-            <!-- Empty state gastos -->
             <LinearLayout
                 android:id="@+id/layoutEmptyExpenses"
                 android:layout_width="match_parent"
@@ -105,8 +100,7 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 android:padding="32dp"
-                android:visibility="gone"
-                tools:visibility="visible">
+                android:visibility="gone">
 
                 <ImageView
                     android:layout_width="80dp"
@@ -114,13 +108,13 @@
                     android:alpha="0.4"
                     app:srcCompat="@drawable/ic_receipt"
                     app:tint="?attr/colorOnSurfaceVariant"
-                    android:contentDescription="Sin gastos" />
+                    android:contentDescription="@null" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Sin gastos todavia"
+                    android:text="@string/sin_gastos_todavia"
                     android:textAppearance="?attr/textAppearanceTitleMedium"
                     android:textColor="?attr/colorOnSurfaceVariant" />
 
@@ -129,13 +123,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:gravity="center"
-                    android:text="Pulsa el boton + para anadir el primer gasto"
+                    android:text="@string/pulsa_boton_anadir_gasto"
                     android:textAppearance="?attr/textAppearanceBodySmall"
                     android:textColor="?attr/colorOnSurfaceVariant" />
 
             </LinearLayout>
 
-            <!-- Lista de gastos -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewExpenses"
                 android:layout_width="match_parent"
@@ -149,14 +142,13 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <!-- FAB añadir gasto -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddExpense"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:contentDescription="Añadir gasto"
+        android:contentDescription="@string/anadir_gasto_cd"
         app:srcCompat="@drawable/ic_add" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

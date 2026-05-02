@@ -25,23 +25,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Helper que encapsula TODA la configuración de MPAndroidChart para el LineChart
- * del módulo de Estadísticas (Card #44).
- *
- * Muestra la evolución de gastos acumulados día a día (o semana a semana)
- * dentro del mes activo. El área bajo la curva se rellena con un degradado
- * semitransparente. Soporta zoom y scroll horizontal.
- *
- * Uso básico:
- * <pre>
- *   LineChartHelper helper = new LineChartHelper(context, lineChart);
- *   helper.setOnPuntoClickListener((etiqueta, acumulado) -> mostrarDetalle(...));
- *
- *   viewModel.gastosDiarios.observe(this,   puntos -> helper.actualizarDiario(puntos));
- *   viewModel.gastosSemanales.observe(this, puntos -> helper.actualizarSemanal(puntos));
- * </pre>
- */
+
 public class LineChartHelper {
 
     private static final int COLOR_LINEA     = Color.parseColor("#E53935"); // rojo
@@ -53,7 +37,7 @@ public class LineChartHelper {
     private final LineChart lineChart;
     private OnPuntoClickListener puntoClickListener;
 
-    // ─── Interfaz de click ────────────────────────────────────────────────────
+    //Interfaz de click
     public interface OnPuntoClickListener {
         /**
          * @param etiqueta     etiqueta del punto clicado (p.ej. "15" o "S2")
@@ -63,7 +47,7 @@ public class LineChartHelper {
         void onPuntoClick(String etiqueta, double acumulado, double totalPunto);
     }
 
-    // ─── Constructor ──────────────────────────────────────────────────────────
+    //Constructor
 
     public LineChartHelper(Context context, LineChart lineChart) {
         this.context   = context;
@@ -71,7 +55,7 @@ public class LineChartHelper {
         configurarLineChart();
     }
 
-    // ─── Configuración inicial ────────────────────────────────────────────────
+    //Configuración inicial
 
     private void configurarLineChart() {
         lineChart.getDescription().setEnabled(false);
@@ -139,7 +123,7 @@ public class LineChartHelper {
         });
     }
 
-    // ─── Actualización de datos ───────────────────────────────────────────────
+    //Actualización de datos
 
     /**
      * Actualiza el gráfico con datos de vista DIARIA.
@@ -248,14 +232,14 @@ public class LineChartHelper {
         dataSet.setDrawValues(false);
     }
 
-    // ─── Estado vacío ─────────────────────────────────────────────────────────
+    //Estado vacío
 
     private void mostrarEstadoVacio() {
         lineChart.setData(null);
         lineChart.invalidate();
     }
 
-    // ─── Helpers de relleno de huecos ────────────────────────────────────────
+    //Helpers de relleno de huecos
 
     /**
      * Genera una lista de 31 PuntoLinea (uno por día).
@@ -305,7 +289,7 @@ public class LineChartHelper {
         return resultado;
     }
 
-    // ─── Setter ───────────────────────────────────────────────────────────────
+    //Setter
 
     public void setOnPuntoClickListener(OnPuntoClickListener listener) {
         this.puntoClickListener = listener;

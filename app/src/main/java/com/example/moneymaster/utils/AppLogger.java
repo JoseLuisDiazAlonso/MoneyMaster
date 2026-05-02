@@ -11,22 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * Card #65 – Control de errores global
- *
- * Logger centralizado con:
- *  - Niveles apropiados: VERBOSE, DEBUG, INFO, WARN, ERROR.
- *  - Los logs DEBUG/VERBOSE solo emiten si el nivel está habilitado (Log.isLoggable).
- *  - Logging opcional a fichero para ERROR y WARN (activable en runtime).
- *  - API estática para usar sin instanciar desde cualquier clase.
- *
- * Uso:
- * <pre>
- *   AppLogger.d("MiClase", "Valor calculado: " + valor);
- *   AppLogger.e("MiClase", "Error al guardar gasto", throwable);
- *   AppLogger.enableFileLogging(context);   // activar log a fichero
- * </pre>
- */
+
 public class AppLogger {
 
     private static final String APP_TAG      = "MoneyMaster";
@@ -37,9 +22,9 @@ public class AppLogger {
     private static boolean fileLoggingEnabled = false;
     private static Context appContext          = null;
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // Configuración
-    // ─────────────────────────────────────────────────────────────────────────
+
 
     /**
      * Activa la escritura de logs WARN y ERROR a fichero.
@@ -50,9 +35,9 @@ public class AppLogger {
         fileLoggingEnabled = true;
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // Métodos de log
-    // ─────────────────────────────────────────────────────────────────────────
+
 
     /** Solo si el nivel VERBOSE está habilitado para el tag. */
     public static void v(String tag, String msg) {
@@ -97,9 +82,8 @@ public class AppLogger {
         writeToFile("E", tag, msg, t);
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // Escritura a fichero
-    // ─────────────────────────────────────────────────────────────────────────
 
     private static void writeToFile(String level, String tag, String msg, Throwable t) {
         if (!fileLoggingEnabled || appContext == null) return;
@@ -138,9 +122,9 @@ public class AppLogger {
         return APP_TAG + "/" + tag;
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // Utilidades
-    // ─────────────────────────────────────────────────────────────────────────
+
 
     /**
      * Devuelve el fichero de log de aplicación, o null si no existe.

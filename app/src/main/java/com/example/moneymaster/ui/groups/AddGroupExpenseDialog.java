@@ -11,13 +11,14 @@ import android.widget.ArrayAdapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.moneymaster.R;
 import com.example.moneymaster.data.database.AppDatabase;
 import com.example.moneymaster.data.model.CategoriaGasto;
 import com.example.moneymaster.data.model.GastoGrupo;
 import com.example.moneymaster.data.repository.GrupoRepository;
 import com.example.moneymaster.databinding.DialogAddGroupExpenseBinding;
+import com.example.moneymaster.ui.categories.CategoryAdapter;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,9 +42,7 @@ public class AddGroupExpenseDialog extends BottomSheetDialogFragment {
     private CategoriaGasto categoriaSeleccionada;
 
     private static final SimpleDateFormat SDF =
-            new SimpleDateFormat("dd/MM/yyyy", new Locale("es", "ES"));
-
-    // ─── Factory ─────────────────────────────────────────────────────────────
+            new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
     public static AddGroupExpenseDialog newInstance(int grupoId) {
         AddGroupExpenseDialog d = new AddGroupExpenseDialog();
@@ -52,8 +51,6 @@ public class AddGroupExpenseDialog extends BottomSheetDialogFragment {
         d.setArguments(args);
         return d;
     }
-
-    // ─── Ciclo de vida ────────────────────────────────────────────────────────
 
     @Nullable
     @Override
@@ -79,8 +76,6 @@ public class AddGroupExpenseDialog extends BottomSheetDialogFragment {
         setupButtons();
     }
 
-    // ─── Date picker ──────────────────────────────────────────────────────────
-
     private void setupDatePicker() {
         binding.editTextExpenseDate.setOnClickListener(v -> {
             Calendar cal = Calendar.getInstance();
@@ -98,8 +93,6 @@ public class AddGroupExpenseDialog extends BottomSheetDialogFragment {
         });
     }
 
-    // ─── Carga de datos ───────────────────────────────────────────────────────
-
     private void loadData() {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             AppDatabase db = AppDatabase.getDatabase(requireContext());
@@ -111,11 +104,12 @@ public class AddGroupExpenseDialog extends BottomSheetDialogFragment {
         });
     }
 
-    // ─── Dropdown categoría ───────────────────────────────────────────────────
-
     private void setupDropdownCategoria() {
         List<String> nombresCategorias = new ArrayList<>();
-        for (CategoriaGasto c : categorias) nombresCategorias.add(c.nombre);
+        for (CategoriaGasto c : categorias) {
+            // FIX: resolver clave al nombre traducido
+            nombresCategorias.add(CategoryAdapter.resolverNombre(requireContext(), c.nombre));
+        }
 
         binding.autoCompleteCategoria.setAdapter(new ArrayAdapter<>(
                 requireContext(),
@@ -126,31 +120,27 @@ public class AddGroupExpenseDialog extends BottomSheetDialogFragment {
         });
     }
 
-    // ─── Botones ──────────────────────────────────────────────────────────────
-
     private void setupButtons() {
         binding.buttonCancelar.setOnClickListener(v -> dismiss());
         binding.buttonGuardarGasto.setOnClickListener(v -> validateAndSave());
     }
 
-    // ─── Validación y guardado ────────────────────────────────────────────────
-
     private void validateAndSave() {
         String montoStr = binding.editTextMonto.getText() != null
                 ? binding.editTextMonto.getText().toString().trim() : "";
         if (TextUtils.isEmpty(montoStr)) {
-            binding.inputLayoutMonto.setError("Introduce el monto");
+            binding.inputLayoutMonto.setError(getString(R.string.error_cantidad_requerida));
             return;
         }
         double monto;
         try {
             monto = Double.parseDouble(montoStr.replace(",", "."));
         } catch (NumberFormatException e) {
-            binding.inputLayoutMonto.setError("Monto no válido");
+            binding.inputLayoutMonto.setError(getString(R.string.error_cantidad_invalida));
             return;
         }
         if (monto <= 0) {
-            binding.inputLayoutMonto.setError("El monto debe ser mayor que 0");
+            binding.inputLayoutMonto.setError(getString(R.string.error_cantidad_positiva));
             return;
         }
         binding.inputLayoutMonto.setError(null);
@@ -158,7 +148,7 @@ public class AddGroupExpenseDialog extends BottomSheetDialogFragment {
         String pagadorNombre = binding.editTextPagador.getText() != null
                 ? binding.editTextPagador.getText().toString().trim() : "";
         if (TextUtils.isEmpty(pagadorNombre)) {
-            binding.inputLayoutPagador.setError("Introduce el nombre de quien pagó");
+            binding.inputLayoutPagador.setError(getString(R.string.qui_n_pag));
             return;
         }
         binding.inputLayoutPagador.setError(null);

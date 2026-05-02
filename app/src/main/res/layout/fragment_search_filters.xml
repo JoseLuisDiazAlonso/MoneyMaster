@@ -25,7 +25,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Filtros"
+        android:text="@string/filtros"
         android:textAppearance="?attr/textAppearanceTitleMedium"
         android:layout_marginBottom="16dp" />
 
@@ -33,7 +33,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Categoría"
+        android:text="@string/categor_a"
         android:textAppearance="?attr/textAppearanceLabelMedium"
         android:textColor="?attr/colorOnSurfaceVariant"
         android:layout_marginBottom="8dp" />
@@ -50,7 +50,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rango de precio"
+        android:text="@string/rango_de_precio"
         android:textAppearance="?attr/textAppearanceLabelMedium"
         android:textColor="?attr/colorOnSurfaceVariant"
         android:layout_marginBottom="8dp" />
@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
-            android:hint="Mínimo (€)"
+            android:hint="@string/m_nimo"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_monto_min"
@@ -82,7 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
-            android:hint="Máximo (€)"
+            android:hint="@string/m_ximo"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_monto_max"
@@ -97,7 +97,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Período"
+        android:text="@string/per_odo"
         android:textAppearance="?attr/textAppearanceLabelMedium"
         android:textColor="?attr/colorOnSurfaceVariant"
         android:layout_marginBottom="8dp" />
@@ -114,28 +114,28 @@
             android:id="@+id/chip_periodo_hoy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hoy"
+            android:text="@string/hoy"
             style="@style/Widget.Material3.Chip.Filter" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_periodo_semana"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Esta semana"
+            android:text="@string/esta_semana"
             style="@style/Widget.Material3.Chip.Filter" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_periodo_mes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Este mes"
+            android:text="@string/este_mes"
             style="@style/Widget.Material3.Chip.Filter" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_periodo_anio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Este año"
+            android:text="@string/este_a_o"
             style="@style/Widget.Material3.Chip.Filter" />
 
     </com.google.android.material.chip.ChipGroup>
@@ -152,7 +152,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
-            android:text="Limpiar"
+            android:text="@string/limpiar"
             style="@style/Widget.Material3.Button.OutlinedButton" />
 
         <com.google.android.material.button.MaterialButton
@@ -161,7 +161,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
-            android:text="Aplicar"
+            android:text="@string/aplicar"
             style="@style/Widget.Material3.Button" />
 
     </LinearLayout>

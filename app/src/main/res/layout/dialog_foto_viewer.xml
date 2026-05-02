@@ -33,7 +33,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="24dp"
         android:src="@drawable/ic_delete"
-        android:contentDescription="Eliminar foto"
+        android:contentDescription="@string/eliminar_foto"
         app:backgroundTint="#CC0000"
         app:tint="@android:color/white"
         xmlns:app="http://schemas.android.com/apk/res-auto"/>

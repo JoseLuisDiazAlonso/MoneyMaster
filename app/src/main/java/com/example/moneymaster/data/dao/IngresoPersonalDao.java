@@ -15,25 +15,13 @@ import com.example.moneymaster.data.model.TotalPorCategoria;
 
 import java.util.List;
 
-/**
- * IngresoPersonalDao — Card #62: métodos originales conservados + optimizaciones.
- *
- * Cambios respecto a la versión anterior:
- *  - getIngresosByUsuario()      → añadido LIMIT 200
- *  - getIngresosByMes()          → sin cambios (ya filtra por mes/año)
- *  - getUltimosIngresos()        → conservado con :limite dinámico
- *  - getTotalIngresosMes()       → sin cambios
- *  - getIngresosPorCategoria()   → sin cambios (agregado)
- *  - getResumenUltimosMeses()    → sin cambios
- *  - Todos los SELECT usan columnas indexadas (fecha, categoria_id)
- *    definidas en la entidad IngresoPersonal con @Index
- */
+
 @Dao
 public interface IngresoPersonalDao {
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // INSERT / UPDATE / DELETE
-    // ─────────────────────────────────────────────────────────────────────────
+
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertar(IngresoPersonal ingreso);
@@ -44,14 +32,11 @@ public interface IngresoPersonalDao {
     @Delete
     void eliminar(IngresoPersonal ingreso);
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // SELECT — usados por IngresoRepository
-    // ─────────────────────────────────────────────────────────────────────────
 
-    /**
-     * Todos los ingresos del usuario ordenados por fecha DESC.
-     * Card #62: LIMIT 200 añadido.
-     */
+    // SELECT — usados por IngresoRepository
+
+
+
     @Query("SELECT * FROM ingresos_personales " +
             "WHERE usuarioId = :usuarioId " +
             "ORDER BY fecha DESC " +
@@ -93,9 +78,9 @@ public interface IngresoPersonalDao {
     @Query("SELECT * FROM ingresos_personales WHERE id = :ingresoId LIMIT 1")
     LiveData<IngresoPersonal> getIngresoById(long ingresoId);
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // SELECT — Estadísticas (usados por IngresoRepository)
-    // ─────────────────────────────────────────────────────────────────────────
+
 
     /**
      * Suma de ingresos agrupada por categoría para el mes indicado.
@@ -128,9 +113,9 @@ public interface IngresoPersonalDao {
             "LIMIT :meses")
     LiveData<List<ResumenMensual>> getResumenUltimosMeses(long usuarioId, int meses);
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // SELECT — usados por StatisticsViewModel (Card #62)
-    // ─────────────────────────────────────────────────────────────────────────
+
+    // SELECT — usados por StatisticsViewModel
+
 
     /** Todos los ingresos del año indicado (usa índice de fecha). */
     @Query("SELECT * FROM ingresos_personales " +
@@ -147,9 +132,9 @@ public interface IngresoPersonalDao {
             "ORDER BY fecha DESC")
     LiveData<List<IngresoPersonal>> getIngresosByRango(long usuarioId, long inicio, long fin);
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // SELECT — Síncronas para Export (PDF / CSV)
-    // ─────────────────────────────────────────────────────────────────────────
+
 
     @Query("SELECT * FROM ingresos_personales " +
             "WHERE usuarioId = :usuarioId " +
@@ -166,9 +151,9 @@ public interface IngresoPersonalDao {
     @Query("SELECT * FROM ingresos_personales WHERE id = :id LIMIT 1")
     IngresoPersonal getByIdSync(long id);
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // SELECT — Síncronas para Export (rango de fechas y completo)
-    // ─────────────────────────────────────────────────────────────────────────
+
 
     /** Ingresos en un rango de timestamps ms — para ExportFragment CSV/PDF. */
     @Query("SELECT * FROM ingresos_personales " +
@@ -184,9 +169,9 @@ public interface IngresoPersonalDao {
             "ORDER BY fecha DESC")
     List<IngresoPersonal> getTodosIngresosParaExportacion(int usuarioId);
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // SELECT — usados por DashboardViewModel (rango de timestamps)
-    // ─────────────────────────────────────────────────────────────────────────
+
 
     /**
      * Ingresos con datos de categoría filtrados por rango de timestamps ms.

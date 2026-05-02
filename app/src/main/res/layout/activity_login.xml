@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="MoneyMaster"
+            android:text="@string/moneymaster"
             android:textSize="28sp"
             android:textStyle="bold"
             android:textAlignment="center"/>
@@ -37,8 +37,8 @@
             android:id="@+id/textView5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Inicia Sesión en tu cuenta"
-            android:textSize="16dp"
+            android:text="@string/inicia_sesi_n_en_tu_cuenta"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:layout_marginTop="16dp"
             android:textAlignment="center"
@@ -57,7 +57,7 @@
                 android:id="@+id/etEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Correo electrónico"
+                android:hint="@string/correo_electr_nico"
                 android:inputType="textEmailAddress"
                 android:imeOptions="actionNext"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -75,7 +75,7 @@
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Contraseña"
+                android:hint="@string/contrase_a"
                 android:inputType="textPassword"
                 android:imeOptions="actionDone"/>
 
@@ -93,7 +93,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Recordarme"
+                android:text="@string/recordarme"
                 android:textSize="14sp"/>
 
             <TextView
@@ -102,14 +102,13 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginRight="10sp"
-                android:text="¿Olvidaste tu contraseña?"
+                android:text="@string/olvidaste_tu_contrase_a"
                 android:textSize="13sp"
                 android:textColor="?attr/colorPrimary"
                 android:clickable="true"
                 android:focusable="true"/>
         </LinearLayout>
 
-        <!-- Mensaje de error credenciales incorrectos -->
         <TextView
             android:id="@+id/tvLoginError"
             android:layout_width="match_parent"
@@ -121,13 +120,12 @@
             android:gravity="center"
             android:visibility="gone" />
 
-        <!-- Botón Iniciar Sesión -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogin"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="24dp"
-            android:text="Iniciar Sesión"
+            android:text="@string/iniciar_sesi_n"
             android:textSize="16sp"
             style="@style/Widget.Material3.Button" />
 
@@ -144,7 +142,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="¿No tienes cuenta?"
+                android:text="@string/no_tienes_cuenta"
                 android:textSize="14sp"
                 android:textColor="?attr/colorOnSurfaceVariant"/>
 
@@ -153,7 +151,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Registrate"
+                android:text="@string/registrate"
                 android:layout_marginLeft="10sp"
                 android:textSize="14sp"
                 android:textStyle="bold"

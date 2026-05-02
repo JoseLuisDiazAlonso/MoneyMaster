@@ -9,31 +9,14 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.snackbar.Snackbar;
 
-/**
- * Card #65 – Control de errores global
- *
- * Helper centralizado para mostrar errores y mensajes al usuario
- * mediante Snackbar (preferido) o Toast (fallback sin View disponible).
- *
- * Uso desde Fragment:
- * <pre>
- *   ErrorUiHelper.showError(this, "No se pudo guardar el gasto");
- *   ErrorUiHelper.showSuccess(this, "Gasto guardado correctamente");
- *   ErrorUiHelper.showErrorConReintentar(this, "Error de guardado", v -> guardarGasto());
- * </pre>
- *
- * Uso desde Activity:
- * <pre>
- *   ErrorUiHelper.showError(this, binding.getRoot(), "Error al exportar");
- * </pre>
- */
+
 public class ErrorUiHelper {
 
     private static final String TAG = "ErrorUiHelper";
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // API para Fragment (busca la raíz de la vista automáticamente)
-    // ─────────────────────────────────────────────────────────────────────────
+
 
     /**
      * Muestra un Snackbar de error (rojo) en el Fragment.
@@ -92,9 +75,9 @@ public class ErrorUiHelper {
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // API para Activity
-    // ─────────────────────────────────────────────────────────────────────────
+
 
     public static void showError(Activity activity, View anchorView, String mensaje) {
         showErrorSnackbar(anchorView, mensaje);
@@ -108,9 +91,9 @@ public class ErrorUiHelper {
         Snackbar.make(anchorView, mensaje, Snackbar.LENGTH_SHORT).show();
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // Toast (fallback cuando no hay View)
-    // ─────────────────────────────────────────────────────────────────────────
+
 
     public static void showToastError(Context context, String mensaje) {
         AppLogger.w(TAG, "Mostrando Toast error (sin View): " + mensaje);
@@ -121,9 +104,9 @@ public class ErrorUiHelper {
         Toast.makeText(context, mensaje, Toast.LENGTH_SHORT).show();
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // Mensajes de error estándar reutilizables
-    // ─────────────────────────────────────────────────────────────────────────
+
 
     public static void showErrorGuardado(Fragment fragment) {
         showError(fragment, "No se pudo guardar. Inténtalo de nuevo.");
@@ -145,9 +128,8 @@ public class ErrorUiHelper {
         showError(fragment, "Por favor, completa todos los campos obligatorios.");
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // Helpers privados
-    // ─────────────────────────────────────────────────────────────────────────
 
     private static void showErrorSnackbar(View root, String mensaje) {
         Context ctx = root.getContext();

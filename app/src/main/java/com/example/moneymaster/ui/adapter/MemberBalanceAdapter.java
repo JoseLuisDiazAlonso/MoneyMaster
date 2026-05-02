@@ -1,4 +1,4 @@
-package com.example.moneymaster.ui.groups.adapter;
+package com.example.moneymaster.ui.adapter;
 
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moneymaster.databinding.ItemMemberBalanceBinding;
-import com.example.moneymaster.ui.groups.model.MemberBalanceItem;
+import com.example.moneymaster.data.model.MemberBalanceItem;
 
 import java.util.Locale;
 
@@ -45,7 +45,7 @@ public class MemberBalanceAdapter
         holder.bind(getItem(position));
     }
 
-    // ─── ViewHolder ───────────────────────────────────────────────────────────
+    //ViewHolder
 
     static class BalanceViewHolder extends RecyclerView.ViewHolder {
 

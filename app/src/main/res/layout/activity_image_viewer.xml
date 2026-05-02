@@ -132,7 +132,7 @@
             android:layout_marginBottom="12dp"
             app:fabSize="mini"
             android:src="@drawable/ic_share"
-            android:contentDescription="Compartir foto"
+            android:contentDescription="@string/compartir_foto"
             app:backgroundTint="?attr/colorSecondaryContainer"
             app:tint="?attr/colorOnSecondaryContainer" />
 
@@ -142,7 +142,7 @@
             android:layout_height="wrap_content"
             app:fabSize="mini"
             android:src="@drawable/ic_delete"
-            android:contentDescription="Eliminar foto"
+            android:contentDescription="@string/eliminar_foto"
             app:backgroundTint="#CC0000"
             app:tint="@android:color/white" />
 

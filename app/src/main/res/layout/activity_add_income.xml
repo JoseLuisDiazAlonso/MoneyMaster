@@ -1,25 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    activity_add_income.xml
-    ────────────────────────────────────────────────────────────────────────────
-    Layout de la pantalla "Añadir Ingreso".
 
-    ESTRUCTURA:
-      CoordinatorLayout
-        └── MaterialToolbar           (barra superior con botón atrás)
-        └── NestedScrollView          (scroll para teclado)
-              └── LinearLayout (vertical)
-                    ├── TextInputLayout  → importe
-                    ├── TextInputLayout  → categoría (ExposedDropdownMenu)
-                    ├── TextInputLayout  → descripción (opcional)
-                    ├── TextInputLayout  → fecha
-                    └── MaterialButton   → Guardar (verde)
-
-    COLORES:
-      El tema usa ?attr/colorPrimary que en AddIncomeActivity apunta a
-      @color/income_green (~#4CAF50), diferenciando visualmente ingresos
-      (verde) de gastos (rojo).
--->
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"

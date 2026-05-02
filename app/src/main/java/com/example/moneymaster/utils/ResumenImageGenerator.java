@@ -29,29 +29,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * ResumenImageGenerator — Genera una imagen PNG del balance de un grupo.
- *
- * Dibuja con Android Canvas una tarjeta visual de resolución fija (1080×1920 px)
- * con diseño Material, lista para compartir por WhatsApp o cualquier app.
- *
- * La imagen incluye:
- *   - Cabecera con degradado azul, nombre del grupo y fecha
- *   - Tarjeta de resumen: total, miembros, cuota equitativa
- *   - Tabla de gastos por miembro (con barras de progreso proporcionales)
- *   - Gráfico circular simple (pie chart) con colores por miembro
- *   - Sección de balance individual (verde = cobra, rojo = debe)
- *   - Lista de liquidaciones sugeridas
- *   - Pie con logo MoneyMaster
- *
- * Uso:
- *   ResumenImageGenerator.DatosGrupo datos = new ResumenImageGenerator.DatosGrupo(...);
- *   Uri uri = ResumenImageGenerator.generar(context, datos);
- *   ShareUtils.shareImage(context, uri); // pasando el File correspondiente
- *
- * Card #38 — Sprint 5: Compartir
- * Dependencias: SHARE-001 (ShareUtils), GROUP-007 (BalanceGrupo)
- */
+
 public class ResumenImageGenerator {
 
     // ── Dimensiones del canvas ─────────────────────────────────────────────────

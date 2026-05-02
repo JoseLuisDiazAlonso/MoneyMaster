@@ -2,7 +2,6 @@ package com.example.moneymaster.ui.groups.model;
 
 /**
  * POJO de UI que representa una transacción sugerida para saldar deudas.
- * Ejemplo: "Carlos debe 30€ a Ana"
  *
  * pagado es un flag en memoria (no se persiste en Room en este sprint).
  * Al marcar como pagado se oculta la tarjeta visualmente.

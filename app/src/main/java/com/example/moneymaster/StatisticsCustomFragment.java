@@ -24,19 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Pestaña "Personalizado" del fragmento de Estadísticas.
- *
- * CONTENIDO:
- *  1. Selector de rango de fechas con MaterialDateRangePicker
- *  2. Botón "Aplicar" para cargar los datos del rango seleccionado
- *  3. Tarjetas de resumen: Total Gastado · Total Ingresado · Balance
- *  4. Lista textual de los movimientos del período (sin gráfico complejo,
- *     ya que el rango puede abarcar semanas o años)
- *
- * El selector devuelve timestamps en milisegundos (UTC).
- * El ViewModel espera timestamps en segundos; hacemos la conversión aquí.
- */
+
 public class StatisticsCustomFragment extends Fragment {
 
     private FragmentStatisticsCustomBinding binding;
@@ -75,9 +63,9 @@ public class StatisticsCustomFragment extends Fragment {
         binding = null;
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
+
     // Setup
-    // ──────────────────────────────────────────────────────────────────────────
+
 
     /**
      * Abre el MaterialDateRangePicker al pulsar el campo de fechas.
@@ -127,9 +115,9 @@ public class StatisticsCustomFragment extends Fragment {
         });
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
+
     // Observadores
-    // ──────────────────────────────────────────────────────────────────────────
+
 
     private void observeData() {
         boolean b = viewModel.getGastosCustom() != null && false;// guard null inicial
@@ -189,9 +177,9 @@ public class StatisticsCustomFragment extends Fragment {
         binding.tvEmpty.setVisibility(numMovimientos == 0 ? View.VISIBLE : View.GONE);
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
+
     // Helpers
-    // ──────────────────────────────────────────────────────────────────────────
+
 
     private void updateDateLabel() {
         String inicio = SDF.format(new Date(startMs));

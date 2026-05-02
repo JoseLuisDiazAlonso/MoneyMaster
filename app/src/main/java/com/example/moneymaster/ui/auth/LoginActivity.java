@@ -68,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    // ── Listeners ─────────────────────────────────────────
+    //Listeners
 
     private void setupListeners() {
         btnLogin.setOnClickListener(v -> attemptLogin());
@@ -96,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    // ── Lógica de login ───────────────────────────────────
+    //Lógica de login
 
     private void attemptLogin() {
         String email    = etEmail.getText().toString().trim();
@@ -148,7 +148,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    // ── Éxito ─────────────────────────────────────────────
+    //Éxito
 
     private void handleLoginSuccess(User user, boolean remember) {
         // FIX: SessionManager centraliza la sesión en "MoneyMasterSession"
@@ -162,7 +162,7 @@ public class LoginActivity extends AppCompatActivity {
         navigateToMainActivity();
     }
 
-    // ── Error ─────────────────────────────────────────────
+    //Error
 
     private void handleLoginError() {
         setLoadingState(false);
@@ -171,7 +171,7 @@ public class LoginActivity extends AppCompatActivity {
         etPassword.requestFocus();
     }
 
-    // ── Helpers UI ────────────────────────────────────────
+    //Helpers UI
 
     private void showGeneralError(String message) {
         tvLoginError.setText(message);
@@ -187,7 +187,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setText(loading ? "Verificando..." : "Iniciar Sesión");
     }
 
-    // ── Vistas ────────────────────────────────────────────
+    //Vistas
 
     private void initViews() {
         tilEmail         = findViewById(R.id.tilEmail);
@@ -201,7 +201,7 @@ public class LoginActivity extends AppCompatActivity {
         tvForgotPassword = findViewById(R.id.tvForgotPassword);
     }
 
-    // ── Sesión ────────────────────────────────────────────
+    //Sesión
 
     private boolean checkExistingSession() {
         boolean rememberMe = prefs.getBoolean(KEY_REMEMBER_ME, false);

@@ -22,7 +22,7 @@ import java.util.Locale;
 
 public class GroupAdapter extends ListAdapter<GroupWithDetails, GroupAdapter.GroupViewHolder> {
 
-    // ─── DiffUtil ────────────────────────────────────────────────────────────
+    //DiffUtil
 
     private static final DiffUtil.ItemCallback<GroupWithDetails> DIFF_CALLBACK =
             new DiffUtil.ItemCallback<GroupWithDetails>() {
@@ -41,7 +41,7 @@ public class GroupAdapter extends ListAdapter<GroupWithDetails, GroupAdapter.Gro
                 }
             };
 
-    // ─── Interfaces ──────────────────────────────────────────────────────────
+    //Interfaces
 
     public interface OnGroupClickListener {
         void onGroupClick(GroupWithDetails group);
@@ -54,7 +54,7 @@ public class GroupAdapter extends ListAdapter<GroupWithDetails, GroupAdapter.Gro
     private final OnGroupClickListener  clickListener;
     private OnGroupDeleteListener       deleteListener;
 
-    // ─── Constructor ─────────────────────────────────────────────────────────
+    //Constructor
 
     public GroupAdapter(OnGroupClickListener clickListener) {
         super(DIFF_CALLBACK);
@@ -65,7 +65,7 @@ public class GroupAdapter extends ListAdapter<GroupWithDetails, GroupAdapter.Gro
         this.deleteListener = listener;
     }
 
-    // ─── ItemTouchHelper (swipe-to-delete) ───────────────────────────────────
+    //ItemTouchHelper (swipe-to-delete)
 
     public ItemTouchHelper createSwipeToDelete() {
         return new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
@@ -149,7 +149,7 @@ public class GroupAdapter extends ListAdapter<GroupWithDetails, GroupAdapter.Gro
         });
     }
 
-    // ─── Inflate ─────────────────────────────────────────────────────────────
+    //Inflate
 
     @NonNull
     @Override
@@ -164,7 +164,7 @@ public class GroupAdapter extends ListAdapter<GroupWithDetails, GroupAdapter.Gro
         holder.bind(getItem(position), clickListener);
     }
 
-    // ─── ViewHolder ──────────────────────────────────────────────────────────
+    //ViewHolder
 
     static class GroupViewHolder extends RecyclerView.ViewHolder {
 

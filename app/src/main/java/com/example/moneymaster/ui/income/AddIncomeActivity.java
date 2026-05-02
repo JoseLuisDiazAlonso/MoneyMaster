@@ -12,7 +12,8 @@ import com.example.moneymaster.R;
 import com.example.moneymaster.data.model.CategoriaIngreso;
 import com.example.moneymaster.data.model.IngresoPersonal;
 import com.example.moneymaster.databinding.ActivityAddIncomeBinding;
-import com.example.moneymaster.ui.adapter.IncomeDropdownAdapter; // FIX: singular
+import com.example.moneymaster.ui.adapter.IncomeDropdownAdapter;
+import com.example.moneymaster.ui.categories.CategoryAdapter;
 import com.example.moneymaster.utils.SessionManager;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointBackward;
@@ -34,10 +35,6 @@ public class AddIncomeActivity extends AppCompatActivity {
     private long             usuarioId             = -1;
 
     private static final String DATE_DISPLAY_FORMAT = "dd MMM yyyy";
-
-    // ═════════════════════════════════════════════════════════════════════════
-    //  CICLO DE VIDA
-    // ═════════════════════════════════════════════════════════════════════════
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,20 +75,17 @@ public class AddIncomeActivity extends AppCompatActivity {
         binding = null;
     }
 
-    // ═════════════════════════════════════════════════════════════════════════
-    //  CONFIGURACIÓN DE COMPONENTES
-    // ═════════════════════════════════════════════════════════════════════════
-
     private void setupCategoryDropdown() {
         categoryAdapter = new IncomeDropdownAdapter(this);
         binding.autoCompleteCategory.setAdapter(categoryAdapter);
         binding.autoCompleteCategory.setOnItemClickListener(
                 (parent, view, position, id) -> {
                     selectedCategory = categoryAdapter.getItem(position);
-                    // FIX: mostrar el nombre en lugar del toString() del objeto
                     if (selectedCategory != null) {
+                        // FIX: mostrar nombre traducido
                         binding.autoCompleteCategory.setText(
-                                selectedCategory.nombre, false);
+                                CategoryAdapter.resolverNombre(this, selectedCategory.nombre),
+                                false);
                     }
                     binding.tilCategory.setError(null);
                 });
@@ -116,8 +110,9 @@ public class AddIncomeActivity extends AppCompatActivity {
 
             picker.addOnPositiveButtonClickListener(selectionMs -> {
                 selectedDateTimestamp = selectionMs / 1000L;
+                // FIX: usar Locale.getDefault() en lugar de Locale("es","ES")
                 String formatted = new SimpleDateFormat(DATE_DISPLAY_FORMAT,
-                        new Locale("es", "ES")).format(new Date(selectionMs));
+                        Locale.getDefault()).format(new Date(selectionMs));
                 binding.etFecha.setText(formatted);
                 binding.tilFecha.setError(null);
             });
@@ -135,10 +130,6 @@ public class AddIncomeActivity extends AppCompatActivity {
         });
     }
 
-    // ═════════════════════════════════════════════════════════════════════════
-    //  LIVEDATA
-    // ═════════════════════════════════════════════════════════════════════════
-
     private void observeCategories() {
         viewModel.getCategorias().observe(this, categories -> {
             if (categories != null && !categories.isEmpty()) {
@@ -146,10 +137,6 @@ public class AddIncomeActivity extends AppCompatActivity {
             }
         });
     }
-
-    // ═════════════════════════════════════════════════════════════════════════
-    //  VALIDACIÓN
-    // ═════════════════════════════════════════════════════════════════════════
 
     private boolean validateForm() {
         boolean valid = true;
@@ -190,10 +177,6 @@ public class AddIncomeActivity extends AppCompatActivity {
 
         return valid;
     }
-
-    // ═════════════════════════════════════════════════════════════════════════
-    //  GUARDADO
-    // ═════════════════════════════════════════════════════════════════════════
 
     private void saveIncome() {
         IngresoPersonal ingreso = new IngresoPersonal();

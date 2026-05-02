@@ -1,6 +1,8 @@
 package com.example.moneymaster.ui;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -18,6 +20,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
 import com.example.moneymaster.R;
@@ -29,6 +32,7 @@ import com.example.moneymaster.utils.ResetManager;
 import com.example.moneymaster.utils.SecurityUtils;
 import com.example.moneymaster.utils.SessionManager;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -60,6 +64,7 @@ public class PerfilFragment extends Fragment {
         bindViews(view);
         cargarDatosUsuario();
         cargarVersion();
+        configurarSwitchDarkMode(view);
         configurarClickListeners(view);
     }
 
@@ -68,6 +73,29 @@ public class PerfilFragment extends Fragment {
         tvEmailActual   = view.findViewById(R.id.tvEmailActual);
         tvVersionActual = view.findViewById(R.id.tvVersionActual);
     }
+
+    // Modo oscuro
+
+    private void configurarSwitchDarkMode(View view) {
+        SharedPreferences prefs = requireContext()
+                .getSharedPreferences("MoneyMasterPrefs", Context.MODE_PRIVATE);
+
+        SwitchMaterial switchDark = view.findViewById(R.id.switchDarkMode);
+
+        // Marcar el switch según la preferencia guardada
+        switchDark.setChecked(prefs.getBoolean("dark_mode", false));
+
+        // Reaccionar al cambio
+        switchDark.setOnCheckedChangeListener((btn, isChecked) -> {
+            prefs.edit().putBoolean("dark_mode", isChecked).apply();
+            AppCompatDelegate.setDefaultNightMode(
+                    isChecked ? AppCompatDelegate.MODE_NIGHT_YES
+                            : AppCompatDelegate.MODE_NIGHT_NO
+            );
+        });
+    }
+
+    // Datos de usuario
 
     private void cargarDatosUsuario() {
         long userId = sessionManager.getUserId();
@@ -95,6 +123,8 @@ public class PerfilFragment extends Fragment {
         }
     }
 
+    // Click listeners
+
     private void configurarClickListeners(View view) {
         view.findViewById(R.id.itemNombre)
                 .setOnClickListener(v -> mostrarDialogEditarNombre());
@@ -105,6 +135,8 @@ public class PerfilFragment extends Fragment {
         view.findViewById(R.id.itemCerrarSesion)
                 .setOnClickListener(v -> mostrarDialogCerrarSesion());
     }
+
+    // Backup / Restore
 
     private void confirmarRestore(Uri uri) {
         new MaterialAlertDialogBuilder(requireContext())
@@ -127,6 +159,8 @@ public class PerfilFragment extends Fragment {
             });
         });
     }
+
+    // Eliminar datos
 
     private void mostrarDialogEliminarDatos() {
         View dialogView = LayoutInflater.from(requireContext())
@@ -180,6 +214,8 @@ public class PerfilFragment extends Fragment {
         });
     }
 
+    //Editar nombre
+
     private void mostrarDialogEditarNombre() {
         View dialogView = LayoutInflater.from(requireContext())
                 .inflate(R.layout.dialog_editar_nombre, null);
@@ -222,6 +258,8 @@ public class PerfilFragment extends Fragment {
             }
         });
     }
+
+    // Cambiar contraseña
 
     private void mostrarDialogCambiarPassword() {
         View dialogView = LayoutInflater.from(requireContext())
@@ -286,6 +324,8 @@ public class PerfilFragment extends Fragment {
         });
     }
 
+    //  Cerrar sesión
+
     private void mostrarDialogCerrarSesion() {
         new MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Cerrar sesión")
@@ -301,6 +341,8 @@ public class PerfilFragment extends Fragment {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
+
+    // Reiniciar app
 
     private void reiniciarApp() {
         Intent intent = requireContext().getPackageManager()

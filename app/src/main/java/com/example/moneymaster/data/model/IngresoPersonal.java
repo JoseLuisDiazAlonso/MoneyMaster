@@ -6,7 +6,7 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 /**
- * Entidad IngresoPersonal — Card #62: índices añadidos en fecha y categoria_id.
+ * Entidad IngresoPersonal
  */
 @Entity(
         tableName = "ingresos_personales",

@@ -8,7 +8,6 @@
     android:orientation="vertical"
     android:padding="24dp">
 
-    <!-- Drag handle -->
     <View
         android:layout_width="32dp"
         android:layout_height="4dp"
@@ -16,23 +15,21 @@
         android:layout_marginBottom="20dp"
         android:background="@drawable/bg_drag_handle" />
 
-    <!-- Titulo -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:text="Nuevo gasto"
+        android:text="@string/nuevo_gasto"
         android:textAppearance="?attr/textAppearanceTitleLarge"
         android:textColor="?attr/colorOnSurface" />
 
-    <!-- Monto -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/inputLayoutMonto"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
-        android:hint="Monto *"
+        android:hint="@string/monto"
         app:startIconDrawable="@drawable/ic_euro"
         app:suffixText="EUR">
 
@@ -42,16 +39,14 @@
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
             android:imeOptions="actionNext" />
-
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Descripcion -->
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
-        android:hint="Descripción (opcional)"
+        android:hint="@string/descripci_n_opcional"
         app:startIconDrawable="@drawable/ic_description">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -61,17 +56,15 @@
             android:inputType="textCapSentences"
             android:maxLength="100"
             android:imeOptions="actionNext" />
-
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Quién pagó (texto libre) -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/inputLayoutPagador"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
-        android:hint="Quién pagó *">
+        android:hint="@string/qui_n_pag">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextPagador"
@@ -80,16 +73,14 @@
             android:inputType="textPersonName|textCapWords"
             android:maxLength="50"
             android:imeOptions="actionNext" />
-
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Dropdown: categoría -->
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
-        android:hint="Categoría (opcional)"
+        android:hint="@string/categor_a_opcional"
         app:startIconDrawable="@drawable/ic_category">
 
         <AutoCompleteTextView
@@ -101,16 +92,14 @@
             android:focusableInTouchMode="false"
             android:cursorVisible="false"
             tools:text="Restaurantes" />
-
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Fecha -->
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:hint="Fecha"
+        android:hint="@string/fecha"
         app:startIconDrawable="@drawable/ic_calendar">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -120,10 +109,8 @@
             android:focusable="false"
             android:inputType="none"
             android:cursorVisible="false" />
-
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Botones acción -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -136,14 +123,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:text="Cancelar" />
+            android:text="@string/cancelar" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonGuardarGasto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Guardar gasto" />
-
+            android:text="@string/guardar_gasto" />
     </LinearLayout>
 
 </LinearLayout>

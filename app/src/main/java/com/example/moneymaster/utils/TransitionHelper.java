@@ -12,18 +12,7 @@ import androidx.core.util.Pair;
 
 import com.example.moneymaster.R;
 
-/**
- * TransitionHelper
- *
- * Centraliza todas las transiciones y animaciones de navegación de MoneyMaster.
- * Proporciona métodos estáticos para:
- *  - Transiciones entre Activities (slide, fade)
- *  - Animaciones de FAB (rotate + scale)
- *  - Shared element transitions para fotos
- *  - Animaciones de RecyclerView items
- *
- * Card #55 - Sprint 9 UX
- */
+
 public class TransitionHelper {
 
     // -------------------------------------------------------------------------
@@ -73,9 +62,9 @@ public class TransitionHelper {
         activity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
-    // -------------------------------------------------------------------------
+
     // Shared Element Transitions (fotos)
-    // -------------------------------------------------------------------------
+
 
     /**
      * Inicia una Activity con shared element transition para fotos.
@@ -118,9 +107,9 @@ public class TransitionHelper {
         }
     }
 
-    // -------------------------------------------------------------------------
+
     // FAB Animations
-    // -------------------------------------------------------------------------
+
 
     /**
      * Aplica animación de rotación + escala al FAB al abrirse.
@@ -157,9 +146,9 @@ public class TransitionHelper {
                 .start();
     }
 
-    // -------------------------------------------------------------------------
+
     // RecyclerView Item Animations (usadas desde el Adapter/Fragment)
-    // -------------------------------------------------------------------------
+
 
     /**
      * Carga y devuelve la animación de entrada de un item del RecyclerView.
@@ -196,9 +185,9 @@ public class TransitionHelper {
                 .start();
     }
 
-    // -------------------------------------------------------------------------
+
     // View Animations (genéricas)
-    // -------------------------------------------------------------------------
+
 
     /**
      * Hace aparecer una vista con fade in.

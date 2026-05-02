@@ -12,23 +12,7 @@ import com.github.mikephil.charting.utils.MPPointF;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-/**
- * MarkerView personalizado para el BarChart (Card #43).
- *
- * Muestra un pequeño globo flotante al tocar una barra, con:
- *   · Nombre del mes (tomado de la etiqueta del eje X)
- *   · Importe de la barra seleccionada formateado en euros
- *
- * Para usarlo:
- * <pre>
- *   BarTooltipMarker marker = new BarTooltipMarker(context, R.layout.marker_bar_tooltip);
- *   marker.setChartView(barChart);
- *   barChart.setMarker(marker);
- * </pre>
- *
- * NOTA: el layout marker_bar_tooltip.xml debe existir en res/layout/.
- * Ver el archivo marker_bar_tooltip.xml incluido en este card.
- */
+
 public class BarTooltipMarker extends MarkerView {
 
     private final TextView tvContenido;

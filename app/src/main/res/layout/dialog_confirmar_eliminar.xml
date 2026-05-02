@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Esta acción eliminará permanentemente:"
+        android:text="@string/esta_acci_n_eliminar_permanentemente"
         android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
         android:textColor="?attr/colorOnSurface" />
 
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginStart="8dp"
-        android:text="• Todos los gastos e ingresos personales\n• Todos los grupos y gastos grupales\n• Todas las fotos de recibos\n• Tu cuenta de usuario"
+        android:text="@string/todos_los_gastos_e_ingresos_personales_n_todos_los_grupos_y_gastos_grupales_n_todas_las_fotos_de_recibos_n_tu_cuenta_de_usuario"
         android:textAppearance="@style/TextAppearance.Material3.BodySmall"
         android:textColor="@color/expense_red" />
 
@@ -36,7 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="Las categorías predefinidas del sistema se restaurarán automáticamente."
+        android:text="@string/las_categor_as_predefinidas_del_sistema_se_restaurar_n_autom_ticamente"
         android:textAppearance="@style/TextAppearance.Material3.BodySmall"
         android:textColor="?attr/colorOnSurfaceVariant" />
 
@@ -53,7 +53,7 @@
         android:id="@+id/cbConfirmarEliminar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Entiendo que esto es irreversible"
+        android:text="@string/entiendo_que_esto_es_irreversible"
         android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
         android:textColor="?attr/colorOnSurface"
         android:buttonTint="@color/expense_red" />

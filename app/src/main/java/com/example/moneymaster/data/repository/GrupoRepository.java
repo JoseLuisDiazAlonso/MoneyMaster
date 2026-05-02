@@ -19,21 +19,7 @@ import com.example.moneymaster.data.service.BalancePersistenceService;
 
 import java.util.List;
 
-/**
- * Repositorio unificado para toda la gestión de grupos.
- *
- * Responsabilidades:
- *   - CRUD de Grupo, MiembroGrupo y GastoGrupo
- *   - Exposición de LiveData para la UI
- *   - Disparo automático de BalancePersistenceService tras cada
- *     inserción o eliminación de gasto
- *
- * El recálculo de balances se encadena automáticamente:
- *   insertarGasto() → Room actualiza gastos_grupo
- *                   → BalancePersistenceService recalcula
- *                   → Room actualiza balance_grupo
- *                   → LiveData notifica a la UI
- */
+
 public class GrupoRepository {
 
     private final AppDatabase db;

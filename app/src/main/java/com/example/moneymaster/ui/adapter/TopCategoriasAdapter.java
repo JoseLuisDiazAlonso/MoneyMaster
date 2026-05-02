@@ -23,19 +23,10 @@ import com.example.moneymaster.data.model.TopCategoriasItem;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Adaptador para el RecyclerView horizontal de Top 5 categorías más gastadas.
- *
- * Características:
- *  - Hereda de ListAdapter + DiffUtil para actualizaciones eficientes.
- *  - Calcula el porcentaje de cada categoría respecto al total de la lista.
- *  - Tiñe el icono vector con el color propio de la categoría.
- *  - Barra de progreso coloreada según la categoría.
- *  - Muestra el número de ranking (1 a 5) en el chip superior.
- */
+
 public class TopCategoriasAdapter extends ListAdapter<TopCategoriasItem, TopCategoriasAdapter.ViewHolder> {
 
-    // ─── DiffUtil ─────────────────────────────────────────────────────────────
+    //DiffUtil
 
     private static final DiffUtil.ItemCallback<TopCategoriasItem> DIFF_CALLBACK =
             new DiffUtil.ItemCallback<TopCategoriasItem>() {
@@ -52,7 +43,7 @@ public class TopCategoriasAdapter extends ListAdapter<TopCategoriasItem, TopCate
                 }
             };
 
-    // ─── Estado interno ───────────────────────────────────────────────────────
+    //Estado interno
 
     /** Total sumado de todos los ítems de la lista; usado para calcular el % de cada uno. */
     private double totalGeneral = 0.0;
@@ -80,7 +71,7 @@ public class TopCategoriasAdapter extends ListAdapter<TopCategoriasItem, TopCate
         super.submitList(list);
     }
 
-    // ─── Ciclo de vida del ViewHolder ─────────────────────────────────────────
+    //Ciclo de vida del ViewHolder
 
     @NonNull
     @Override
@@ -95,25 +86,25 @@ public class TopCategoriasAdapter extends ListAdapter<TopCategoriasItem, TopCate
         TopCategoriasItem item = getItem(position);
         Context ctx = holder.itemView.getContext();
 
-        // ── Ranking (1-indexed) ───────────────────────────────────────────────
+        //Ranking (1-indexed)
         holder.tvRanking.setText(String.valueOf(position + 1));
 
-        // ── Nombre ────────────────────────────────────────────────────────────
+        //Nombre
         holder.tvNombre.setText(item.nombreCategoria);
 
-        // ── Cantidad formateada ───────────────────────────────────────────────
+        //Cantidad formateada
         holder.tvCantidad.setText(formatearEuros(item.total));
 
-        // ── Porcentaje ────────────────────────────────────────────────────────
+        //Porcentaje
         int porcentaje = totalGeneral > 0
                 ? (int) Math.round((item.total / totalGeneral) * 100)
                 : 0;
         holder.tvPorcentaje.setText(porcentaje + "%");
 
-        // ── Barra de progreso ─────────────────────────────────────────────────
+        //Barra de progreso
         holder.progressBar.setProgress(porcentaje);
 
-        // ── Color de la categoría ─────────────────────────────────────────────
+        //Color de la categoría
         int color = parseColor(item.color);
         holder.progressBar.setProgressTintList(ColorStateList.valueOf(color));
 
@@ -122,7 +113,7 @@ public class TopCategoriasAdapter extends ListAdapter<TopCategoriasItem, TopCate
                 ColorStateList.valueOf(applyAlpha(color, 0.15f)));
         holder.tvRanking.setTextColor(color);
 
-        // ── Icono vector coloreado ────────────────────────────────────────────
+        //Icono vector coloreado
         int iconResId = resolverIcono(ctx, item.icono);
         if (iconResId != 0) {
             Drawable drawable = ContextCompat.getDrawable(ctx, iconResId);
@@ -142,7 +133,7 @@ public class TopCategoriasAdapter extends ListAdapter<TopCategoriasItem, TopCate
                 ColorStateList.valueOf(applyAlpha(color, 0.08f)));
     }
 
-    // ─── ViewHolder ───────────────────────────────────────────────────────────
+    //ViewHolder
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         final TextView   tvRanking;
@@ -163,10 +154,10 @@ public class TopCategoriasAdapter extends ListAdapter<TopCategoriasItem, TopCate
         }
     }
 
-    // ─── Helpers privados ─────────────────────────────────────────────────────
+    //Helpers privados
 
     /**
-     * Formatea un double como moneda en español (e.g. 1.250,00 €).
+     * Formatea un double como moneda en español
      */
     private String formatearEuros(double cantidad) {
         return String.format(new Locale("es", "ES"), "%,.2f €", cantidad);

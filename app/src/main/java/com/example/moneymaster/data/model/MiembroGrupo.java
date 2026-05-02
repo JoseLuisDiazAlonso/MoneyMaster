@@ -37,12 +37,12 @@ public class MiembroGrupo {
     @ColumnInfo(name = "usuarioId")
     public int usuarioId = 0;
 
-    /** Nombre visible del miembro en el grupo. Ej: "Ana", "Pedro". */
+    /** Nombre visible del miembro en el grupo.  */
     @Nullable
     @ColumnInfo(name = "nombre")
     public String nombre;
 
-    /** Color hex asignado al miembro. Ej: "#F44336". */
+    /** Color hex asignado al miembro.  */
     @Nullable
     @ColumnInfo(name = "color")
     public String color;

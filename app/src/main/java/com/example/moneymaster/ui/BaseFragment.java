@@ -13,45 +13,7 @@ import androidx.viewbinding.ViewBinding;
 import com.bumptech.glide.Glide;
 import com.example.moneymaster.utils.DisposableManager;
 
-/**
- * Card #64 – Manejo de memoria y leaks
- *
- * Fragment base que elimina automáticamente las tres fuentes más comunes
- * de leaks en Fragments:
- *
- *  1. ViewBinding: la referencia al binding se anula en onDestroyView()
- *     para no retener la jerarquía de vistas cuando el Fragment vive
- *     en el back-stack.
- *
- *  2. Listeners / callbacks: DisposableManager ejecuta todas las
- *     acciones de limpieza registradas.
- *
- *  3. Glide: se cancela cualquier petición pendiente ligada al Fragment.
- *
- * Uso:
- * <pre>
- *   public class MiFragment extends BaseFragment<FragmentMiBinding> {
- *
- *       {@literal @}Override
- *       protected FragmentMiBinding inflateBinding(LayoutInflater inflater,
- *                                                   ViewGroup container) {
- *           return FragmentMiBinding.inflate(inflater, container, false);
- *       }
- *
- *       {@literal @}Override
- *       public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
- *           super.onViewCreated(view, savedInstanceState);
- *
- *           // Registrar listeners que necesiten limpieza:
- *           TextWatcher watcher = new MyWatcher();
- *           binding.etSearch.addTextChangedListener(watcher);
- *           disposables.add(() -> binding.etSearch.removeTextChangedListener(watcher));
- *       }
- *   }
- * </pre>
- *
- * @param <VB> Tipo del ViewBinding generado por el Fragment
- */
+
 public abstract class BaseFragment<VB extends ViewBinding> extends Fragment {
 
     private VB _binding;
@@ -62,9 +24,8 @@ public abstract class BaseFragment<VB extends ViewBinding> extends Fragment {
     /** Gestor centralizado de limpieza de listeners. */
     protected final DisposableManager disposables = new DisposableManager();
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // Contrato para subclases
-    // ─────────────────────────────────────────────────────────────────────────
 
     /**
      * Infla el ViewBinding específico del Fragment.
@@ -76,9 +37,8 @@ public abstract class BaseFragment<VB extends ViewBinding> extends Fragment {
     protected abstract VB inflateBinding(@NonNull LayoutInflater inflater,
                                          @Nullable ViewGroup container);
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // Ciclo de vida
-    // ─────────────────────────────────────────────────────────────────────────
 
     @Nullable
     @Override

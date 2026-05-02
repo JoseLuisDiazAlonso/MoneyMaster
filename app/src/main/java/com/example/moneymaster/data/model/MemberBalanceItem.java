@@ -1,4 +1,4 @@
-package com.example.moneymaster.ui.groups.model;
+package com.example.moneymaster.data.model;
 
 
 public class MemberBalanceItem {

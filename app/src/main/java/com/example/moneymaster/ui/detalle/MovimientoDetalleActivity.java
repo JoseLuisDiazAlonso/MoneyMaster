@@ -38,7 +38,7 @@ public class MovimientoDetalleActivity extends AppCompatActivity {
     private final SimpleDateFormat dateFormat =
             new SimpleDateFormat("dd MMM yyyy", new Locale("es", "ES"));
 
-    // ── Static factory ────────────────────────────────────────────────────────
+    //Static factory
 
     public static void start(Context context, int id, MovimientoReciente.Tipo tipo) {
         Intent intent = new Intent(context, MovimientoDetalleActivity.class);
@@ -47,7 +47,7 @@ public class MovimientoDetalleActivity extends AppCompatActivity {
         context.startActivity(intent);
     }
 
-    // ── Ciclo de vida ─────────────────────────────────────────────────────────
+    //Ciclo de vida
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +87,7 @@ public class MovimientoDetalleActivity extends AppCompatActivity {
         binding = null;
     }
 
-    // ── Carga de datos ────────────────────────────────────────────────────────
+    //Carga de datos
 
     private void cargarDetalle(int id, MovimientoReciente.Tipo tipo) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
@@ -103,7 +103,7 @@ public class MovimientoDetalleActivity extends AppCompatActivity {
         });
     }
 
-    // ── Mostrar gasto ─────────────────────────────────────────────────────────
+    //Mostrar gasto
 
     private void mostrarGasto(GastoPersonal gasto) {
         if (gasto == null) { finish(); return; }
@@ -126,7 +126,7 @@ public class MovimientoDetalleActivity extends AppCompatActivity {
 
     }
 
-    // ── Mostrar ingreso ───────────────────────────────────────────────────────
+    //Mostrar ingreso
 
     private void mostrarIngreso(IngresoPersonal ingreso) {
         if (ingreso == null) { finish(); return; }
@@ -149,7 +149,7 @@ public class MovimientoDetalleActivity extends AppCompatActivity {
 
     }
 
-    // ── Categoría gasto ───────────────────────────────────────────────────────
+    //Categoría gasto
 
     private void cargarCategoriaGasto(Integer categoriaId) {
         if (categoriaId == null) {
@@ -169,7 +169,7 @@ public class MovimientoDetalleActivity extends AppCompatActivity {
         });
     }
 
-    // ── Categoría ingreso ─────────────────────────────────────────────────────
+    //Categoría ingreso
 
     private void cargarCategoriaIngreso(Integer categoriaId) {
         if (categoriaId == null) {
@@ -189,7 +189,7 @@ public class MovimientoDetalleActivity extends AppCompatActivity {
         });
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+    //Helpers
 
     private void aplicarColorIcono(String color, String icono) {
         try {

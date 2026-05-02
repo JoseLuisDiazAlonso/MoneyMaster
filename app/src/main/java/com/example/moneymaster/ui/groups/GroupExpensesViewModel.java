@@ -10,8 +10,9 @@ import androidx.lifecycle.MediatorLiveData;
 import com.example.moneymaster.data.database.AppDatabase;
 import com.example.moneymaster.data.model.GastoGrupo;
 import com.example.moneymaster.data.model.Grupo;
+import com.example.moneymaster.data.model.MemberBalanceItem;
 import com.example.moneymaster.data.model.MiembroGrupo;
-import com.example.moneymaster.ui.groups.model.MemberBalanceItem;
+import com.example.moneymaster.ui.groups.model.MiembroBalanceItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,7 +65,7 @@ public class GroupExpensesViewModel extends AndroidViewModel {
         balancesPorMiembro.addSource(miembrosSource, m -> recalcularBalances());
     }
 
-    // ─── LiveData públicos ────────────────────────────────────────────────────
+    // LiveData públicos
 
     public LiveData<Grupo>              getGrupo()             { return grupo; }
     public LiveData<List<GastoGrupo>>   getGastos()            { return gastos; }
@@ -76,7 +77,7 @@ public class GroupExpensesViewModel extends AndroidViewModel {
         return db.gastoGrupoDao().getTotalGastosGrupo(grupoId);
     }
 
-    // ─── Cálculo de balances ──────────────────────────────────────────────────
+    //Cálculo de balances
 
     private void recalcularBalances() {
         List<GastoGrupo>   listaGastos   = gastosSource   != null ? gastosSource.getValue()   : null;
@@ -109,7 +110,7 @@ public class GroupExpensesViewModel extends AndroidViewModel {
         balancesPorMiembro.setValue(resultado);
     }
 
-    // ─── Escrituras ───────────────────────────────────────────────────────────
+    //Escrituras
 
     public void eliminarGasto(GastoGrupo gasto) {
         AppDatabase.databaseWriteExecutor.execute(() ->

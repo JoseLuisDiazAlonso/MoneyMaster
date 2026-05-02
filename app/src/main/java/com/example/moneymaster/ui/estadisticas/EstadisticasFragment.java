@@ -34,6 +34,7 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.android.material.chip.ChipGroup;
 
+import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -61,19 +62,12 @@ public class EstadisticasFragment extends Fragment {
     private List<ResumenMensual> ultimosGastosMeses   = new ArrayList<>();
     private List<ResumenMensual> ultimosIngresosMeses = new ArrayList<>();
 
-    private static final String[] MESES_ES = {
-            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-    };
-
     private static final int[] COLORES_PIE = {
             0xFF4CAF50, 0xFF2196F3, 0xFFF44336, 0xFFFF9800, 0xFF9C27B0,
             0xFF00BCD4, 0xFFFFEB3B, 0xFF795548, 0xFF607D8B, 0xFFE91E63
     };
 
-    // =========================================================================
     // Ciclo de vida
-    // =========================================================================
 
     @Nullable
     @Override
@@ -97,9 +91,7 @@ public class EstadisticasFragment extends Fragment {
         observarDatos();
     }
 
-    // =========================================================================
     // Inicialización
-    // =========================================================================
 
     private void leerSesion() {
         usuarioId = new SessionManager(requireContext()).getUserId();
@@ -130,12 +122,10 @@ public class EstadisticasFragment extends Fragment {
         }
     }
 
-    // =========================================================================
     // Configuración inicial de gráficos
-    // =========================================================================
 
     private void configurarGraficos() {
-        // ── PieChart ──────────────────────────────────────────────────────────
+        // FIX: textos "sin datos" desde strings.xml
         pieChart.setUsePercentValues(true);
         pieChart.getDescription().setEnabled(false);
         pieChart.setDrawHoleEnabled(true);
@@ -144,9 +134,8 @@ public class EstadisticasFragment extends Fragment {
         pieChart.setDrawEntryLabels(false);
         pieChart.getLegend().setEnabled(true);
         pieChart.getLegend().setWordWrapEnabled(true);
-        pieChart.setNoDataText("Sin gastos este mes");
+        pieChart.setNoDataText(getString(R.string.sin_gastos_este_mes));
 
-        // ── BarChart ──────────────────────────────────────────────────────────
         barChart.getDescription().setEnabled(false);
         barChart.setDrawGridBackground(false);
         barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -155,9 +144,8 @@ public class EstadisticasFragment extends Fragment {
         barChart.getAxisRight().setEnabled(false);
         barChart.getAxisLeft().setAxisMinimum(0f);
         barChart.setFitBars(true);
-        barChart.setNoDataText("Sin datos disponibles");
+        barChart.setNoDataText(getString(R.string.sin_datos_disponibles));
 
-        // ── LineChart ─────────────────────────────────────────────────────────
         lineChart.getDescription().setEnabled(false);
         lineChart.setDrawGridBackground(false);
         lineChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -165,12 +153,10 @@ public class EstadisticasFragment extends Fragment {
         lineChart.getXAxis().setDrawGridLines(false);
         lineChart.getAxisRight().setEnabled(false);
         lineChart.getAxisLeft().setAxisMinimum(0f);
-        lineChart.setNoDataText("Sin gastos este mes");
+        lineChart.setNoDataText(getString(R.string.sin_gastos_este_mes));
     }
 
-    // =========================================================================
     // Selector de mes
-    // =========================================================================
 
     private void configurarSelectorMes() {
         actualizarTextMes();
@@ -196,9 +182,7 @@ public class EstadisticasFragment extends Fragment {
         });
     }
 
-    // =========================================================================
     // Chips de rango y vista
-    // =========================================================================
 
     private void configurarChips() {
         chipGroupRango.setOnCheckedStateChangeListener((group, checkedIds) -> {
@@ -217,13 +201,9 @@ public class EstadisticasFragment extends Fragment {
         });
     }
 
-    // =========================================================================
     // Observers LiveData
-    // =========================================================================
 
     private void observarDatos() {
-
-        // ── PieChart: gastos por categoría ────────────────────────────────────
         viewModel.gastosPorCategoria.observe(getViewLifecycleOwner(), lista -> {
             if (lista == null || lista.isEmpty()) {
                 pieChart.setVisibility(View.GONE);
@@ -235,7 +215,6 @@ public class EstadisticasFragment extends Fragment {
             }
         });
 
-        // ── BarChart: gastos vs ingresos ──────────────────────────────────────
         viewModel.resumenGastosMeses.observe(getViewLifecycleOwner(), gastos -> {
             ultimosGastosMeses = gastos != null ? gastos : new ArrayList<>();
             dibujarBarChart(ultimosGastosMeses, ultimosIngresosMeses);
@@ -246,7 +225,6 @@ public class EstadisticasFragment extends Fragment {
             dibujarBarChart(ultimosGastosMeses, ultimosIngresosMeses);
         });
 
-        // ── LineChart: evolución de gastos ────────────────────────────────────
         viewModel.resumenGastosMeses.observe(getViewLifecycleOwner(), gastos -> {
             ultimosGastosMeses = gastos != null ? gastos : new ArrayList<>();
             boolean semanal = chipGroupVista != null
@@ -255,9 +233,7 @@ public class EstadisticasFragment extends Fragment {
         });
     }
 
-    // =========================================================================
     // Dibujo de gráficos
-    // =========================================================================
 
     private void dibujarPieChart(List<TotalPorCategoria> lista) {
         List<PieEntry> entries = new ArrayList<>();
@@ -265,7 +241,7 @@ public class EstadisticasFragment extends Fragment {
             if (item.total > 0) {
                 entries.add(new PieEntry(
                         (float) item.total,
-                        item.nombreCategoria != null ? item.nombreCategoria : "Otros"));
+                        item.nombreCategoria != null ? item.nombreCategoria : getString(R.string.sin_descripcion)));
             }
         }
 
@@ -282,7 +258,7 @@ public class EstadisticasFragment extends Fragment {
         dataSet.setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
-                return String.format(new Locale("es", "ES"), "%.1f%%", value);
+                return String.format(Locale.getDefault(), "%.1f%%", value);
             }
         });
 
@@ -328,11 +304,11 @@ public class EstadisticasFragment extends Fragment {
             etiquetas.add(etiqueta);
         }
 
-        BarDataSet dsGastos = new BarDataSet(entriesGastos, "Gastos");
+        // FIX: leyendas desde strings.xml
+        BarDataSet dsGastos   = new BarDataSet(entriesGastos,   getString(R.string.leyenda_gastos));
+        BarDataSet dsIngresos = new BarDataSet(entriesIngresos, getString(R.string.leyenda_ingresos));
         dsGastos.setColor(0xFFF44336);
         dsGastos.setValueTextSize(9f);
-
-        BarDataSet dsIngresos = new BarDataSet(entriesIngresos, "Ingresos");
         dsIngresos.setColor(0xFF4CAF50);
         dsIngresos.setValueTextSize(9f);
 
@@ -363,7 +339,8 @@ public class EstadisticasFragment extends Fragment {
             etiquetas.add(mesCorto(datos.get(i).mes, datos.get(i).anio));
         }
 
-        LineDataSet dataSet = new LineDataSet(entries, "Gastos");
+        // FIX: leyenda desde strings.xml
+        LineDataSet dataSet = new LineDataSet(entries, getString(R.string.leyenda_gastos));
         dataSet.setColor(0xFF2196F3);
         dataSet.setCircleColor(0xFF2196F3);
         dataSet.setLineWidth(2f);
@@ -379,14 +356,22 @@ public class EstadisticasFragment extends Fragment {
         lineChart.invalidate();
     }
 
-    // =========================================================================
     // Helpers
-    // =========================================================================
 
     private void actualizarTextMes() {
         int mes  = calendarActual.get(Calendar.MONTH);
         int anio = calendarActual.get(Calendar.YEAR);
-        tvMesAnio.setText(MESES_ES[mes] + " " + anio);
+
+        // FIX: usar DateFormatSymbols con Locale.getDefault()
+        // en lugar del array MESES_ES hardcodeado en español
+        String[] meses = new DateFormatSymbols(Locale.getDefault()).getMonths();
+        String nombreMes = meses[mes];
+        // Primera letra en mayúscula
+        if (nombreMes != null && !nombreMes.isEmpty()) {
+            nombreMes = nombreMes.substring(0, 1).toUpperCase(Locale.getDefault())
+                    + nombreMes.substring(1);
+        }
+        tvMesAnio.setText(nombreMes + " " + anio);
     }
 
     private void empujarFiltroMes() {
@@ -396,10 +381,17 @@ public class EstadisticasFragment extends Fragment {
     }
 
     private String mesCorto(int mes, int anio) {
-        String[] mesesCortos = {"Ene", "Feb", "Mar", "Abr", "May", "Jun",
-                "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"};
+        // FIX: usar DateFormatSymbols con Locale.getDefault()
+        // en lugar del array mesesCortos hardcodeado en español
+        String[] mesesCortos = new DateFormatSymbols(Locale.getDefault()).getShortMonths();
         int idx = Math.max(0, Math.min(mes - 1, 11));
-        return mesesCortos[idx] + "\n" + (anio % 100);
+        String nombreCorto = mesesCortos[idx];
+        // Capitalizar primera letra
+        if (nombreCorto != null && !nombreCorto.isEmpty()) {
+            nombreCorto = nombreCorto.substring(0, 1).toUpperCase(Locale.getDefault())
+                    + nombreCorto.substring(1);
+        }
+        return nombreCorto + "\n" + (anio % 100);
     }
 
     @Override

@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // ── Toolbar ───────────────────────────────────────────────────────────────
+    // Toolbar
 
     private void setupToolbar() {
         setSupportActionBar(binding.toolbar);
@@ -72,9 +72,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void mostrarDialogCerrarSesion() {
         new MaterialAlertDialogBuilder(this)
-                .setTitle("Cerrar sesión")
-                .setMessage("¿Seguro que quieres cerrar sesión?")
-                .setPositiveButton("Cerrar sesión", (dialog, which) -> {
+                .setTitle(R.string.cerrar_sesion_titulo)
+                .setMessage(R.string.cerrar_sesion_mensaje)
+                .setPositiveButton(R.string.cerrar_sesi_n, (dialog, which) -> {
                     new SessionManager(this).clearSession();
                     Intent intent = new Intent(this,
                             com.example.moneymaster.ui.auth.LoginActivity.class);
@@ -83,11 +83,11 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 })
-                .setNegativeButton("Cancelar", null)
+                .setNegativeButton(R.string.cancelar, null)
                 .show();
     }
 
-    // ── BottomNavigation ──────────────────────────────────────────────────────
+    // BottomNavigation
 
     private void setupBottomNavigation() {
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -131,12 +131,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // ── FAB ───────────────────────────────────────────────────────────────────
+    // FAB — diálogo para elegir tipo de movimiento
 
     private void mostrarDialogTipoMovimiento() {
         new MaterialAlertDialogBuilder(this)
-                .setTitle("Añadir movimiento")
-                .setItems(new String[]{"Gasto", "Ingreso"}, (dialog, which) -> {
+                .setTitle(R.string.anadir_movimiento)
+                .setItems(new String[]{
+                        getString(R.string.tipo_gasto),
+                        getString(R.string.tipo_ingreso)
+                }, (dialog, which) -> {
                     if (which == 0) {
                         startActivity(new Intent(this, AddExpenseActivity.class));
                     } else {
@@ -155,7 +158,24 @@ public class MainActivity extends AppCompatActivity {
         binding.fabAddExpense.setVisibility(View.GONE);
     }
 
-    // ── Ciclo de vida ─────────────────────────────────────────────────────────
+    // Ciclo de vida
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Fragment current = getSupportFragmentManager()
+                .findFragmentById(R.id.fragmentContainer);
+        if (current instanceof HomeFragment) {
+            binding.fabAddExpense.setVisibility(View.VISIBLE);
+            binding.fabAddExpense.setOnClickListener(v -> mostrarDialogTipoMovimiento());
+        } else if (current instanceof GroupsFragment) {
+            binding.fabAddExpense.setVisibility(View.VISIBLE);
+            binding.fabAddExpense.setOnClickListener(v ->
+                    startActivity(new Intent(this, CreateGroupActivity.class)));
+        } else {
+            binding.fabAddExpense.setVisibility(View.GONE);
+        }
+    }
 
     @Override
     protected void onDestroy() {

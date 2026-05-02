@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:gravity="center"
-                android:text="Controla tus finanzas"
+                android:text="@string/controla_tus_finanzas"
                 android:textColor="?attr/colorOnSurface"
                 android:textSize="28sp"
                 android:textStyle="bold" />
@@ -52,7 +52,7 @@
                 android:layout_marginTop="20dp"
                 android:gravity="center"
                 android:lineSpacingExtra="4dp"
-                android:text="Lleva un registro completo de tus gastos e ingresos en un solo lugar"
+                android:text="@string/lleva_un_registro_completo_de_tus_gastos_e_ingresos_en_un_solo_lugar"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="16sp" />
 

@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".activity_onboarding">
 
-    <!--ViewPager2 para las pantallas de Onboarding-->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="0dp"
@@ -17,7 +16,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!--Indicador de puntos-->
     <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
         android:id="@+id/dots_indicator"
         android:layout_width="wrap_content"
@@ -33,7 +31,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!--Contenedor de Botones-->
     <LinearLayout
         android:id="@+id/buttonContainer"
         android:layout_width="0dp"
@@ -45,17 +42,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!--Botón Saltar-->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSkip"
             style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Saltar"
+            android:text="@string/btn_saltar"
             android:textAllCaps="false"/>
 
-        <!--Botón Siguiente-->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnNext"
             style="@style/Widget.Material3.Button"
@@ -63,17 +58,16 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
-            android:text="Siguiente"
+            android:text="@string/btn_siguiente"
             android:textAllCaps="false"/>
 
-        <!--Botón Comenzar (inicialmente oculto)-->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnStart"
             style="@style/Widget.Material3.Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="Comenzar"
+            android:text="@string/btn_comenzar"
             android:textAllCaps="false"
             android:visibility="gone"/>
 

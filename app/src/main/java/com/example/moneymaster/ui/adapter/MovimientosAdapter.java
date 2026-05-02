@@ -16,7 +16,7 @@ import com.bumptech.glide.Glide;
 import com.example.moneymaster.R;
 import com.example.moneymaster.data.model.MovimientoReciente;
 import com.example.moneymaster.databinding.ItemMovimientoBinding;
-import com.example.moneymaster.util.SwipeDeleteManager;
+import com.example.moneymaster.utils.SwipeDeleteManager;
 import com.example.moneymaster.utils.TransitionHelper;
 
 import java.text.NumberFormat;
@@ -62,7 +62,7 @@ public class MovimientosAdapter
         this.longClickListener = listener;
     }
 
-    // ── DiffUtil ──────────────────────────────────────────────────────────────
+    //DiffUtil
 
     public void submitList(List<MovimientoReciente> newList) {
         List<MovimientoReciente> safeNew = newList != null ? newList : new ArrayList<>();
@@ -85,7 +85,7 @@ public class MovimientosAdapter
         result.dispatchUpdatesTo(this);
     }
 
-    // ── Eliminación con animación ─────────────────────────────────────────────
+    //Eliminación con animación
 
     public void removeItemWithAnimation(RecyclerView recyclerView, int position,
                                         Runnable afterRemove) {
@@ -116,7 +116,7 @@ public class MovimientosAdapter
         holder.itemView.startAnimation(removeAnim);
     }
 
-    // ── SwipeDeleteManager.AdapterContract ────────────────────────────────────
+    //SwipeDeleteManager.AdapterContract
 
     @Override
     public MovimientoReciente getItemAt(int position) {
@@ -139,7 +139,7 @@ public class MovimientosAdapter
         notifyItemInserted(safePos);
     }
 
-    // ── RecyclerView.Adapter ──────────────────────────────────────────────────
+    //RecyclerView.Adapter ─
 
     @NonNull
     @Override
@@ -162,7 +162,7 @@ public class MovimientosAdapter
     @Override
     public int getItemCount() { return items.size(); }
 
-    // ── ViewHolder ────────────────────────────────────────────────────────────
+    //ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 

@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--App Name-->
+    <string name="app_name">MoneyMaster</string>
+    <!--Splash Screen-->
+    <string name="app_logo">MoneyMaster Logo</string>
+    <string name="splash_title">Money Master</string>
+    <string name="splash_description">Expense and Income Tracker</string>
+    <string name="version">v1.0.0</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- BottomNavigation labels -->
+    <string name="nav_home">Home</string>
+    <string name="nav_groups">Groups</string>
+    <string name="nav_stats">Statistics</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- Toolbar menu -->
+    <string name="action_notifications">Notifications</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_logout">Log out</string>
+
+    <!-- FAB -->
+    <string name="fab_add_expense">Add expense</string>
+
+    <!-- Fragment placeholders -->
+    <string name="fragment_home_placeholder">Home — coming soon</string>
+    <string name="fragment_groups_placeholder">Groups — coming soon</string>
+    <string name="fragment_stats_placeholder">Statistics — coming soon</string>
+    <string name="fragment_profile_placeholder">Profile — coming soon</string>
+
+    <!-- Titles -->
+    <string name="title_add_expense">Add Expense</string>
+
+    <!-- Field hints -->
+    <string name="hint_cantidad">Amount (€)</string>
+    <string name="hint_categoria">Category</string>
+    <string name="hint_descripcion">Description (optional)</string>
+    <string name="hint_fecha">Date</string>
+
+    <!-- Labels -->
+    <string name="label_foto_recibo">Receipt photo</string>
+
+    <!-- Buttons -->
+    <string name="btn_anadir_foto">Add receipt photo</string>
+    <string name="btn_cambiar_foto">Change photo</string>
+    <string name="btn_guardar_gasto">Save expense</string>
+
+    <!-- Photo dialog options -->
+    <string name="option_camara">Camera</string>
+    <string name="option_galeria">Gallery</string>
+    <string name="dialog_fuente_foto">Select photo</string>
+
+    <!-- Accessibility -->
+    <string name="cd_foto_recibo">Receipt photo</string>
+    <string name="cd_eliminar_foto">Delete photo</string>
+
+    <!-- Validation errors -->
+    <string name="error_cantidad_requerida">Amount is required</string>
+    <string name="error_cantidad_positiva">Amount must be greater than 0</string>
+    <string name="error_cantidad_invalida">Invalid amount format</string>
+    <string name="error_categoria_requerida">Please select a category</string>
+
+    <!-- System errors -->
+    <string name="error_permiso_camara">Camera permission is required</string>
+    <string name="error_crear_foto">Could not create photo file</string>
+    <string name="error_guardar_gasto">Error saving expense</string>
+
+    <!-- Success messages -->
+    <string name="msg_gasto_guardado">Expense saved successfully</string>
+
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <!-- Add Income screen -->
+    <string name="add_income_title">Add Income</string>
+    <string name="hint_amount">Amount (€)</string>
+    <string name="hint_category">Category</string>
+    <string name="hint_description_optional">Description (optional)</string>
+    <string name="hint_date">Date</string>
+    <string name="btn_save_income">Save Income</string>
+    <string name="select_date">Select date</string>
+
+    <!-- Validation errors income -->
+    <string name="error_amount_required">Amount is required</string>
+    <string name="error_amount_positive">Amount must be greater than 0</string>
+    <string name="error_amount_invalid">Please enter a valid number</string>
+    <string name="error_category_required">Please select a category</string>
+    <string name="error_date_required">Please select a date</string>
+    <string name="error_save_income">Error saving income. Please try again.</string>
+
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</string>
+    <string name="icono_categoria">Category icon</string>
+
+    <!-- Dashboard / Movements -->
+    <string name="empty_movements_title">No movements yet</string>
+    <string name="empty_movements_subtitle">Record your first expense or income\nto start tracking your finances.</string>
+    <string name="empty_movements_cta">Add movement</string>
+
+    <!-- Groups -->
+    <string name="empty_groups_title">Create your first group</string>
+    <string name="empty_groups_subtitle">Groups let you share expenses\nwith friends, family or housemates.</string>
+    <string name="empty_groups_cta">Create group</string>
+
+    <!-- Statistics -->
+    <string name="empty_statistics_title">Add expenses to see statistics</string>
+    <string name="empty_statistics_subtitle">Once you add movements, you\'ll see\ncharts with a breakdown of your finances.</string>
+    <string name="empty_statistics_cta">Add expense</string>
+
+    <!-- Photo board -->
+    <string name="empty_photos_title">No photos in this group</string>
+    <string name="empty_photos_subtitle">Attach photos of receipts or tickets\nto group expenses to keep them handy.</string>
+    <string name="empty_photos_cta">Add photo</string>
+
+    <!-- Swipe to delete -->
+    <string name="swipe_gasto_eliminado">Expense deleted</string>
+    <string name="swipe_deshacer">Undo</string>
+    <string name="swipe_gasto_grupo_eliminado">Group expense deleted</string>
+
+    <!-- Search -->
+    <string name="search_hint">Search expense...</string>
+    <string name="search_filter">Filters</string>
+    <string name="search_results_count">%d result</string>
+    <string name="search_results_count_plural">%d results</string>
+    <string name="filter_categoria">Category</string>
+    <string name="filter_precio">Price range</string>
+    <string name="filter_periodo">Period</string>
+    <string name="filter_hoy">Today</string>
+    <string name="filter_semana">This week</string>
+    <string name="filter_mes">This month</string>
+    <string name="filter_anio">This year</string>
+    <string name="filter_aplicar">Apply</string>
+    <string name="filter_limpiar">Clear</string>
+    <string name="filter_monto_min">Minimum (€)</string>
+    <string name="filter_monto_max">Maximum (€)</string>
+    <string name="sin_descripcion">No description</string>
+
+    <!-- General -->
+    <string name="money_master">MONEY MASTER</string>
+    <string name="moneymaster">MoneyMaster</string>
+    <string name="cancelar">Cancel</string>
+    <string name="continuar">Continue</string>
+    <string name="eliminar">Delete</string>
+    <string name="compartir">Share</string>
+    <string name="buscar">Search</string>
+    <string name="limpiar">Clear</string>
+    <string name="aplicar">Apply</string>
+    <string name="exportar_datos">Export data</string>
+    <string name="predefinida">Default</string>
+
+    <!-- Login -->
+    <string name="inicia_sesi_n_en_tu_cuenta">Sign in to your account</string>
+    <string name="correo_electr_nico">Email address</string>
+    <string name="contrase_a">Password</string>
+    <string name="recordarme">Remember me</string>
+    <string name="olvidaste_tu_contrase_a">Forgot your password?</string>
+    <string name="iniciar_sesi_n">Log In</string>
+    <string name="no_tienes_cuenta">Don\'t have an account?</string>
+    <string name="registrate">Sign up</string>
+
+    <!-- Register -->
+    <string name="crear_cuenta">Create account</string>
+    <string name="nombre">Name</string>
+    <string name="email">Email</string>
+    <string name="repetir_contrase_a">Repeat Password</string>
+    <string name="pregunta_de_seguridad">Security question</string>
+    <string name="selecciona_una_pregunta">Select a question</string>
+    <string name="tu_respuesta">Your answer</string>
+    <string name="sala_para_recuperar_tu_contrase_a_si_la_olvidas">Use it to recover your password if you forget it</string>
+    <string name="registrarse">Register</string>
+
+    <!-- Recover password -->
+    <string name="recuperar_contrase_a">Recover password</string>
+    <string name="introduce_tu_email_y_responde_la_pregunta_de_seguridad">Enter your email and answer the security question</string>
+    <string name="nueva_contrase_a">New password</string>
+    <string name="confirmar_contrase_a">Confirm password</string>
+    <string name="confirmar_nueva_contrase_a">Confirm new password</string>
+    <string name="guardar_nueva_contrase_a">Save new password</string>
+    <string name="volver_al_inicio_de_sesi_n">Back to login</string>
+    <string name="c_digo_de_6_d_gitos">6-digit code</string>
+
+    <!-- Change password -->
+    <string name="cambiar_contrase_a">Change password</string>
+    <string name="contrase_a_actual">Current password</string>
+
+    <!-- Expenses -->
+    <string name="nuevo_gasto">New expense</string>
+    <string name="guardar_gasto">Save expense</string>
+    <string name="fecha">Date</string>
+    <string name="monto">Amount *</string>
+
+    <!-- Groups -->
+    <string name="datos_del_grupo">Group details</string>
+    <string name="nombre_del_grupo">Group name *</string>
+    <string name="descripci_n_opcional">Description (optional)</string>
+    <string name="total_del_grupo">Group total</string>
+    <string name="sin_grupos_todav_a">No groups yet</string>
+    <string name="crea_un_grupo_para_compartir_y_dividir_gastos_con_otras_personas">Create a group to share and split expenses with others</string>
+    <string name="qui_n_pag">Who paid *</string>
+    <string name="categor_a_opcional">Category (optional)</string>
+
+    <!-- Statistics -->
+    <string name="marzo_2025">March 2025</string>
+    <string name="enero_2025">January 2025</string>
+    <string name="gastos_por_categor_a">Expenses by category</string>
+    <string name="sin_gastos_este_mes">No expenses this month</string>
+    <string name="mostrando_todas">Showing: all</string>
+    <string name="gastos_vs_ingresos">Expenses vs Income</string>
+    <string name="sin_datos_disponibles">No data available</string>
+    <string name="evoluci_n_de_gastos">Expense trend</string>
+    <string name="diario">Daily</string>
+    <string name="semanal">Weekly</string>
+    <string name="balance_del_mes">Monthly balance</string>
+    <string name="ingresos">Income</string>
+    <string name="gastos">Expenses</string>
+    <string name="gastado">Spent</string>
+    <string name="evoluci_n_mensual">Monthly trend</string>
+    <string name="gastos_por_mes">Expenses by month</string>
+    <string name="rango_de_fechas">Date range</string>
+
+    <!-- Home -->
+    <string name="ltimos_movimientos">Latest movements</string>
+    <string name="sin_movimientos_este_mes">No movements this month</string>
+    <string name="ver_todos">See all</string>
+    <string name="controla_tus_finanzas">Take control of your finances</string>
+    <string name="lleva_un_registro_completo_de_tus_gastos_e_ingresos_en_un_solo_lugar">Keep a complete record of your expenses and income in one place</string>
+
+    <!-- Profile -->
+    <string name="perfil">Profile</string>
+    <string name="nombre_de_usuario">Username</string>
+    <string name="cargando">Loading...</string>
+    <string name="datos">Data</string>
+    <string name="eliminar_todos_los_datos">Delete all data</string>
+    <string name="cerrar_sesi_n">Log out</string>
+    <string name="acerca_de">About</string>
+    <string name="versi_n">Version</string>
+    <string name="_1_0_0">1.0.0</string>
+    <string name="nuevo_nombre">New name</string>
+
+    <!-- Appearance -->
+    <string name="apariencia">Appearance</string>
+    <string name="modo_oscuro">Dark mode</string>
+
+    <!-- Delete data -->
+    <string name="esta_acci_n_eliminar_permanentemente">This action will permanently delete:</string>
+    <string name="todos_los_gastos_e_ingresos_personales_n_todos_los_grupos_y_gastos_grupales_n_todas_las_fotos_de_recibos_n_tu_cuenta_de_usuario">• All personal expenses and income\n• All groups and group expenses\n• All receipt photos\n• Your user account</string>
+    <string name="las_categor_as_predefinidas_del_sistema_se_restaurar_n_autom_ticamente">Default system categories will be restored automatically.</string>
+    <string name="entiendo_que_esto_es_irreversible">I understand this is irreversible</string>
+
+    <!-- Photos -->
+    <string name="sin_fotos_todav_a">No photos yet</string>
+
+    <!-- Filters -->
+    <string name="filtros">Filters</string>
+    <string name="categor_a">Category</string>
+    <string name="rango_de_precio">Price range</string>
+    <string name="per_odo">Period</string>
+    <string name="hoy">Today</string>
+    <string name="esta_semana">This week</string>
+    <string name="este_mes">This month</string>
+    <string name="este_a_o">This year</string>
+    <string name="m_nimo">Minimum (€)</string>
+    <string name="m_ximo">Maximum (€)</string>
+
+    <!-- Export -->
+    <string name="exporta_tus_movimientos_para_abrirlos_en_excel_u_otras_apps">Export your movements to open them in Excel or other apps.</string>
+    <string name="exportar_csv">Export CSV</string>
+    <string name="compatible_con_excel_google_sheets_numbers">Compatible with Excel, Google Sheets, Numbers</string>
+    <string name="exportar_mes_actual">Export current month</string>
+    <string name="exportar_todos_los_datos">Export all data</string>
+    <string name="exportar_pdf">Export PDF</string>
+    <string name="informe_con_resumen_tabla_y_gr_fico">Report with summary, table and chart</string>
+    <string name="exportar_informe_del_mes">Export monthly report</string>
+
+    <!-- Categories -->
+    <string name="nombre_de_la_categor_a">Category name</string>
+    <string name="ingresado">Received</string>
+
+    <!-- Splash -->
+    <string name="splash_main_title">Money Master</string>
+    <string name="splash_subtitle">Expense and Income Tracker</string>
+
+    <!-- Onboarding 2 -->
+    <string name="onboarding2_title">Visualize your finances</string>
+    <string name="onboarding2_description">Access detailed charts and statistics of your transactions</string>
+
+    <!-- Onboarding 3 -->
+    <string name="onboarding3_title">Privacy guaranteed</string>
+    <string name="onboarding3_description">All your data is stored only on your device, with no internet connection</string>
+
+    <!-- Onboarding buttons -->
+    <string name="btn_saltar">Skip</string>
+    <string name="btn_siguiente">Next</string>
+    <string name="btn_comenzar">Get Started</string>
+
+    <!-- Movement detail -->
+    <string name="detalle">Detail</string>
+    <string name="label_fecha">Date</string>
+    <string name="label_tipo">Type</string>
+    <string name="label_descripcion">Description</string>
+    <string name="label_categoria">Category</string>
+    <string name="foto_del_recibo">Receipt photo</string>
+
+    <!-- Statistics month -->
+    <string name="balance">Balance</string>
+    <string name="gastos_por_categoria_titulo">Expenses by category</string>
+    <string name="gastos_vs_ingresos_semana">Expenses vs Income by week</string>
+    <string name="gastado_label">Spent</string>
+    <string name="ingresado_label">Received</string>
+
+    <!-- Statistics custom -->
+    <string name="seleccionar_fechas">Select dates</string>
+    <string name="ningun_rango_seleccionado">No range selected</string>
+    <string name="selecciona_rango_y_aplica">Select a date range and press Apply</string>
+    <string name="n_movimientos">%d movements</string>
+
+    <!-- Groups balance and expenses -->
+    <string name="balance_por_miembro">Balance per member</string>
+    <string name="transacciones_sugeridas">Suggested transactions</string>
+    <string name="descripcion_transacciones">Make these transfers to settle all debts with the minimum number of payments</string>
+    <string name="todo_saldado">All settled</string>
+    <string name="deudas_pagadas">All debts have been paid</string>
+    <string name="sin_deudas">No debts</string>
+    <string name="grupo_equilibrado">The group is perfectly balanced</string>
+    <string name="lo_que_ha_pagado_cada_uno">What each person has paid</string>
+    <string name="gastos_del_grupo">Group expenses</string>
+    <string name="sin_gastos_todavia">No expenses yet</string>
+    <string name="pulsa_boton_anadir_gasto">Tap the + button to add the first expense</string>
+    <string name="anadir_gasto_cd">Add expense</string>
+    <string name="pagado">Paid</string>
+    <string name="cuota_label">Share: %s EUR</string>
+
+    <!-- Item group expense / member -->
+    <string name="gasto">Expense</string>
+    <string name="eliminar_miembro">Remove member</string>
+    <!-- Statistics tabs -->
+    <string name="tab_mes_actual">Current month</string>
+    <string name="tab_anio">Year</string>
+    <string name="tab_personalizado">Custom</string>
+    <!-- MainActivity dialogs -->
+    <string name="anadir_movimiento">Add movement</string>
+    <string name="tipo_gasto">Expense</string>
+    <string name="tipo_ingreso">Income</string>
+    <string name="cerrar_sesion_titulo">Log out</string>
+    <string name="cerrar_sesion_mensaje">Are you sure you want to log out?</string>
+    <!-- Create group / Home -->
+    <string name="miembros">Members</string>
+    <string name="se_necesitan_al_menos_2_miembros">At least 2 members are required</string>
+    <string name="a_adir_miembro">Add member</string>
+    <string name="crear_grupo">Create group</string>
+    <string name="mes_anterior">Previous month</string>
+    <string name="mes_siguiente">Next month</string>
+    <string name="filtros_avanzados">Advanced filters</string>
+    <string name="sin_movimientos">No movements</string>
+    <!-- Categories / StatisticsMonth -->
+    <string name="sin_categorias">No categories</string>
+    <string name="pulsa_para_crear_categoria">Tap + to create your first custom category</string>
+    <string name="anadir_categoria_cd">Add category</string>
+    <string name="sin_categorias_cd">No categories</string>
+    <string name="eliminar_categoria">Delete category</string>
+    <string name="confirmar_eliminar_categoria">Are you sure you want to delete this category?</string>
+    <string name="categoria_eliminada">Category deleted</string>
+    <string name="sem_1">Week 1</string>
+    <string name="sem_2">Week 2</string>
+    <string name="sem_3">Week 3</string>
+    <string name="sem_4">Week 4</string>
+    <string name="sin_datos">No data</string>
+    <string name="leyenda_gastos">Expenses</string>
+    <string name="leyenda_ingresos">Income</string>
+    <!-- Extra strings -->
+    <string name="guardar">Save</string>
+    <string name="nueva_categor_a">New category</string>
+    <string name="vista_previa">Preview</string>
+    <string name="icono">Icon</string>
+    <string name="color">Color</string>
+    <string name="a_o_anterior">Previous year</string>
+    <string name="a_o_siguiente">Next year</string>
+    <string name="valor_inicial">0.00 €</string>
+    <string name="valor_vacio">--</string>
+    <!-- Image viewer / dialogs / fragments -->
+    <string name="compartir_foto">Share photo</string>
+    <string name="eliminar_foto">Delete photo</string>
+    <string name="expira_en_02_00_00">⏰ Expires in: 02:00:00</string>
+    <string name="compartir_resumen_del_grupo">Share group summary</string>
+    <string name="comparte_el_resumen_por_whatsapp_u_otras_apps">Share the summary via WhatsApp or other apps</string>
+    <string name="compartir_como_texto">Share as text</string>
+    <string name="compartir_por_texto">Share by text</string>
+    <string name="resumen_con_emojis_listo_para_whatsapp">Summary with emojis ready for WhatsApp</string>
+    <string name="preparando_resumen">Preparing summary...</string>
+    <string name="sin_fotos">No photos</string>
+    <string name="las_fotos_de_recibos_del_grupo_aparecer_n_aqu">Group receipt photos will appear here</string>
+    <string name="icono_de_categor_a">Category icon</string>
+    <string name="eliminar_categor_a">Delete category</string>
+    <string name="icono_categor_a">Category icon</string>
+    <string name="secci_n">Section</string>
+    <string name="seleccionado">Selected</string>
+    <string name="foto_de_recibo">Receipt photo</string>
+    <string name="_3m">3M</string>
+    <string name="_6m">6M</string>
+    <string name="_12m">12M</string>
+    <string name="seleccionada">Selected</string>
+    <string name="valor_cero">0.00</string>
+    <!-- Categories adapter -->
+    <string name="cat_predefinidas">Default</string>
+    <string name="cat_mis_categorias">My categories</string>
+    <string name="cat_gastos_tab">Expenses</string>
+    <string name="cat_ingresos_tab">Income</string>
+    <string name="error_nombre_obligatorio">Name is required</string>
+    <string name="error_maximo_30">Maximum 30 characters</string>
+    <string name="categoria_creada">Category created successfully</string>
+    <!-- Predefined expense categories -->
+    <string name="cat_alimentacion">Food</string>
+    <string name="cat_transporte">Transport</string>
+    <string name="cat_vivienda">Housing</string>
+    <string name="cat_salud">Health</string>
+    <string name="cat_educacion">Education</string>
+    <string name="cat_ocio">Entertainment</string>
+    <string name="cat_ropa">Clothing</string>
+    <string name="cat_tecnologia">Technology</string>
+    <string name="cat_viajes">Travel</string>
+    <string name="cat_mascotas">Pets</string>
+    <string name="cat_restaurantes">Restaurants</string>
+    <string name="cat_supermercado">Supermarket</string>
+    <string name="cat_seguros">Insurance</string>
+    <string name="cat_suscripciones">Subscriptions</string>
+    <string name="cat_otros_gastos">Other expenses</string>
+    <string name="cat_otros">Others</string>
+    <!-- Predefined income categories -->
+    <string name="cat_salario">Salary</string>
+    <string name="cat_freelance">Freelance</string>
+    <string name="cat_inversiones">Investments</string>
+    <string name="cat_alquiler">Rent</string>
+    <string name="cat_regalo">Gift</string>
+    <string name="cat_reembolso">Refund</string>
+    <string name="cat_venta">Sale</string>
+    <string name="cat_otros_ingresos">Other income</string>
+    <!-- Register validation errors -->
+    <string name="error_email_registrado">This email is already registered</string>
+    <string name="error_password_min">Password must be at least 6 characters</string>
+    <string name="error_passwords_no_coinciden">Passwords do not match</string>
+    <!-- Group detail tabs -->
+    <string name="tab_gastos_grupo">Expenses</string>
+    <string name="tab_balance_grupo">Balance</string>
+    <string name="grupo_default">Group</string>
+</resources>

@@ -17,24 +17,15 @@ import com.example.moneymaster.data.model.GastoGrupo;
 import com.example.moneymaster.databinding.FragmentGroupExpensesBinding;
 import com.example.moneymaster.ui.adapter.GroupExpenseAdapter;
 import com.example.moneymaster.ui.expenses.FotoViewerDialog;
-import com.example.moneymaster.ui.groups.adapter.MemberBalanceAdapter;
-import com.example.moneymaster.util.SwipeDeleteManager;
+import com.example.moneymaster.ui.adapter.MemberBalanceAdapter;
+import com.example.moneymaster.utils.SwipeDeleteManager;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * GroupExpensesFragment — Card #57
- *
- * Cambios respecto a la versión anterior:
- *  - Añade swipeDeleteManager para gestionar swipe-to-delete con Deshacer
- *  - onDestroyView() llama a swipeDeleteManager.cancelPendingDelete()
- *    para forzar borrado inmediato si el fragment se destruye con un
- *    item pendiente de eliminar
- *  - El resto del fragment permanece sin cambios
- */
+
 public class GroupExpensesFragment extends Fragment {
 
     public static final String ARG_GRUPO_ID = "grupoId";
@@ -83,7 +74,7 @@ public class GroupExpensesFragment extends Fragment {
         observeData();
     }
 
-    // ─── Setup ────────────────────────────────────────────────────────────────
+    //Setup
 
     private void setupRecyclerViews() {
         // RecyclerView de balances por miembro
@@ -106,7 +97,7 @@ public class GroupExpensesFragment extends Fragment {
         binding.recyclerViewExpenses.setNestedScrollingEnabled(false);
     }
 
-    // ─── Card #57: Swipe to delete ────────────────────────────────────────────
+    //Swipe to delete
 
     private void setupSwipeDelete() {
         swipeDeleteManager = new SwipeDeleteManager<>(
@@ -126,7 +117,7 @@ public class GroupExpensesFragment extends Fragment {
         });
     }
 
-    // ─── Observadores ─────────────────────────────────────────────────────────
+    //Observadores
 
     private void observeData() {
         viewModel.getGrupo().observe(getViewLifecycleOwner(), grupo -> {
@@ -163,7 +154,7 @@ public class GroupExpensesFragment extends Fragment {
         });
     }
 
-    // ─── Card #33: carga mapa fotoReciboId → rutaArchivo ─────────────────────
+    //carga mapa fotoReciboId → rutaArchivo
 
     private void cargarRutasFotos(List<GastoGrupo> gastos) {
         if (gastos == null || gastos.isEmpty()) {

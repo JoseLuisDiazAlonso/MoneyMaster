@@ -43,13 +43,13 @@
                     android:alpha="0.4"
                     app:srcCompat="@drawable/ic_group"
                     app:tint="?attr/colorOnSurfaceVariant"
-                    android:contentDescription="Sin grupos" />
+                    android:contentDescription="@string/sin_grupos" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
-                    android:text="Sin grupos todavía"
+                    android:text="@string/sin_grupos_todav_a"
                     android:textAppearance="?attr/textAppearanceTitleMedium"
                     android:textColor="?attr/colorOnSurface" />
 
@@ -58,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:gravity="center"
-                    android:text="Crea un grupo para compartir y dividir gastos con otras personas"
+                    android:text="@string/crea_un_grupo_para_compartir_y_dividir_gastos_con_otras_personas"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
                     android:textColor="?attr/colorOnSurfaceVariant" />
 

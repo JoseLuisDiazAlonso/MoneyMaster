@@ -14,10 +14,7 @@ import java.util.List;
 @Dao
 public interface BalanceGrupoDao {
 
-    /**
-     * Inserta o reemplaza un balance por su clave única
-     * (grupo_id, usuario_deudor_id, usuario_acreedor_id).
-     */
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long upsertBalance(BalanceGrupo balance);
 

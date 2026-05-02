@@ -75,9 +75,9 @@ public class StatisticsYearFragment extends Fragment {
         binding = null;
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
+
     // Setup
-    // ──────────────────────────────────────────────────────────────────────────
+
 
     private void setupYearSelector() {
         binding.btnYearPrev.setOnClickListener(v -> changeYear(-1));
@@ -116,9 +116,9 @@ public class StatisticsYearFragment extends Fragment {
         binding.barChartMensual.animateY(600);
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
+
     // Observadores
-    // ──────────────────────────────────────────────────────────────────────────
+
 
     private void observeData() {
         viewModel.getSelectedYear().observe(getViewLifecycleOwner(),
@@ -135,9 +135,9 @@ public class StatisticsYearFragment extends Fragment {
         });
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
+
     // Actualización de UI
-    // ──────────────────────────────────────────────────────────────────────────
+
 
     private void updateSummaryGastos(List<GastoPersonal> gastos) {
         double total = 0;
@@ -209,9 +209,9 @@ public class StatisticsYearFragment extends Fragment {
         binding.barChartMensual.invalidate();
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
+
     // Helpers
-    // ──────────────────────────────────────────────────────────────────────────
+
 
     private void changeYear(int delta) {
         Integer year  = viewModel.getSelectedYear().getValue();

@@ -11,7 +11,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- ─── Selector de mes ───────────────────────────────────────── -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -32,7 +31,7 @@
                     android:layout_height="40dp"
                     android:src="@drawable/ic_chevron_left"
                     android:background="?attr/actionBarItemBackground"
-                    android:contentDescription="Mes anterior" />
+                    android:contentDescription="@string/mes_anterior" />
 
                 <TextView
                     android:id="@+id/tv_mes_anio"
@@ -40,7 +39,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Marzo 2025"
+                    android:text="@string/marzo_2025"
                     android:textAppearance="?attr/textAppearanceTitleMedium" />
 
                 <ImageButton
@@ -49,12 +48,11 @@
                     android:layout_height="40dp"
                     android:src="@drawable/ic_chevron_right"
                     android:background="?attr/actionBarItemBackground"
-                    android:contentDescription="Mes siguiente" />
+                    android:contentDescription="@string/mes_siguiente" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- ─── Tarjeta PieChart ──────────────────────────────────────── -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_pie_chart"
             android:layout_width="match_parent"
@@ -72,7 +70,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Gastos por categoría"
+                    android:text="@string/gastos_por_categor_a"
                     android:textAppearance="?attr/textAppearanceTitleMedium"
                     android:layout_marginBottom="8dp" />
 
@@ -81,7 +79,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:gravity="center"
-                    android:text="Sin gastos este mes"
+                    android:text="@string/sin_gastos_este_mes"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:visibility="gone" />
@@ -97,14 +95,13 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="8dp"
-                    android:text="Mostrando: todas"
+                    android:text="@string/mostrando_todas"
                     app:closeIconVisible="true"
                     android:visibility="gone" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- ─── Tarjeta BarChart ──────────────────────────────────────── -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_bar_chart"
             android:layout_width="match_parent"
@@ -130,7 +127,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Gastos vs Ingresos"
+                        android:text="@string/gastos_vs_ingresos"
                         android:textAppearance="?attr/textAppearanceTitleMedium" />
 
                     <com.google.android.material.chip.ChipGroup
@@ -144,7 +141,7 @@
                             android:id="@+id/chip_3_meses"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="3M"
+                            android:text="@string/_3m"
                             style="@style/Widget.Material3.Chip.Filter" />
 
                         <com.google.android.material.chip.Chip
@@ -159,7 +156,7 @@
                             android:id="@+id/chip_12_meses"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="12M"
+                            android:text="@string/_12m"
                             style="@style/Widget.Material3.Chip.Filter" />
 
                     </com.google.android.material.chip.ChipGroup>
@@ -171,7 +168,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="180dp"
                     android:gravity="center"
-                    android:text="Sin datos disponibles"
+                    android:text="@string/sin_datos_disponibles"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:visibility="gone" />
@@ -184,7 +181,6 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- ─── Tarjeta LineChart ─────────────────────────────────────── -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_line_chart"
             android:layout_width="match_parent"
@@ -199,7 +195,6 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <!-- Cabecera: título + selector diario/semanal -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -211,7 +206,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Evolución de gastos"
+                        android:text="@string/evoluci_n_de_gastos"
                         android:textAppearance="?attr/textAppearanceTitleMedium" />
 
                     <com.google.android.material.chip.ChipGroup
@@ -225,7 +220,7 @@
                             android:id="@+id/chip_vista_diaria"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Diario"
+                            android:text="@string/diario"
                             android:checked="true"
                             style="@style/Widget.Material3.Chip.Filter" />
 
@@ -233,31 +228,28 @@
                             android:id="@+id/chip_vista_semanal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Semanal"
+                            android:text="@string/semanal"
                             style="@style/Widget.Material3.Chip.Filter" />
 
                     </com.google.android.material.chip.ChipGroup>
 
                 </LinearLayout>
 
-                <!-- Estado vacío -->
                 <TextView
                     android:id="@+id/tv_sin_datos_line"
                     android:layout_width="match_parent"
                     android:layout_height="180dp"
                     android:gravity="center"
-                    android:text="Sin gastos este mes"
+                    android:text="@string/sin_gastos_este_mes"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:visibility="gone" />
 
-                <!-- LineChart -->
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/line_chart"
                     android:layout_width="match_parent"
                     android:layout_height="260dp" />
 
-                <!-- Resumen al tocar un punto -->
                 <TextView
                     android:id="@+id/tv_line_detalle"
                     android:layout_width="wrap_content"

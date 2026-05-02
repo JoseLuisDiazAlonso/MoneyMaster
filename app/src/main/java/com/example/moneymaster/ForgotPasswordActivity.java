@@ -20,16 +20,7 @@ import com.example.moneymaster.utils.SecurityUtils;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * ForgotPasswordActivity
- *
- * Flujo en 2 pasos:
- *   Paso 1 — El usuario introduce su email. Si existe en BD se avanza al paso 2.
- *   Paso 2 — Se muestra la pregunta de seguridad asociada a ese email.
- *            Si la respuesta es correcta, el usuario puede establecer una nueva contraseña.
- *
- * La actividad gestiona ambos pasos con un único layout usando visibilidad de vistas.
- */
+
 public class ForgotPasswordActivity extends AppCompatActivity {
 
     // ── Preguntas de seguridad disponibles ────────────────
@@ -198,7 +189,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         });
     }
 
-    // ── 6. Navegar a Login con mensaje ────────────────────
+    // ── 6. Navegar a Login con mensaje
     private void navigateToLogin() {
         Intent intent = new Intent(this, LoginActivity.class);
         intent.putExtra("password_reset_success", true);
@@ -207,7 +198,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         finish();
     }
 
-    // ── Utilidad ──────────────────────────────────────────
+    //Utilidad
     private String getTextFrom(TextInputEditText et) {
         return et.getText() != null ? et.getText().toString().trim() : "";
     }

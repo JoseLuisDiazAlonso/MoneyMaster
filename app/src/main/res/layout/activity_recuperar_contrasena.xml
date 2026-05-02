@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="?attr/colorSurface">
 
-    <!-- TopAppBar -->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
@@ -17,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="#8D5AED"
-            app:title="Recuperar Contraseña"
+            app:title="@string/recuperar_contrase_a"
             app:navigationIcon="@drawable/ic_arrow_back" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -32,7 +31,6 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <!-- Ícono -->
             <ImageView
                 android:layout_width="96dp"
                 android:layout_height="96dp"
@@ -44,9 +42,7 @@
                 android:padding="20dp"
                 app:srcCompat="@drawable/icono" />
 
-
             <!-- PANTALLA 1: Ingresar email -->
-
             <LinearLayout
                 android:id="@+id/layoutEmail"
                 android:layout_width="match_parent"
@@ -57,7 +53,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Ingresa tu email registrado"
+                    android:text="@string/introduce_tu_email_y_responde_la_pregunta_de_seguridad"
                     android:textAppearance="?attr/textAppearanceHeadlineSmall"
                     android:textAlignment="center"
                     android:layout_marginBottom="8dp" />
@@ -65,7 +61,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Te enviaremos un código de verificación de 6 dígitos válido por 2 horas."
+                    android:text="@string/sala_para_recuperar_tu_contrase_a_si_la_olvidas"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:textAlignment="center"
@@ -76,7 +72,7 @@
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Correo electrónico"
+                    android:hint="@string/correo_electr_nico"
                     android:layout_marginBottom="24dp">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -91,10 +87,9 @@
                     android:id="@+id/btnEnviarCodigo"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:text="Enviar Código"
+                    android:text="@string/continuar"
                     app:cornerRadius="12dp" />
             </LinearLayout>
-
 
             <!-- PANTALLA 2: Verificar código -->
             <LinearLayout
@@ -107,7 +102,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Revisa tu email"
+                    android:text="@string/recuperar_contrase_a"
                     android:textAppearance="?attr/textAppearanceHeadlineSmall"
                     android:textAlignment="center"
                     android:layout_marginBottom="8dp" />
@@ -121,7 +116,6 @@
                     android:textAlignment="center"
                     android:layout_marginBottom="8dp" />
 
-                <!-- Timer -->
                 <TextView
                     android:id="@+id/tvTimer"
                     android:layout_width="match_parent"
@@ -130,14 +124,14 @@
                     android:textColor="?attr/colorPrimary"
                     android:textAlignment="center"
                     android:layout_marginBottom="24dp"
-                    android:text="⏰ Expira en: 02:00:00" />
+                    android:text="@string/expira_en_02_00_00" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilCodigo"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Código de 6 dígitos"
+                    android:hint="@string/c_digo_de_6_d_gitos"
                     app:startIconDrawable="@drawable/ic_pin"
                     android:layout_marginBottom="24dp">
 
@@ -157,7 +151,7 @@
                     android:id="@+id/btnVerificarCodigo"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:text="Verificar Código"
+                    android:text="@string/continuar"
                     app:cornerRadius="12dp"
                     android:layout_marginBottom="12dp" />
 
@@ -166,12 +160,10 @@
                     style="@style/Widget.Material3.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="¿No recibiste el código? Reenviar" />
+                    android:text="@string/volver_al_inicio_de_sesi_n" />
             </LinearLayout>
 
-
             <!-- PANTALLA 3: Nueva contraseña -->
-
             <LinearLayout
                 android:id="@+id/layoutNuevaContrasena"
                 android:layout_width="match_parent"
@@ -182,7 +174,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Crea tu nueva contraseña"
+                    android:text="@string/nueva_contrase_a"
                     android:textAppearance="?attr/textAppearanceHeadlineSmall"
                     android:textAlignment="center"
                     android:layout_marginBottom="24dp" />
@@ -192,7 +184,7 @@
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Nueva contraseña"
+                    android:hint="@string/nueva_contrase_a"
                     app:startIconDrawable="@drawable/ic_lock"
                     app:endIconMode="password_toggle"
                     android:layout_marginBottom="16dp">
@@ -209,7 +201,7 @@
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Confirmar contraseña"
+                    android:hint="@string/confirmar_contrase_a"
                     app:startIconDrawable="@drawable/ic_lock_check"
                     app:endIconMode="password_toggle"
                     android:layout_marginBottom="24dp">
@@ -226,11 +218,10 @@
                     android:id="@+id/btnActualizarContrasena"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:text="Actualizar Contraseña"
+                    android:text="@string/guardar_nueva_contrase_a"
                     app:cornerRadius="12dp" />
             </LinearLayout>
 
-            <!-- Loading -->
             <com.google.android.material.progressindicator.LinearProgressIndicator
                 android:id="@+id/progressBar"
                 android:layout_width="match_parent"

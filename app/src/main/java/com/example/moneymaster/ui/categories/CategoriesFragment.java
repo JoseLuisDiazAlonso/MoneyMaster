@@ -14,11 +14,6 @@ import com.example.moneymaster.R;
 import com.example.moneymaster.databinding.FragmentCategoriesBinding;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-/**
- * Fragment principal de Categorías.
- * Contiene un TabLayout con dos pestañas: Gastos e Ingresos.
- * Cada pestaña muestra su propio sub-fragment con la lista de categorías.
- */
 public class CategoriesFragment extends Fragment {
 
     private FragmentCategoriesBinding binding;
@@ -42,14 +37,14 @@ public class CategoriesFragment extends Fragment {
         CategoryPagerAdapter adapter = new CategoryPagerAdapter(this);
         binding.viewPagerCategories.setAdapter(adapter);
 
-        // Vincula el TabLayout con el ViewPager2
         new TabLayoutMediator(binding.tabLayoutCategories, binding.viewPagerCategories,
                 (tab, position) -> {
                     if (position == 0) {
-                        tab.setText("Gastos");
+                        // FIX: texto desde strings.xml
+                        tab.setText(R.string.cat_gastos_tab);
                         tab.setIcon(R.drawable.ic_category_expense);
                     } else {
-                        tab.setText("Ingresos");
+                        tab.setText(R.string.cat_ingresos_tab);
                         tab.setIcon(R.drawable.ic_category_income);
                     }
                 }).attach();

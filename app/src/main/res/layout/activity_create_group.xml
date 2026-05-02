@@ -37,7 +37,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Datos del grupo"
+                android:text="@string/datos_del_grupo"
                 android:textAppearance="?attr/textAppearanceTitleSmall"
                 android:textColor="?attr/colorPrimary"
                 android:layout_marginBottom="8dp" />
@@ -48,7 +48,7 @@
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nombre del grupo *"
+                android:hint="@string/nombre_del_grupo"
                 app:startIconDrawable="@drawable/ic_group"
                 android:layout_marginBottom="12dp">
 
@@ -67,7 +67,7 @@
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Descripción (opcional)"
+                android:hint="@string/descripci_n_opcional"
                 android:layout_marginBottom="24dp">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -93,7 +93,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Miembros"
+                    android:text="@string/miembros"
                     android:textAppearance="?attr/textAppearanceTitleSmall"
                     android:textColor="?attr/colorPrimary" />
 
@@ -113,7 +113,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Se necesitan al menos 2 miembros"
+                android:text="@string/se_necesitan_al_menos_2_miembros"
                 android:textAppearance="?attr/textAppearanceBodySmall"
                 android:textColor="?attr/colorError"
                 android:visibility="gone"
@@ -135,7 +135,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="+ Añadir miembro"
+                android:text="@string/a_adir_miembro"
                 app:icon="@drawable/ic_person_add" />
 
             <!-- Espaciado antes del botón principal -->
@@ -157,7 +157,7 @@
                 android:id="@+id/buttonCreateGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Crear Grupo"
+                android:text="@string/crear_grupo"
                 android:layout_marginBottom="16dp" />
 
         </LinearLayout>

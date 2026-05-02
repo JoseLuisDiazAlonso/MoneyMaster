@@ -25,7 +25,7 @@ public class CategoriaIngreso {
     @ColumnInfo(name = "id")
     public int id;
 
-    /** NULL = categoría del sistema. INT = categoría personalizada del usuario. */
+
     @Nullable
     @ColumnInfo(name = "usuario_id")
     public Integer usuarioId;
@@ -33,19 +33,19 @@ public class CategoriaIngreso {
     @ColumnInfo(name = "nombre")
     public String nombre;
 
-    /** Nombre del drawable (ej: "ic_salary"). Para setImageResource() dinámico. */
+
     @ColumnInfo(name = "icono")
     public String icono;
 
-    /** Color hex (ej: "#4CAF50"). Para tinting con setColorFilter(). */
+
     @ColumnInfo(name = "color")
     public String color;
 
-    /** 1 = categoría del sistema (no editable), 0 = personalizada. */
+
     @ColumnInfo(name = "es_sistema", defaultValue = "0")
     public int esSistema = 0;
 
-    /** 1 = activa, 0 = desactivada (borrado suave). */
+
     @ColumnInfo(name = "activo", defaultValue = "1")
     public int activo = 1;
     public int esPredefinida;

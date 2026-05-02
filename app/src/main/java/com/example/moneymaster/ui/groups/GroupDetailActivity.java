@@ -26,16 +26,12 @@ public class GroupDetailActivity extends AppCompatActivity {
     private int    grupoId;
     private String grupoNombre;
 
-    // ─── Factory ─────────────────────────────────────────────────────────────
-
     public static void start(Context context, int grupoId, String grupoNombre) {
         Intent intent = new Intent(context, GroupDetailActivity.class);
         intent.putExtra(EXTRA_GRUPO_ID, grupoId);
         intent.putExtra(EXTRA_GRUPO_NOMBRE, grupoNombre);
         context.startActivity(intent);
     }
-
-    // ─── Ciclo de vida ────────────────────────────────────────────────────────
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +50,9 @@ public class GroupDetailActivity extends AppCompatActivity {
         setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(nombre != null ? nombre : "Grupo");
+            // FIX: fallback desde strings.xml si nombre es null
+            getSupportActionBar().setTitle(
+                    nombre != null ? nombre : getString(R.string.grupo_default));
         }
     }
 
@@ -64,14 +62,13 @@ public class GroupDetailActivity extends AppCompatActivity {
 
         new TabLayoutMediator(binding.tabLayout, binding.viewPager,
                 (tab, position) -> {
+                    // FIX: pestañas desde strings.xml
                     switch (position) {
-                        case 0: tab.setText("Gastos");  break;
-                        case 1: tab.setText("Balance"); break;
+                        case 0: tab.setText(R.string.tab_gastos_grupo);  break;
+                        case 1: tab.setText(R.string.tab_balance_grupo); break;
                     }
                 }).attach();
     }
-
-    // ─── Menú Toolbar ─────────────────────────────────────────────────────────
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -92,14 +89,10 @@ public class GroupDetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // ─── Compartir ────────────────────────────────────────────────────────────
-
     private void mostrarDialogCompartir() {
         CompartirGrupoDialog dialog = CompartirGrupoDialog.newInstance(grupoId, grupoNombre);
         dialog.show(getSupportFragmentManager(), CompartirGrupoDialog.TAG);
     }
-
-    // ─── Adapter de pestañas ──────────────────────────────────────────────────
 
     private static class GroupPagerAdapter extends FragmentStateAdapter {
 

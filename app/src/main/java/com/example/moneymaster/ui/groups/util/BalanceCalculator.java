@@ -10,43 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Calcula quién debe a quién en un grupo de gastos compartidos.
- *
- * Algoritmo en dos pasos:
- *
- * PASO 1 — Balance neto por miembro:
- *   Para cada miembro calculamos su balance neto:
- *     balanceNeto = totalPagado - cuotaIdeal
- *   Donde:
- *     totalPagado  = suma de gastos donde pagadoPorNombre == miembro.nombre
- *     cuotaIdeal   = totalGrupo / numMiembros  (división igualitaria)
- *
- *   Si balanceNeto > 0 → el miembro recupera dinero (acreedor)
- *   Si balanceNeto < 0 → el miembro debe dinero (deudor)
- *   Si balanceNeto == 0 → está equilibrado
- *
- * PASO 2 — Liquidación mínima de transacciones:
- *   Algoritmo greedy de dos punteros sobre listas ordenadas de
- *   acreedores (mayor a menor) y deudores (mayor deuda a menor):
- *     - Tomar el mayor acreedor y el mayor deudor.
- *     - La transacción es min(deuda, crédito).
- *     - Reducir ambos saldos. Si alguno llega a 0, avanzar al siguiente.
- *     - Repetir hasta que todas las deudas sean 0.
- *
- *   Este algoritmo minimiza el número de transacciones necesarias.
- *
- * Ejemplo con 3 miembros y total 90€:
- *   Ana pagó 60€, Pedro 20€, Luis 10€ → cuota ideal 30€ cada uno
- *   Ana:   60 - 30 = +30 (acreedor)
- *   Pedro: 20 - 30 = -10 (deudor)
- *   Luis:  10 - 30 = -20 (deudor)
- *
- *   Transacciones:
- *   Luis  debe 20€ a Ana  → Ana queda con +10
- *   Pedro debe 10€ a Ana  → Ana queda con 0
- *   Resultado: 2 transacciones (mínimo posible)
- */
+
 public class BalanceCalculator {
 
     private static final double EPSILON = 0.01; // umbral para ignorar diferencias de céntimos

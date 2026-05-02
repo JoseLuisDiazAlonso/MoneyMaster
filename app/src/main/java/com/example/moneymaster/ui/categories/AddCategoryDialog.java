@@ -23,18 +23,6 @@ import com.example.moneymaster.data.model.CategoriaIngreso;
 import com.example.moneymaster.databinding.DialogAddCategoryBinding;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-/**
- * Dialog para crear una nueva categoría personalizada.
- *
- * CAMPOS:
- * - Nombre de la categoría (obligatorio)
- * - Icono (selección de grid de iconos)
- * - Color (selección de paleta de colores)
- *
- * IMPLEMENTACIÓN:
- * Usa DialogFragment en lugar de AlertDialog directamente para sobrevivir
- * rotaciones de pantalla sin perder el estado del formulario.
- */
 public class AddCategoryDialog extends DialogFragment {
 
     private static final String ARG_TYPE = "category_type";
@@ -42,11 +30,10 @@ public class AddCategoryDialog extends DialogFragment {
     private DialogAddCategoryBinding binding;
     private CategoriesViewModel viewModel;
 
-    private String selectedIcon = "ic_category_default";
-    private String selectedColor = "#6750A4"; // Color primario Material 3 por defecto
+    private String selectedIcon  = "ic_category_default";
+    private String selectedColor = "#6750A4";
     private String categoryType;
 
-    // Lista de iconos disponibles para categorías
     private static final String[] AVAILABLE_ICONS = {
             "ic_cat_food", "ic_cat_transport", "ic_cat_shopping", "ic_cat_health",
             "ic_cat_education", "ic_cat_entertainment", "ic_cat_home", "ic_cat_travel",
@@ -54,7 +41,6 @@ public class AddCategoryDialog extends DialogFragment {
             "ic_cat_salary", "ic_cat_investment", "ic_cat_gift", "ic_cat_other"
     };
 
-    // Paleta de colores predefinidos
     private static final String[] AVAILABLE_COLORS = {
             "#F44336", "#E91E63", "#9C27B0", "#6750A4",
             "#3F51B5", "#2196F3", "#03A9F4", "#00BCD4",
@@ -74,8 +60,7 @@ public class AddCategoryDialog extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            categoryType = getArguments().getString(ARG_TYPE,
-                    CategoryListFragment.TYPE_GASTOS);
+            categoryType = getArguments().getString(ARG_TYPE, CategoryListFragment.TYPE_GASTOS);
         }
     }
 
@@ -92,7 +77,6 @@ public class AddCategoryDialog extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Comparte el ViewModel con el Fragment padre
         viewModel = new ViewModelProvider(requireParentFragment())
                 .get(CategoriesViewModel.class);
 
@@ -102,37 +86,21 @@ public class AddCategoryDialog extends DialogFragment {
         updatePreview();
     }
 
-    /**
-     * Configura el grid de iconos (4 columnas).
-     */
     private void setupIconGrid() {
         IconGridAdapter iconAdapter = new IconGridAdapter(
-                AVAILABLE_ICONS,
-                selectedIcon,
-                icon -> {
-                    selectedIcon = icon;
-                    updatePreview();
-                });
+                AVAILABLE_ICONS, selectedIcon,
+                icon -> { selectedIcon = icon; updatePreview(); });
 
         binding.recyclerViewIcons.setLayoutManager(new GridLayoutManager(requireContext(), 4));
         binding.recyclerViewIcons.setAdapter(iconAdapter);
     }
 
-    /**
-     * Configura el selector de color con chips de colores.
-     * Crea un chip por cada color disponible dinámicamente.
-     */
     private void setupColorPicker() {
         ColorPickerAdapter colorAdapter = new ColorPickerAdapter(
-                AVAILABLE_COLORS,
-                selectedColor,
-                color -> {
-                    selectedColor = color;
-                    updatePreview();
-                });
+                AVAILABLE_COLORS, selectedColor,
+                color -> { selectedColor = color; updatePreview(); });
 
-        binding.recyclerViewColors.setLayoutManager(
-                new GridLayoutManager(requireContext(), 8));
+        binding.recyclerViewColors.setLayoutManager(new GridLayoutManager(requireContext(), 8));
         binding.recyclerViewColors.setAdapter(colorAdapter);
     }
 
@@ -141,11 +109,7 @@ public class AddCategoryDialog extends DialogFragment {
         binding.buttonSave.setOnClickListener(v -> saveCategory());
     }
 
-    /**
-     * Actualiza la vista previa en tiempo real al cambiar icono o color.
-     */
     private void updatePreview() {
-        // Preview del icono con color seleccionado
         int iconResId = requireContext().getResources().getIdentifier(
                 selectedIcon, "drawable", requireContext().getPackageName());
 
@@ -159,53 +123,45 @@ public class AddCategoryDialog extends DialogFragment {
             }
         }
 
-        // Fondo del preview con el color seleccionado (20% opacidad)
-        int color = Color.parseColor(selectedColor);
-        int bgColor = Color.argb(51,
-                Color.red(color), Color.green(color), Color.blue(color));
+        int color   = Color.parseColor(selectedColor);
+        int bgColor = Color.argb(51, Color.red(color), Color.green(color), Color.blue(color));
         binding.viewPreviewBackground.setBackgroundColor(bgColor);
     }
 
-    /**
-     * Valida y guarda la nueva categoría en la base de datos.
-     */
     private void saveCategory() {
         String nombre = binding.editTextCategoryName.getText() != null
                 ? binding.editTextCategoryName.getText().toString().trim()
                 : "";
 
-        // Validación del nombre
+        // FIX: mensajes de validación desde strings.xml
         if (TextUtils.isEmpty(nombre)) {
-            binding.inputLayoutCategoryName.setError("El nombre es obligatorio");
+            binding.inputLayoutCategoryName.setError(getString(R.string.error_nombre_obligatorio));
             return;
         }
-
         if (nombre.length() > 30) {
-            binding.inputLayoutCategoryName.setError("Máximo 30 caracteres");
+            binding.inputLayoutCategoryName.setError(getString(R.string.error_maximo_30));
             return;
         }
-
         binding.inputLayoutCategoryName.setError(null);
 
-        // Guarda según el tipo de categoría
         if (CategoryListFragment.TYPE_GASTOS.equals(categoryType)) {
             CategoriaGasto nuevaCategoria = new CategoriaGasto();
-            nuevaCategoria.nombre = nombre;
-            nuevaCategoria.icono = selectedIcon;
-            nuevaCategoria.color = selectedColor;
-            nuevaCategoria.esPredefinida = 0; // Es custom, no predefinida
+            nuevaCategoria.nombre       = nombre;
+            nuevaCategoria.icono        = selectedIcon;
+            nuevaCategoria.color        = selectedColor;
+            nuevaCategoria.esPredefinida = 0;
             viewModel.insertCategoriaGasto(nuevaCategoria);
         } else {
             CategoriaIngreso nuevaCategoria = new CategoriaIngreso();
-            nuevaCategoria.nombre = nombre;
-            nuevaCategoria.icono = selectedIcon;
-            nuevaCategoria.color = selectedColor;
+            nuevaCategoria.nombre       = nombre;
+            nuevaCategoria.icono        = selectedIcon;
+            nuevaCategoria.color        = selectedColor;
             nuevaCategoria.esPredefinida = 0;
             viewModel.insertCategoriaIngreso(nuevaCategoria);
         }
 
-        Toast.makeText(requireContext(),
-                "Categoría creada correctamente", Toast.LENGTH_SHORT).show();
+        // FIX: Toast desde strings.xml
+        Toast.makeText(requireContext(), R.string.categoria_creada, Toast.LENGTH_SHORT).show();
         dismiss();
     }
 
@@ -215,13 +171,9 @@ public class AddCategoryDialog extends DialogFragment {
         binding = null;
     }
 
-    /**
-     * Configura el Dialog para usar el estilo de Material 3.
-     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        // Usamos un tema de dialog de Material 3
         return new MaterialAlertDialogBuilder(requireContext(),
                 com.google.android.material.R.style.ThemeOverlay_Material3_MaterialAlertDialog)
                 .create();

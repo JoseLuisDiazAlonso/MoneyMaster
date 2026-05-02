@@ -26,9 +26,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MoneyMaster"
         tools:targetApi="31">
+
         <activity
             android:name=".ui.detalle.MovimientoDetalleActivity"
             android:exported="false" />
+
         <!-- Splash Screen — punto de entrada de la app -->
         <activity
             android:name=".ui.onboarding.Splash"
@@ -36,60 +38,81 @@
             android:theme="@style/Theme.MoneyMaster">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Onboarding -->
+        </activity>
+
+        <!-- Onboarding -->
         <activity
             android:name=".ui.onboarding.OnboardingActivity"
-            android:exported="false" /> <!-- Login -->
+            android:exported="false" />
+
+        <!-- Login — configChanges evita que se destruya al rotar -->
         <activity
             android:name=".ui.auth.LoginActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize" /> <!-- Recuperar Contraseña -->
+            android:windowSoftInputMode="adjustResize"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
+
+        <!-- Recuperar Contraseña -->
         <activity
             android:name=".ForgotPasswordActivity"
             android:exported="false" />
         <activity
             android:name=".ui.auth.ForgotPasswordActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize" /> <!-- Pantalla principal -->
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Pantalla principal -->
         <activity
             android:name=".MainActivity"
             android:exported="false"
             android:label="@string/app_name"
             android:theme="@style/Theme.MoneyMaster"
-            android:windowSoftInputMode="adjustResize" /> <!-- Registro de usuario -->
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Registro de usuario -->
         <activity
             android:name=".ActivityRegister"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize" /> <!-- Add Expense -->
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Add Expense -->
         <activity
             android:name=".ui.expenses.AddExpenseActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize" /> <!-- Add Income -->
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Add Income -->
         <activity
             android:name=".ui.income.AddIncomeActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize" /> <!-- Grupos -->
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Grupos -->
         <activity
             android:name=".ui.groups.CreateGroupActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.groups.GroupDetailActivity"
-            android:exported="false" /> <!-- Perfil / Acerca de -->
+            android:exported="false" />
+
+        <!-- Perfil / Acerca de -->
         <activity
             android:name=".AcercaDeActivity"
             android:exported="false" />
         <activity
             android:name=".ui.BaseActivity"
-            android:exported="false" /> <!-- Visor de imágenes -->
+            android:exported="false" />
+
+        <!-- Visor de imágenes -->
         <activity
             android:name=".ui.viewer.ImageViewerActivity"
             android:exported="false"
-            android:theme="@style/Theme.MoneyMaster" /> <!-- FileProvider -->
+            android:theme="@style/Theme.MoneyMaster" />
 
+        <!-- FileProvider -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -99,6 +122,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
     </application>
 
 </manifest>

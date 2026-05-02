@@ -40,7 +40,7 @@ public class CompartirGrupoDialog extends BottomSheetDialogFragment {
     private final ExecutorService executor    = Executors.newSingleThreadExecutor();
     private final Handler         mainHandler = new Handler(Looper.getMainLooper());
 
-    // ─── Factory ─────────────────────────────────────────────────────────────
+    //Factory
 
     public static CompartirGrupoDialog newInstance(int grupoId, String grupoNombre) {
         CompartirGrupoDialog dialog = new CompartirGrupoDialog();
@@ -51,7 +51,7 @@ public class CompartirGrupoDialog extends BottomSheetDialogFragment {
         return dialog;
     }
 
-    // ─── Ciclo de vida ────────────────────────────────────────────────────────
+    //Ciclo de vida
 
     @Nullable
     @Override
@@ -84,7 +84,7 @@ public class CompartirGrupoDialog extends BottomSheetDialogFragment {
         executor.shutdownNow();
     }
 
-    // ─── Compartir texto ──────────────────────────────────────────────────────
+    //Compartir texto
 
     private void compartirTexto(int grupoId) {
         mostrarLoading(true);
@@ -127,7 +127,7 @@ public class CompartirGrupoDialog extends BottomSheetDialogFragment {
         });
     }
 
-    // ─── UI helpers ───────────────────────────────────────────────────────────
+    //UI helpers
 
     private void mostrarLoading(boolean cargando) {
         if (binding == null) return;
@@ -136,7 +136,7 @@ public class CompartirGrupoDialog extends BottomSheetDialogFragment {
         if (getDialog() != null) getDialog().setCancelable(!cargando);
     }
 
-    // ─── Helpers de datos ─────────────────────────────────────────────────────
+    //Helpers de datos
 
     private Map<Integer, String> construirMapaNombres(List<MiembroGrupo> miembros,
                                                       List<GastoGrupo> gastos) {

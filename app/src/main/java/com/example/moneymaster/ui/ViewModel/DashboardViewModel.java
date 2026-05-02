@@ -25,54 +25,26 @@ import java.util.Locale;
 import com.example.moneymaster.data.model.GastoPersonal;
 import com.example.moneymaster.data.model.IngresoPersonal;
 
-/**
- * ╔══════════════════════════════════════════════════════════════════╗
- * ║  DashboardViewModel.java                                         ║
- * ║  Ruta: ui/viewmodel/DashboardViewModel.java                      ║
- * ╠══════════════════════════════════════════════════════════════════╣
- * ║  ViewModel del Fragment de Inicio (Dashboard).                   ║
- * ║                                                                  ║
- * ║  Responsabilidades:                                              ║
- * ║  1. Gestionar el mes seleccionado (prev/next).                   ║
- * ║  2. Lanzar queries reactivas a Room a través de switchMap.       ║
- * ║  3. Combinar gastos + ingresos con MediatorLiveData.             ║
- * ║  4. Exponer balance, totales y lista de movimientos al Fragment. ║
- * ╚══════════════════════════════════════════════════════════════════╝
- */
+
 public class DashboardViewModel extends AndroidViewModel {
 
-    // ─── Dependencias ────────────────────────────────────────────────────────
+    // Dependencias
     private final AppDatabase db;
     private final int         userId;
 
-    // ─── Estado del mes seleccionado ─────────────────────────────────────────
-    /**
-     * Guarda el mes que está viendo el usuario.
-     * Se modifica con mesAnterior() y mesSiguiente().
-     */
+    // Estado del mes seleccionado
     private final Calendar calendarActual;
 
-    /**
-     * Trigger interno: array [inicioMes, finMes] en ms Unix.
-     * Cada cambio aquí dispara nuevas queries en Room vía switchMap.
-     */
     private final MutableLiveData<long[]> rangoMes = new MutableLiveData<>();
 
-    // ─── LiveData de Room (reactivos al rangoMes) ─────────────────────────────
+    // LiveData de Room (reactivos al rangoMes)
     private final LiveData<List<GastoConCategoria>>   gastosMes;
     private final LiveData<List<IngresoConCategoria>> ingresosMes;
 
-    // ─── LiveData expuestos al Fragment ──────────────────────────────────────
-
-    /**
-     * Hasta 10 movimientos recientes (gastos + ingresos mezclados,
-     * ordenados por fecha DESC). Usa MediatorLiveData porque combina
-     * dos fuentes independientes.
-     */
+    // LiveData expuestos al Fragment
     public final MediatorLiveData<List<MovimientoReciente>> movimientos =
             new MediatorLiveData<>();
 
-    /** Balance del mes = totalIngresos - totalGastos (puede ser negativo). */
     private final MutableLiveData<Double> _balance       = new MutableLiveData<>(0.0);
     private final MutableLiveData<Double> _totalIngresos = new MutableLiveData<>(0.0);
     private final MutableLiveData<Double> _totalGastos   = new MutableLiveData<>(0.0);
@@ -81,17 +53,16 @@ public class DashboardViewModel extends AndroidViewModel {
     public final LiveData<Double> totalIngresos = _totalIngresos;
     public final LiveData<Double> totalGastos   = _totalGastos;
 
-    /** Etiqueta del mes, p.ej. "Marzo 2026". Observada por el selector. */
     public final MutableLiveData<String> etiquetaMes = new MutableLiveData<>();
 
-    /** Número máximo de movimientos a mostrar en el dashboard. */
     private static final int MAX_MOVIMIENTOS = 10;
 
-    // ─── Formato de fecha para la etiqueta del mes ───────────────────────────
+    // FIX: Locale.getDefault() en lugar de Locale("es","ES") fijo
+    // Así el nombre del mes cambia automáticamente con el idioma del dispositivo
     private static final SimpleDateFormat FORMAT_MES =
-            new SimpleDateFormat("MMMM yyyy", new Locale("es", "ES"));
+            new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
 
-    // ─── Constructor ─────────────────────────────────────────────────────────
+    // Constructor
 
     public DashboardViewModel(@NonNull Application application) {
         super(application);
@@ -100,11 +71,8 @@ public class DashboardViewModel extends AndroidViewModel {
         userId = new SessionManager(application).getUserId();
 
         calendarActual = Calendar.getInstance();
-        actualizarRangoMes(); // emite el primer valor → lanza las queries iniciales
+        actualizarRangoMes();
 
-        // ── SwitchMap: cada vez que rangoMes cambia, Room lanza nuevas queries ──
-        // switchMap cancela automáticamente las observaciones anteriores,
-        // evitando fugas de memoria y resultados de meses anteriores.
         gastosMes = Transformations.switchMap(rangoMes, rango ->
                 db.gastoPersonalDao().getGastosPorCategoria(
                         userId, rango[0], rango[1]));
@@ -113,35 +81,22 @@ public class DashboardViewModel extends AndroidViewModel {
                 db.ingresoPersonalDao().getIngresosPorCategoria(
                         userId, rango[0], rango[1]));
 
-        // ── MediatorLiveData: recalcula cuando llegan datos de cualquier fuente ──
-        // Se llama a recalcular() aunque solo llegue una de las dos fuentes,
-        // usando getValue() para leer el valor más reciente de la otra.
         movimientos.addSource(gastosMes,   gastos   -> recalcular());
         movimientos.addSource(ingresosMes, ingresos -> recalcular());
     }
 
-    // ─── Navegación de meses ─────────────────────────────────────────────────
+    // Navegación de meses
 
-    /** Retrocede al mes anterior y dispara nuevas queries. */
     public void mesAnterior() {
         calendarActual.add(Calendar.MONTH, -1);
         actualizarRangoMes();
     }
 
-    /** Avanza al mes siguiente y dispara nuevas queries. */
     public void mesSiguiente() {
         calendarActual.add(Calendar.MONTH, 1);
         actualizarRangoMes();
     }
 
-    /**
-     * Calcula el rango [primerMilisegundoDelMes, primerMilisegundoDelMesSiguiente)
-     * y actualiza rangoMes y etiquetaMes.
-     *
-     * Por qué < y no <=:
-     * Las fechas son timestamps en ms. Usando < finMes no hay ambigüedad
-     * en el último instante del mes (23:59:59.999 < 00:00:00.000 del mes siguiente).
-     */
     private void actualizarRangoMes() {
         Calendar inicio = (Calendar) calendarActual.clone();
         inicio.set(Calendar.DAY_OF_MONTH, 1);
@@ -155,24 +110,18 @@ public class DashboardViewModel extends AndroidViewModel {
 
         rangoMes.setValue(new long[]{ inicio.getTimeInMillis(), fin.getTimeInMillis() });
 
-        // Etiqueta con la primera letra en mayúscula: "marzo 2026" → "Marzo 2026"
-        String label = FORMAT_MES.format(calendarActual.getTime());
+        // FIX: usar Locale.getDefault() para que la primera letra en mayúscula
+        // funcione correctamente en cualquier idioma
+        Locale locale = Locale.getDefault();
+        SimpleDateFormat formatMes = new SimpleDateFormat("MMMM yyyy", locale);
+        String label = formatMes.format(calendarActual.getTime());
         etiquetaMes.setValue(
-                label.substring(0, 1).toUpperCase(new Locale("es", "ES")) + label.substring(1)
+                label.substring(0, 1).toUpperCase(locale) + label.substring(1)
         );
     }
 
-    // ─── Recálculo combinado ─────────────────────────────────────────────────
+    // Recálculo combinado
 
-    /**
-     * Combina la lista de gastos y la de ingresos en una sola lista de
-     * MovimientoReciente, ordena por fecha DESC y recorta a MAX_MOVIMIENTOS.
-     * También actualiza balance, totalIngresos y totalGastos.
-     *
-     * Se llama cada vez que gastosMes o ingresosMes emiten un nuevo valor.
-     * Si alguna fuente todavía no ha llegado, getValue() devuelve null:
-     * en ese caso se usa una lista vacía para no bloquear el recálculo.
-     */
     private void recalcular() {
         List<GastoConCategoria>   gastos   = gastosMes.getValue();
         List<IngresoConCategoria> ingresos = ingresosMes.getValue();
@@ -182,7 +131,6 @@ public class DashboardViewModel extends AndroidViewModel {
 
         List<MovimientoReciente> combinada = new ArrayList<>();
 
-        // ── Convertir gastos ──────────────────────────────────────────────────
         double sumGastos = 0.0;
         for (GastoConCategoria g : gastos) {
             sumGastos += g.importe;
@@ -198,7 +146,6 @@ public class DashboardViewModel extends AndroidViewModel {
             ));
         }
 
-        // ── Convertir ingresos ────────────────────────────────────────────────
         double sumIngresos = 0.0;
         for (IngresoConCategoria i : ingresos) {
             sumIngresos += i.importe;
@@ -214,16 +161,13 @@ public class DashboardViewModel extends AndroidViewModel {
             ));
         }
 
-        // ── Ordenar por fecha DESC ────────────────────────────────────────────
         Collections.sort(combinada,
                 (a, b) -> Long.compare(b.getFecha(), a.getFecha()));
 
-        // ── Recortar a MAX_MOVIMIENTOS ────────────────────────────────────────
         List<MovimientoReciente> recortada = combinada.size() > MAX_MOVIMIENTOS
                 ? combinada.subList(0, MAX_MOVIMIENTOS)
                 : combinada;
 
-        // ── Publicar resultados ───────────────────────────────────────────────
         movimientos.setValue(new ArrayList<>(recortada));
         _totalGastos.setValue(sumGastos);
         _totalIngresos.setValue(sumIngresos);

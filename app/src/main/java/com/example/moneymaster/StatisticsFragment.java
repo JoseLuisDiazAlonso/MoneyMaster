@@ -17,27 +17,11 @@ import com.example.moneymaster.ui.ViewModel.StatisticsViewModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-/**
- * Fragment principal de la pantalla de Estadísticas.
- *
- * Actúa como contenedor raíz para las tres pestañas:
- *  - Mes Actual  → StatisticsMonthFragment
- *  - Año         → StatisticsYearFragment
- *  - Personalizado → StatisticsCustomFragment
- *
- * Utiliza ViewPager2 + TabLayout gestionados por TabLayoutMediator.
- * El ViewModel compartido (StatisticsViewModel) es el único punto de
- * verdad para los datos; los fragmentos hijos lo observan directamente.
- */
 public class StatisticsFragment extends Fragment {
 
     private FragmentStatisticsBinding binding;
     private StatisticsViewModel viewModel;
     private StatisticsPagerAdapter pagerAdapter;
-
-    // ──────────────────────────────────────────────────────────────────────────
-    // Lifecycle
-    // ──────────────────────────────────────────────────────────────────────────
 
     @Nullable
     @Override
@@ -52,7 +36,6 @@ public class StatisticsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // ViewModel con ámbito de Activity para compartir datos entre pestañas
         viewModel = new ViewModelProvider(requireActivity())
                 .get(StatisticsViewModel.class);
 
@@ -66,21 +49,11 @@ public class StatisticsFragment extends Fragment {
         binding = null;
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
-    // Setup helpers
-    // ──────────────────────────────────────────────────────────────────────────
-
-    /**
-     * Configura el ViewPager2 con el adaptador de las tres pestañas.
-     * offscreenPageLimit(2) mantiene los tres fragmentos vivos en memoria para
-     * evitar recargas al cambiar de pestaña.
-     */
     private void setupViewPager() {
         pagerAdapter = new StatisticsPagerAdapter(this);
         binding.viewPagerStatistics.setAdapter(pagerAdapter);
         binding.viewPagerStatistics.setOffscreenPageLimit(2);
 
-        // Sincronizar selección de pestaña con el ViewModel
         binding.viewPagerStatistics.registerOnPageChangeCallback(
                 new ViewPager2.OnPageChangeCallback() {
                     @Override
@@ -90,12 +63,13 @@ public class StatisticsFragment extends Fragment {
                 });
     }
 
-    /**
-     * Enlaza TabLayout con ViewPager2 mediante TabLayoutMediator.
-     * Los títulos de pestaña se asignan aquí para tenerlos centralizados.
-     */
     private void setupTabLayout() {
-        String[] tabTitles = {"Mes actual", "Año", "Personalizado"};
+        // Títulos leídos de strings.xml → se traducen automáticamente
+        String[] tabTitles = {
+                getString(R.string.tab_mes_actual),
+                getString(R.string.tab_anio),
+                getString(R.string.tab_personalizado)
+        };
 
         new TabLayoutMediator(
                 binding.tabLayoutStatistics,

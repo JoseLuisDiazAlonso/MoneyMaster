@@ -16,7 +16,7 @@ import java.util.List;
 @Dao
 public interface GrupoDao {
 
-    // ── CRUD básico ───────────────────────────────────────────────────────────
+    //CRUD básico
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertGrupo(Grupo grupo);
@@ -33,7 +33,7 @@ public interface GrupoDao {
     @Query("SELECT * FROM grupos ORDER BY fecha_creacion DESC")
     LiveData<List<Grupo>> getAllGrupos();
 
-    // ── Consulta enriquecida para el Fragment Lista de Grupos ─────────────────
+    //Consulta enriquecida para el Fragment Lista de Grupos
     //
     // Ahora que miembros_grupo existe, numMiembros cuenta miembros activos reales.
 
@@ -51,7 +51,7 @@ public interface GrupoDao {
             "ORDER BY g.fecha_creacion DESC")
     LiveData<List<GroupWithDetails>> getAllGroupsWithDetails();
 
-    // ── Eliminar datos (PerfilFragment) ───────────────────────────────────────
+    // Eliminar datos (PerfilFragment)
 
     @Query("DELETE FROM grupos WHERE creador_id = :usuarioId")
     void deleteAllByUsuario(int usuarioId);

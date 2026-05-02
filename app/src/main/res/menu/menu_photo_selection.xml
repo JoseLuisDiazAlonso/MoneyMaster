@@ -4,13 +4,13 @@
 
     <item
         android:id="@+id/action_compartir"
-        android:title="Compartir"
+        android:title="@string/compartir"
         android:icon="@drawable/ic_share"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_eliminar"
-        android:title="Eliminar"
+        android:title="@string/eliminar"
         android:icon="@drawable/ic_delete"
         app:showAsAction="ifRoom" />
 

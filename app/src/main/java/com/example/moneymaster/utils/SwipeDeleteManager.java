@@ -1,4 +1,4 @@
-package com.example.moneymaster.util;
+package com.example.moneymaster.utils;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -22,7 +22,7 @@ import java.util.List;
 
 public class SwipeDeleteManager<T> {
 
-    // ─── Contrato que debe implementar el Adapter ─────────────────────────────
+    //Contrato que debe implementar el Adapter
 
     public interface AdapterContract<T> {
         /** Devuelve el item en la posición dada. */
@@ -35,20 +35,20 @@ public class SwipeDeleteManager<T> {
         void restoreItem(T item, int position);
     }
 
-    // ─── Callback de borrado real ─────────────────────────────────────────────
+    //Callback de borrado real
 
     public interface DeleteCallback<T> {
         void onDeleteConfirmed(T item);
     }
 
-    // ─── Constantes ───────────────────────────────────────────────────────────
+    // Constantes
 
     private static final int  SNACKBAR_DURATION_MS = 3000;
     private static final int  ICON_MARGIN_PX       = 48;
     private static final int  BG_COLOR             = Color.parseColor("#FFCDD2");
     private static final int  ICON_TINT            = Color.WHITE;
 
-    // ─── Campos ───────────────────────────────────────────────────────────────
+    //Campos
 
     private final View                  anchorView;
     private final RecyclerView          recyclerView;
@@ -65,7 +65,7 @@ public class SwipeDeleteManager<T> {
 
     private ItemTouchHelper touchHelper;
 
-    // ─── Constructor ──────────────────────────────────────────────────────────
+    //Constructor
 
     public SwipeDeleteManager(
             @NonNull View anchorView,
@@ -81,7 +81,7 @@ public class SwipeDeleteManager<T> {
         this.deleteCallback = deleteCallback;
     }
 
-    // ─── API pública ──────────────────────────────────────────────────────────
+    //API pública
 
     /** Adjunta el ItemTouchHelper al RecyclerView. Llamar en onViewCreated(). */
     public void attach() {
@@ -97,7 +97,7 @@ public class SwipeDeleteManager<T> {
         }
     }
 
-    // ─── Construcción del ItemTouchHelper.Callback ────────────────────────────
+    //Construcción del ItemTouchHelper.Callback
 
     private ItemTouchHelper.SimpleCallback buildCallback() {
         return new ItemTouchHelper.SimpleCallback(
@@ -141,7 +141,7 @@ public class SwipeDeleteManager<T> {
                 handler.postDelayed(pendingDeleteRunnable, SNACKBAR_DURATION_MS);
             }
 
-            // ─── Dibujar fondo rojo + icono papelera ──────────────────────
+            //Dibujar fondo rojo + icono papelera
 
             @Override
             public void onChildDraw(@NonNull Canvas canvas,
@@ -200,7 +200,7 @@ public class SwipeDeleteManager<T> {
         };
     }
 
-    // ─── Snackbar con Deshacer ────────────────────────────────────────────────
+    //Snackbar con Deshacer
 
     private void showUndoSnackbar() {
         if (currentSnackbar != null && currentSnackbar.isShown()) {
@@ -214,7 +214,7 @@ public class SwipeDeleteManager<T> {
         currentSnackbar.show();
     }
 
-    // ─── Lógica de Deshacer ───────────────────────────────────────────────────
+    //Lógica de Deshacer
 
     private void undoDelete() {
         if (pendingItem == null) return;
@@ -230,8 +230,7 @@ public class SwipeDeleteManager<T> {
         pendingPosition = -1;
     }
 
-    // ─── Cancelar borrado pendiente ───────────────────────────────────────────
-
+    //Cancelar borrado pendiente
     /**
      * Fuerza la ejecución inmediata del borrado pendiente.
      * Llamar desde onDestroyView() para no dejar operaciones colgadas.

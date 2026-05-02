@@ -11,31 +11,26 @@ import com.example.moneymaster.data.model.GastoGrupo;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-/**
- * GastoGrupoRepository — refactorizado para Card #60 (Unit Tests)
- *
- * Mismo patrón que GastoPersonalRepository: el Executor se inyecta
- * en el constructor de tests para hacer las operaciones síncronas.
- */
+
 public class GastoGrupoRepository {
 
     private final GastoGrupoDao gastoGrupoDao;
     private final Executor      executor;
 
-    // ─── Constructor de producción ────────────────────────────────────────────
+    //Constructor de producción
     public GastoGrupoRepository(Context context) {
         AppDatabase db = AppDatabase.getDatabase(context);
         this.gastoGrupoDao = db.gastoGrupoDao();
         this.executor      = AppDatabase.databaseWriteExecutor;
     }
 
-    // ─── Constructor para tests ───────────────────────────────────────────────
+    //Constructor para tests
     public GastoGrupoRepository(GastoGrupoDao dao, Executor executor) {
         this.gastoGrupoDao = dao;
         this.executor      = executor;
     }
 
-    // ─── ESCRITURAS ───────────────────────────────────────────────────────────
+    //ESCRITURAS
 
     public void insertarGasto(GastoGrupo gasto) {
         executor.execute(() -> gastoGrupoDao.insertar(gasto));
@@ -57,7 +52,7 @@ public class GastoGrupoRepository {
         executor.execute(() -> gastoGrupoDao.eliminar(gasto));
     }
 
-    // ─── LECTURAS REACTIVAS ───────────────────────────────────────────────────
+    //LECTURAS REACTIVAS
 
     public LiveData<List<GastoGrupo>> getGastosByGrupo(long grupoId) {
         return gastoGrupoDao.getGastosByGrupo(grupoId);
@@ -71,7 +66,7 @@ public class GastoGrupoRepository {
         return gastoGrupoDao.getGastoById(gastoId);
     }
 
-    // ─── LECTURAS SÍNCRONAS ───────────────────────────────────────────────────
+    //LECTURAS SÍNCRONAS
 
     public List<GastoGrupo> getGastosByGrupoSync(long grupoId) {
         return gastoGrupoDao.getGastosByGrupoSync(grupoId);
@@ -81,7 +76,7 @@ public class GastoGrupoRepository {
         return gastoGrupoDao.getTotalPagadoPorUsuarioSync(grupoId, usuarioId);
     }
 
-    // ─── CALLBACK ─────────────────────────────────────────────────────────────
+    //CALLBACK
 
     public interface SaveCallback<T> {
         void onSaved(T result);

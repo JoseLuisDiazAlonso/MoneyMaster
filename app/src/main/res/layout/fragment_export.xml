@@ -19,7 +19,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Exportar datos"
+            android:text="@string/exportar_datos"
             android:textAppearance="?attr/textAppearanceHeadlineSmall"
             android:textColor="?attr/colorOnSurface"
             android:layout_marginBottom="4dp" />
@@ -27,7 +27,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Exporta tus movimientos para abrirlos en Excel u otras apps."
+            android:text="@string/exporta_tus_movimientos_para_abrirlos_en_excel_u_otras_apps"
             android:textAppearance="?attr/textAppearanceBodyMedium"
             android:textColor="?attr/colorOnSurfaceVariant"
             android:layout_marginBottom="24dp" />
@@ -71,14 +71,14 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Exportar CSV"
+                            android:text="@string/exportar_csv"
                             android:textAppearance="?attr/textAppearanceTitleMedium"
                             android:textColor="?attr/colorOnSurface" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Compatible con Excel, Google Sheets, Numbers"
+                            android:text="@string/compatible_con_excel_google_sheets_numbers"
                             android:textAppearance="?attr/textAppearanceBodySmall"
                             android:textColor="?attr/colorOnSurfaceVariant" />
                     </LinearLayout>
@@ -88,7 +88,7 @@
                     android:id="@+id/btn_exportar_csv_mes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Exportar mes actual"
+                    android:text="@string/exportar_mes_actual"
                     android:layout_marginBottom="8dp"
                     style="@style/Widget.Material3.Button" />
 
@@ -96,7 +96,7 @@
                     android:id="@+id/btn_exportar_csv_total"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Exportar todos los datos"
+                    android:text="@string/exportar_todos_los_datos"
                     style="@style/Widget.Material3.Button.OutlinedButton" />
 
             </LinearLayout>
@@ -141,14 +141,14 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Exportar PDF"
+                            android:text="@string/exportar_pdf"
                             android:textAppearance="?attr/textAppearanceTitleMedium"
                             android:textColor="?attr/colorOnSurface" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Informe con resumen, tabla y gráfico"
+                            android:text="@string/informe_con_resumen_tabla_y_gr_fico"
                             android:textAppearance="?attr/textAppearanceBodySmall"
                             android:textColor="?attr/colorOnSurfaceVariant" />
                     </LinearLayout>
@@ -158,7 +158,7 @@
                     android:id="@+id/btn_exportar_pdf_mes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Exportar informe del mes"
+                    android:text="@string/exportar_informe_del_mes"
                     style="@style/Widget.Material3.Button" />
 
             </LinearLayout>

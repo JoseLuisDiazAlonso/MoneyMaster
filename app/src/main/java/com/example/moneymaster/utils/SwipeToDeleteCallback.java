@@ -17,23 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moneymaster.R;
 
-/**
- * SwipeToDeleteCallback
- *
- * Implementa el gesto de swipe para eliminar items del RecyclerView.
- * Al deslizar un item:
- *  1. Dibuja fondo rojo con icono de papelera
- *  2. Al soltar, ejecuta animación de fade-out + slide
- *  3. Notifica al listener para ejecutar la eliminación real
- *
- * Uso:
- *   SwipeToDeleteCallback callback = new SwipeToDeleteCallback(context, position -> {
- *       // eliminar el item en 'position' de tu lista y ViewModel
- *   });
- *   new ItemTouchHelper(callback).attachToRecyclerView(recyclerView);
- *
- * Card #55 - Sprint 9 UX
- */
+
 public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
     public interface OnSwipeDeleteListener {

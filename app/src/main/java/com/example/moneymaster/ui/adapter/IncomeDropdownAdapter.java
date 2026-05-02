@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.moneymaster.R;
 import com.example.moneymaster.data.model.CategoriaIngreso;
+import com.example.moneymaster.ui.categories.CategoryAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,6 @@ public class IncomeDropdownAdapter extends ArrayAdapter<CategoriaIngreso> {
     private final List<CategoriaIngreso> allCategories = new ArrayList<>();
     private final LayoutInflater         inflater;
 
-    // Filter que nunca filtra — siempre devuelve todos los items
     private final Filter noOpFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
@@ -49,7 +49,9 @@ public class IncomeDropdownAdapter extends ArrayAdapter<CategoriaIngreso> {
         @Override
         public CharSequence convertResultToString(Object resultValue) {
             if (resultValue instanceof CategoriaIngreso) {
-                return ((CategoriaIngreso) resultValue).nombre;
+                // FIX: resolver clave al nombre traducido
+                return CategoryAdapter.resolverNombre(
+                        getContext(), ((CategoriaIngreso) resultValue).nombre);
             }
             return super.convertResultToString(resultValue);
         }
@@ -96,7 +98,8 @@ public class IncomeDropdownAdapter extends ArrayAdapter<CategoriaIngreso> {
         CategoriaIngreso cat = getItem(position);
         if (cat == null) return convertView;
 
-        holder.name.setText(cat.nombre);
+        // FIX: resolver clave al nombre traducido
+        holder.name.setText(CategoryAdapter.resolverNombre(getContext(), cat.nombre));
 
         int color = ContextCompat.getColor(getContext(), R.color.income_green);
         holder.iconFrame.setBackgroundTintList(ColorStateList.valueOf(color));

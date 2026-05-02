@@ -5,23 +5,7 @@ import androidx.lifecycle.Observer;
 
 import java.lang.ref.WeakReference;
 
-/**
- * Card #64 – Manejo de memoria y leaks
- *
- * Observer de LiveData que mantiene al consumidor mediante WeakReference,
- * evitando que LiveData retenga una referencia fuerte a Activity o Fragment.
- *
- * Uso típico en un Fragment / Activity:
- * <pre>
- *   viewModel.getDatos().observe(getViewLifecycleOwner(),
- *       new LeakSafeObserver<>(this, (fragment, lista) -> {
- *           fragment.binding.recycler.setAdapter(new MiAdapter(lista));
- *       }));
- * </pre>
- *
- * @param <O> Tipo del observador (Activity, Fragment, etc.)
- * @param <T> Tipo del dato emitido por LiveData
- */
+
 public class LeakSafeObserver<O, T> implements Observer<T> {
 
     /** Contrato que recibe el observador y el dato de forma segura. */

@@ -23,7 +23,7 @@ public class MiembroBalanceAdapter
 
     private static final double EPSILON = 0.01;
 
-    // Colores Material 3 hardcodeados (compatibles con API 21+)
+    // Colores Material 3 hardcodeados
     private static final int COLOR_VERDE  = 0xFF2E7D32; // green 800
     private static final int COLOR_ROJO   = 0xFFB71C1C; // red 900
     private static final int COLOR_GRIS   = 0xFF757575; // grey 600

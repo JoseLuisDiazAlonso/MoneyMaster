@@ -1,4 +1,4 @@
-package com.example.moneymaster.ui.viewmodel;
+package com.example.moneymaster.ui.ViewModel;
 
 import android.app.Application;
 
@@ -15,10 +15,7 @@ import com.example.moneymaster.data.repository.IngresoRepository;
 import java.util.Calendar;
 import java.util.List;
 
-/**
- * ViewModel de la pantalla de Ingresos.
- * Estructura simétrica a GastoViewModel para coherencia de la codebase.
- */
+
 public class IngresoViewModel extends AndroidViewModel {
 
     private final IngresoRepository repository;
@@ -26,7 +23,7 @@ public class IngresoViewModel extends AndroidViewModel {
     private final MutableLiveData<Long>  usuarioIdLive = new MutableLiveData<>();
     private final MutableLiveData<int[]> filtroMesAnio = new MutableLiveData<>();
 
-    // ─── LiveData públicos ────────────────────────────────────────────────────
+    //LiveData públicos
 
     public final LiveData<List<IngresoPersonal>> todosLosIngresos;
     public final LiveData<List<IngresoPersonal>> ingresosFiltrados;
@@ -36,7 +33,7 @@ public class IngresoViewModel extends AndroidViewModel {
     private final MutableLiveData<IngresoPersonal> ingresoSeleccionado = new MutableLiveData<>();
     public LiveData<IngresoPersonal> getIngresoSeleccionado() { return ingresoSeleccionado; }
 
-    // ─── Constructor ──────────────────────────────────────────────────────────
+    //Constructor
 
     public IngresoViewModel(@NonNull Application application) {
         super(application);
@@ -64,7 +61,7 @@ public class IngresoViewModel extends AndroidViewModel {
                 repository::getCategorias);
     }
 
-    // ─── Setters ──────────────────────────────────────────────────────────────
+    //Setters
 
     public void setUsuarioId(long id) {
         if (!Long.valueOf(id).equals(usuarioIdLive.getValue())) {
@@ -84,7 +81,7 @@ public class IngresoViewModel extends AndroidViewModel {
         ingresoSeleccionado.setValue(null);
     }
 
-    // ─── CRUD Ingresos ────────────────────────────────────────────────────────
+    //CRUD Ingresos
 
     public void insertar(IngresoPersonal ingreso) {
         repository.insertar(ingreso);
@@ -98,7 +95,7 @@ public class IngresoViewModel extends AndroidViewModel {
         repository.eliminar(ingreso);
     }
 
-    // ─── CRUD Categorías ──────────────────────────────────────────────────────
+    //CRUD Categorías
 
     public void insertarCategoria(CategoriaIngreso categoria) {
         repository.insertarCategoria(categoria);

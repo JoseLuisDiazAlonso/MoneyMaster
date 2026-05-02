@@ -20,22 +20,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * MovimientosPagingAdapter — Card #62: adaptador para Paging 3.
- *
- * Extiende PagingDataAdapter en lugar de ListAdapter/RecyclerView.Adapter.
- * Room carga las páginas de forma lazy: solo se trae PAGE_SIZE filas del disco
- * cuando el usuario hace scroll, evitando cargar toda la tabla en memoria.
- *
- * Uso en Fragment/Activity:
- *   MovimientosPagingAdapter adapter = new MovimientosPagingAdapter(this);
- *   recyclerView.setAdapter(adapter);
- *   viewModel.gastosPaged.observe(this, pagingData -> adapter.submitData(lifecycle, pagingData));
- */
+
 public class MovimientosPagingAdapter
         extends PagingDataAdapter<GastoPersonal, MovimientosPagingAdapter.ViewHolder> {
 
-    // ── DiffUtil — obligatorio para PagingDataAdapter ─────────────────────
+    //DiffUtil — obligatorio para PagingDataAdapter
     private static final DiffUtil.ItemCallback<GastoPersonal> DIFF_CALLBACK =
             new DiffUtil.ItemCallback<GastoPersonal>() {
                 @Override
@@ -59,7 +48,7 @@ public class MovimientosPagingAdapter
                 }
             };
 
-    // ── Interfaz de click ────────────────────────────────────────────────
+    //Interfaz de click
     public interface OnItemClickListener {
         void onItemClick(GastoPersonal gasto);
     }
@@ -74,7 +63,7 @@ public class MovimientosPagingAdapter
         this.listener = listener;
     }
 
-    // ── ViewHolder ───────────────────────────────────────────────────────
+    //ViewHolder
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvDescripcion;
@@ -93,7 +82,7 @@ public class MovimientosPagingAdapter
         }
     }
 
-    // ── Inflate / Bind ───────────────────────────────────────────────────
+    //Inflate / Bind
 
     @NonNull
     @Override
@@ -138,7 +127,7 @@ public class MovimientosPagingAdapter
         });
     }
 
-    // ── LoadState footer helper ──────────────────────────────────────────
+    //LoadState footer helper
 
     /**
      * Devuelve true si el adapter está vacío (útil para mostrar empty state).

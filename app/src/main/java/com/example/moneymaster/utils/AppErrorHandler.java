@@ -11,20 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * Card #65 – Control de errores global
- *
- * Crash handler personalizado que:
- *  1. Captura cualquier excepción no controlada (UncaughtExceptionHandler).
- *  2. Escribe el stack trace en un fichero de log rotativo en filesDir/logs/.
- *  3. Delega al handler por defecto de Android para que el sistema pueda
- *     mostrar el diálogo de "App cerrada inesperadamente".
- *
- * Instalación — llamar UNA sola vez desde MoneyMasterApplication.onCreate():
- * <pre>
- *   AppErrorHandler.install(this);
- * </pre>
- */
+
 public class AppErrorHandler implements Thread.UncaughtExceptionHandler {
 
     private static final String TAG          = "AppErrorHandler";
@@ -36,9 +23,9 @@ public class AppErrorHandler implements Thread.UncaughtExceptionHandler {
     private final Context                        appContext;
     private final Thread.UncaughtExceptionHandler defaultHandler;
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // Instalación
-    // ─────────────────────────────────────────────────────────────────────────
+
 
     private AppErrorHandler(Context context) {
         this.appContext     = context.getApplicationContext();
@@ -53,9 +40,8 @@ public class AppErrorHandler implements Thread.UncaughtExceptionHandler {
         Log.i(TAG, "AppErrorHandler instalado.");
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // UncaughtExceptionHandler
-    // ─────────────────────────────────────────────────────────────────────────
 
     @Override
     public void uncaughtException(Thread thread, Throwable throwable) {
@@ -71,9 +57,9 @@ public class AppErrorHandler implements Thread.UncaughtExceptionHandler {
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // Escritura de log
-    // ─────────────────────────────────────────────────────────────────────────
+
 
     private void writeCrashToFile(Thread thread, Throwable throwable) {
         File logsDir = new File(appContext.getFilesDir(), LOGS_DIR);
@@ -114,9 +100,8 @@ public class AppErrorHandler implements Thread.UncaughtExceptionHandler {
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // API pública para acceder al log
-    // ─────────────────────────────────────────────────────────────────────────
 
     /**
      * Devuelve el fichero de crash log actual, o null si no existe.

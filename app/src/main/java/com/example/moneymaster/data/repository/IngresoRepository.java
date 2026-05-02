@@ -28,7 +28,7 @@ public class IngresoRepository {
         executor     = AppDatabase.databaseWriteExecutor;
     }
 
-    // ── Ingresos ──────────────────────────────────────────────────────────────
+    //Ingresos
 
     public LiveData<List<IngresoPersonal>> getIngresosByUsuario(long usuarioId) {
         return ingresoDao.getIngresosByUsuario(usuarioId);
@@ -72,7 +72,7 @@ public class IngresoRepository {
         executor.execute(() -> ingresoDao.eliminar(ingreso));
     }
 
-    // ── Estadísticas ──────────────────────────────────────────────────────────
+    //Estadísticas
 
     public LiveData<List<TotalPorCategoria>> getIngresosPorCategoria(long usuarioId, int mes, int anio) {
         return ingresoDao.getIngresosPorCategoria(usuarioId, mes, anio);
@@ -82,7 +82,7 @@ public class IngresoRepository {
         return ingresoDao.getResumenUltimosMeses(usuarioId, meses);
     }
 
-    // ── Categorías ────────────────────────────────────────────────────────────
+    //Categorías
 
     public LiveData<List<CategoriaIngreso>> getCategorias(long usuarioId) {
         return categoriaDao.getCategorias(usuarioId);

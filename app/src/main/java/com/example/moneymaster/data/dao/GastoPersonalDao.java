@@ -19,9 +19,9 @@ import java.util.List;
 @Dao
 public interface GastoPersonalDao {
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // INSERT / UPDATE / DELETE
-    // ─────────────────────────────────────────────────────────────────────────
+
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertar(GastoPersonal gasto);
@@ -32,9 +32,9 @@ public interface GastoPersonalDao {
     @Delete
     void eliminar(GastoPersonal gasto);
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // SELECT — usados por GastoRepository
-    // ─────────────────────────────────────────────────────────────────────────
+
 
     @Query("SELECT * FROM gastos_personales " +
             "WHERE usuarioId = :usuarioId " +
@@ -64,9 +64,9 @@ public interface GastoPersonalDao {
     @Query("SELECT * FROM gastos_personales WHERE id = :gastoId LIMIT 1")
     LiveData<GastoPersonal> getGastoById(long gastoId);
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // SELECT — Estadísticas
-    // ─────────────────────────────────────────────────────────────────────────
+
 
     @Query("SELECT c.nombre AS nombreCategoria, " +
             "       c.color AS colorCategoria, " +
@@ -105,9 +105,9 @@ public interface GastoPersonalDao {
             "LIMIT :meses")
     LiveData<List<ResumenMensual>> getResumenUltimosMeses(long usuarioId, int meses);
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // SELECT — StatisticsViewModel
-    // ─────────────────────────────────────────────────────────────────────────
+
 
     @Query("SELECT * FROM gastos_personales " +
             "WHERE usuarioId = :usuarioId " +
@@ -122,9 +122,9 @@ public interface GastoPersonalDao {
             "ORDER BY fecha DESC")
     LiveData<List<GastoPersonal>> getGastosByRango(long usuarioId, long inicio, long fin);
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // SELECT — Síncronas para Export
-    // ─────────────────────────────────────────────────────────────────────────
+
 
     @Query("SELECT * FROM gastos_personales " +
             "WHERE usuarioId = :usuarioId " +
@@ -153,9 +153,9 @@ public interface GastoPersonalDao {
             "ORDER BY fecha DESC")
     List<GastoPersonal> getTodosGastosParaExportacion(int usuarioId);
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // SELECT — DashboardViewModel
-    // ─────────────────────────────────────────────────────────────────────────
+
 
     @Query("SELECT g.id AS id, " +
             "       g.descripcion AS descripcion, " +
@@ -172,9 +172,9 @@ public interface GastoPersonalDao {
             "ORDER BY g.fecha DESC")
     LiveData<List<GastoConCategoria>> getGastosPorCategoria(int usuarioId, long inicio, long fin);
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // SELECT — BusquedaViewModel
-    // ─────────────────────────────────────────────────────────────────────────
+
 
     @Query("SELECT g.id AS id, " +
             "       g.descripcion AS descripcion, " +

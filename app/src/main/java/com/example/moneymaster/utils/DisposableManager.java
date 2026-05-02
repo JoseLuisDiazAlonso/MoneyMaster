@@ -5,26 +5,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Card #64 – Manejo de memoria y leaks
- *
- * Gestiona el registro y limpieza centralizada de listeners/callbacks
- * en Activities y Fragments, garantizando que todos se anulen en onDestroy /
- * onDestroyView para evitar leaks de contexto.
- *
- * Uso típico:
- * <pre>
- *   // En el Fragment / Activity, como campo:
- *   private final DisposableManager disposables = new DisposableManager();
- *
- *   // Al registrar cualquier listener:
- *   disposables.add(() -> myTextWatcher.removeTextChangedListener(editText));
- *   disposables.add(() -> myLocationManager.removeUpdates(locationListener));
- *
- *   // En onDestroyView() o onDestroy():
- *   disposables.disposeAll();
- * </pre>
- */
+
 public class DisposableManager {
 
     private static final String TAG = "DisposableManager";

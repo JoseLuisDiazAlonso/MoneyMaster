@@ -23,6 +23,6 @@
         android:visibility="gone"
         app:tint="@android:color/white"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:contentDescription="Seleccionado" />
+        android:contentDescription="@string/seleccionado" />
 
 </FrameLayout>

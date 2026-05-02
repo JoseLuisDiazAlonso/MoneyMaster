@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- marker_bar_tooltip.xml
-     Ruta: app/src/main/res/layout/marker_bar_tooltip.xml
-     Layout del globo tooltip que aparece al tocar una barra del BarChart. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_tooltip"
@@ -14,7 +12,7 @@
         android:id="@+id/tv_marker_contenido"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0,00 €"
+        tools:text="0,00"
         android:textColor="#FFFFFF"
         android:textSize="12sp"
         android:fontFamily="sans-serif-medium" />

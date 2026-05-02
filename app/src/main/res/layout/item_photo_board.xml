@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:contentDescription="Foto de recibo" />
+        android:contentDescription="@string/foto_de_recibo" />
 
     <!-- Overlay semitransparente cuando está seleccionada -->
     <View
@@ -31,7 +31,7 @@
         android:layout_margin="6dp"
         android:src="@drawable/ic_check_circle"
         android:visibility="gone"
-        android:contentDescription="Seleccionada"
+        android:contentDescription="@string/seleccionada"
         app:tint="@android:color/white" />
 
 </FrameLayout>

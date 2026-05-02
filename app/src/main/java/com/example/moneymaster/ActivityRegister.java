@@ -17,11 +17,6 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * Clase para validar el nombre, email, contraseña y validación de contraseña.
- * Card #9 — Registro de usuario.
- * Actualización: pregunta de seguridad para recuperación de contraseña.
- */
 public class ActivityRegister extends AppCompatActivity {
 
     private ActivityRegisterBinding binding;
@@ -49,7 +44,6 @@ public class ActivityRegister extends AppCompatActivity {
         executor.shutdown();
     }
 
-    // ── Poblar dropdown con las 3 preguntas de seguridad ──
     private void setupSecurityQuestionDropdown() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
@@ -57,14 +51,12 @@ public class ActivityRegister extends AppCompatActivity {
                 ForgotPasswordActivity.SECURITY_QUESTIONS
         );
         binding.actvSecurityQuestion.setAdapter(adapter);
-        // Seleccionar la primera por defecto
         binding.actvSecurityQuestion.setText(
                 ForgotPasswordActivity.SECURITY_QUESTIONS[0], false);
     }
 
     private void setupListeners() {
         binding.btnRegistrar.setOnClickListener(v -> attemptRegister());
-
         binding.etNombre.addTextChangedListener(clearErrorTextWatcher(binding.tilNombre));
         binding.etEmail.addTextChangedListener(clearErrorTextWatcher(binding.tilEmail));
         binding.etPassword.addTextChangedListener(clearErrorTextWatcher(binding.tilPassword));
@@ -84,38 +76,33 @@ public class ActivityRegister extends AppCompatActivity {
         boolean valid = true;
 
         if (nombre.isEmpty()) {
-            binding.tilNombre.setError("El nombre es obligatorio");
+            binding.tilNombre.setError(getString(R.string.error_nombre_obligatorio));
             valid = false;
         }
-
         if (email.isEmpty()) {
-            binding.tilEmail.setError("El email es obligatorio");
+            binding.tilEmail.setError(getString(R.string.error_amount_required));
             valid = false;
         } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            binding.tilEmail.setError("El email no es válido");
+            binding.tilEmail.setError(getString(R.string.error_amount_invalid));
             valid = false;
         }
-
         if (password.isEmpty()) {
-            binding.tilPassword.setError("La contraseña es obligatoria");
+            binding.tilPassword.setError(getString(R.string.error_amount_required));
             valid = false;
         } else if (password.length() < 6) {
-            binding.tilPassword.setError("La contraseña debe tener al menos 6 caracteres");
+            binding.tilPassword.setError(getString(R.string.error_password_min));
             valid = false;
         }
-
         if (!password.equals(passwordConfirm)) {
-            binding.tisPasswordConfirm.setError("Las contraseñas no coinciden");
+            binding.tisPasswordConfirm.setError(getString(R.string.error_passwords_no_coinciden));
             valid = false;
         }
-
         if (answer.isEmpty()) {
-            binding.tilSecurityAnswer.setError("La respuesta es obligatoria");
+            binding.tilSecurityAnswer.setError(getString(R.string.error_amount_required));
             valid = false;
         }
 
         if (valid) {
-            // Calcular índice de la pregunta seleccionada
             String selectedQuestion = binding.actvSecurityQuestion.getText().toString();
             int questionIndex = 0;
             for (int i = 0; i < ForgotPasswordActivity.SECURITY_QUESTIONS.length; i++) {
@@ -133,17 +120,13 @@ public class ActivityRegister extends AppCompatActivity {
         executor.execute(() -> {
             try {
                 String passwordHash = SecurityUtils.hashPassword(password);
-
-                // Hashear respuesta normalizada (insensible a mayúsculas y espacios)
-                String answerHash = SecurityUtils.hashPassword(answer.toLowerCase());
+                String answerHash   = SecurityUtils.hashPassword(answer.toLowerCase());
 
                 User newUser = new User(nombre, email, passwordHash);
                 newUser.securityQuestion   = questionIndex;
                 newUser.securityAnswerHash = answerHash;
 
                 long userId = db.usuarioDao().insertUser(newUser);
-
-                // Insertar categorías del sistema si no existen
                 sembrarCategoriasSiNecesario();
 
                 runOnUiThread(() -> {
@@ -156,65 +139,67 @@ public class ActivityRegister extends AppCompatActivity {
 
             } catch (Exception e) {
                 runOnUiThread(() ->
-                        binding.tilEmail.setError("Este email ya está registrado")
+                        binding.tilEmail.setError(getString(R.string.error_email_registrado))
                 );
             }
         });
     }
 
+    /**
+     * FIX: nombres de categoría como claves (ej. "cat_alimentacion")
+     * que se traducen en CategoryAdapter según el idioma del dispositivo.
+     */
     private void sembrarCategoriasSiNecesario() {
         if (db.categoriaGastoDao().countCategoriasDelSistema() > 0) return;
 
         java.util.List<com.example.moneymaster.data.model.CategoriaGasto> gastos =
                 java.util.Arrays.asList(
                         com.example.moneymaster.data.model.CategoriaGasto.crearSistema(
-                                "Alimentación",  "ic_restaurant",     "#FF5722"),
+                                "cat_alimentacion", "ic_restaurant",     "#FF5722"),
                         com.example.moneymaster.data.model.CategoriaGasto.crearSistema(
-                                "Transporte",    "ic_directions_car", "#2196F3"),
+                                "cat_transporte",   "ic_directions_car", "#2196F3"),
                         com.example.moneymaster.data.model.CategoriaGasto.crearSistema(
-                                "Vivienda",      "ic_home",           "#4CAF50"),
+                                "cat_vivienda",     "ic_home",           "#4CAF50"),
                         com.example.moneymaster.data.model.CategoriaGasto.crearSistema(
-                                "Salud",         "ic_local_hospital", "#F44336"),
+                                "cat_salud",        "ic_local_hospital", "#F44336"),
                         com.example.moneymaster.data.model.CategoriaGasto.crearSistema(
-                                "Ocio",          "ic_sports_esports", "#9C27B0"),
+                                "cat_ocio",         "ic_sports_esports", "#9C27B0"),
                         com.example.moneymaster.data.model.CategoriaGasto.crearSistema(
-                                "Ropa",          "ic_checkroom",      "#E91E63"),
+                                "cat_ropa",         "ic_checkroom",      "#E91E63"),
                         com.example.moneymaster.data.model.CategoriaGasto.crearSistema(
-                                "Educación",     "ic_school",         "#3F51B5"),
+                                "cat_educacion",    "ic_school",         "#3F51B5"),
                         com.example.moneymaster.data.model.CategoriaGasto.crearSistema(
-                                "Tecnología",    "ic_devices",        "#00BCD4"),
+                                "cat_tecnologia",   "ic_devices",        "#00BCD4"),
                         com.example.moneymaster.data.model.CategoriaGasto.crearSistema(
-                                "Viajes",        "ic_flight",         "#FF9800"),
+                                "cat_viajes",       "ic_flight",         "#FF9800"),
                         com.example.moneymaster.data.model.CategoriaGasto.crearSistema(
-                                "Otros",         "ic_category",       "#607D8B")
+                                "cat_otros",        "ic_category",       "#607D8B")
                 );
         db.categoriaGastoDao().insertarVarias(gastos);
 
         java.util.List<com.example.moneymaster.data.model.CategoriaIngreso> ingresos =
                 java.util.Arrays.asList(
                         com.example.moneymaster.data.model.CategoriaIngreso.crearSistema(
-                                "Salario",       "ic_work",           "#4CAF50"),
+                                "cat_salario",    "ic_work",          "#4CAF50"),
                         com.example.moneymaster.data.model.CategoriaIngreso.crearSistema(
-                                "Freelance",     "ic_laptop",         "#2196F3"),
+                                "cat_freelance",  "ic_laptop",        "#2196F3"),
                         com.example.moneymaster.data.model.CategoriaIngreso.crearSistema(
-                                "Inversiones",   "ic_trending_up",    "#FF9800"),
+                                "cat_inversiones","ic_trending_up",   "#FF9800"),
                         com.example.moneymaster.data.model.CategoriaIngreso.crearSistema(
-                                "Alquiler",      "ic_home",           "#9C27B0"),
+                                "cat_alquiler",   "ic_home",          "#9C27B0"),
                         com.example.moneymaster.data.model.CategoriaIngreso.crearSistema(
-                                "Regalo",        "ic_card_giftcard",  "#E91E63"),
+                                "cat_regalo",     "ic_card_giftcard", "#E91E63"),
                         com.example.moneymaster.data.model.CategoriaIngreso.crearSistema(
-                                "Otros",         "ic_category",       "#607D8B")
+                                "cat_otros",      "ic_category",      "#607D8B")
                 );
         db.categoriaIngresoDao().insertarVarias(ingresos);
     }
 
     private TextWatcher clearErrorTextWatcher(TextInputLayout layout) {
         return new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-            @Override public void afterTextChanged(android.text.Editable s) { }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void afterTextChanged(android.text.Editable s) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
                 layout.setError(null);
             }
         };

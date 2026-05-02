@@ -15,23 +15,7 @@ import com.bumptech.glide.Glide;
 import com.example.moneymaster.R;
 import com.example.moneymaster.databinding.DialogFotoViewerBinding;
 
-/**
- * Card #32 — Dialog de vista ampliada de foto de recibo.
- *
- * Muestra la foto a pantalla completa con dos acciones:
- *   - Cerrar (X) — esquina superior derecha
- *   - Eliminar foto — FAB rojo esquina inferior derecha
- *
- * El gasto se mantiene al eliminar la foto.
- *
- * Uso desde un Fragment:
- *   FotoViewerDialog dialog = FotoViewerDialog.newInstance(rutaFoto, gastoId);
- *   dialog.setOnEliminarFotoListener(gastoId -> viewModel.eliminarFoto(gastoId));
- *   dialog.show(getChildFragmentManager(), "FotoViewer");
- *
- * Uso desde una Activity:
- *   dialog.show(getSupportFragmentManager(), "FotoViewer");
- */
+
 public class FotoViewerDialog extends DialogFragment {
 
     private static final String ARG_RUTA     = "ruta_foto";
@@ -40,7 +24,7 @@ public class FotoViewerDialog extends DialogFragment {
     private DialogFotoViewerBinding binding;
     private OnEliminarFotoListener  eliminarListener;
 
-    // ─── Interfaz callback ────────────────────────────────────────────────────
+    //Interfaz callback
 
     public interface OnEliminarFotoListener {
         /**
@@ -50,7 +34,7 @@ public class FotoViewerDialog extends DialogFragment {
         void onEliminarFoto(int gastoId);
     }
 
-    // ─── Factory method ───────────────────────────────────────────────────────
+    //Factory method
 
     /**
      * @param rutaFoto Ruta absoluta de la foto en el almacenamiento interno.
@@ -69,7 +53,7 @@ public class FotoViewerDialog extends DialogFragment {
         this.eliminarListener = listener;
     }
 
-    // ─── Ciclo de vida ────────────────────────────────────────────────────────
+    //Ciclo de vida
 
     @NonNull
     @Override
@@ -121,7 +105,7 @@ public class FotoViewerDialog extends DialogFragment {
         binding = null;
     }
 
-    // ─── Métodos privados ─────────────────────────────────────────────────────
+    //Métodos privados
 
     private void cargarFoto(String rutaFoto) {
         if (rutaFoto != null) {

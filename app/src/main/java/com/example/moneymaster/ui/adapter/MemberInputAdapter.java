@@ -28,7 +28,7 @@ public class MemberInputAdapter extends RecyclerView.Adapter<MemberInputAdapter.
         this.removeListener = removeListener;
     }
 
-    // ─── Gestión de la lista ──────────────────────────────────────────────────
+    //Gestión de la lista
 
     public void addMember(String color) {
         items.add(new MemberInputItem("", color));
@@ -55,7 +55,7 @@ public class MemberInputAdapter extends RecyclerView.Adapter<MemberInputAdapter.
         return colores;
     }
 
-    // ─── Adapter overrides ────────────────────────────────────────────────────
+    //Adapter overrides
 
     @NonNull
     @Override
@@ -75,7 +75,7 @@ public class MemberInputAdapter extends RecyclerView.Adapter<MemberInputAdapter.
         return items.size();
     }
 
-    // ─── ViewHolder ───────────────────────────────────────────────────────────
+    //ViewHolder
 
     static class MemberViewHolder extends RecyclerView.ViewHolder {
 

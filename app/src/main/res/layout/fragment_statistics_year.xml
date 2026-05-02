@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- fragment_statistics_year.xml
-     Pestaña "Año":
-       · Selector de año con chevrones
-       · 3 tarjetas de resumen numérico
-       · LineChart evolución mensual
-       · BarChart gastos mensuales -->
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -32,7 +27,7 @@
                 android:layout_height="40dp"
                 android:src="@drawable/ic_chevron_left"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Año anterior" />
+                android:contentDescription="@string/a_o_anterior" />
 
             <TextView
                 android:id="@+id/tvSelectedYear"
@@ -49,7 +44,7 @@
                 android:layout_height="40dp"
                 android:src="@drawable/ic_chevron_right"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Año siguiente" />
+                android:contentDescription="@string/a_o_siguiente" />
         </LinearLayout>
 
         <!-- Resumen numérico anual -->
@@ -70,7 +65,8 @@
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="vertical" android:padding="12dp">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Gastado" android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                        android:text="@string/gastado"
+                        android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
                         android:textColor="?attr/colorOnErrorContainer"/>
                     <TextView android:id="@+id/tvTotalGastadoAnual" android:layout_width="wrap_content"
                         android:layout_height="wrap_content" android:text="0,00 €"
@@ -91,7 +87,8 @@
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="vertical" android:padding="12dp">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Ingresado" android:textAppearance="@style/TextAppearance.Material3.LabelSmall"/>
+                        android:text="@string/ingresado"
+                        android:textAppearance="@style/TextAppearance.Material3.LabelSmall"/>
                     <TextView android:id="@+id/tvTotalIngresadoAnual" android:layout_width="wrap_content"
                         android:layout_height="wrap_content" android:text="0,00 €"
                         android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
@@ -110,7 +107,7 @@
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="vertical" android:padding="12dp">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Balance" android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                        android:text="@string/balance" android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
                         android:textColor="?attr/colorOnSecondaryContainer"/>
                     <TextView android:id="@+id/tvBalanceAnual" android:layout_width="wrap_content"
                         android:layout_height="wrap_content" android:text="0,00 €"
@@ -130,7 +127,7 @@
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:orientation="vertical" android:padding="16dp">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Evolución mensual"
+                    android:text="@string/evoluci_n_mensual"
                     android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
                     android:layout_marginBottom="8dp"/>
                 <com.github.mikephil.charting.charts.LineChart
@@ -150,7 +147,7 @@
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:orientation="vertical" android:padding="16dp">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Gastos por mes"
+                    android:text="@string/gastos_por_mes"
                     android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
                     android:layout_marginBottom="8dp"/>
                 <com.github.mikephil.charting.charts.BarChart

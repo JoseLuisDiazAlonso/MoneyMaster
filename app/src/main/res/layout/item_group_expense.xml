@@ -28,7 +28,7 @@
             android:background="@drawable/bg_circle_primary"
             app:srcCompat="@drawable/ic_receipt"
             app:tint="?attr/colorOnPrimaryContainer"
-            android:contentDescription="Gasto" />
+            android:contentDescription="@string/gasto" />
 
         <!-- Descripción y pagador -->
         <LinearLayout

@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.moneymaster.R;
 import com.example.moneymaster.data.model.GastoPersonal;
 import com.example.moneymaster.databinding.ItemMovimientoBinding;
-import com.example.moneymaster.util.SwipeDeleteManager;
+import com.example.moneymaster.utils.SwipeDeleteManager;
 import com.example.moneymaster.utils.TransitionHelper;
 
 import java.text.NumberFormat;
@@ -50,7 +50,7 @@ public class PersonalExpenseAdapter
         this.clickListener = listener;
     }
 
-    // ─── DiffUtil ─────────────────────────────────────────────────────────────
+    //DiffUtil
 
     public void submitList(List<GastoPersonal> newList) {
         List<GastoPersonal> safeNew = newList != null ? newList : new ArrayList<>();
@@ -73,7 +73,7 @@ public class PersonalExpenseAdapter
         result.dispatchUpdatesTo(this);
     }
 
-    // ─── SwipeDeleteManager.AdapterContract ──────────────────────────────────
+    //SwipeDeleteManager.AdapterContract
 
     @Override
     public GastoPersonal getItemAt(int position) {
@@ -96,7 +96,7 @@ public class PersonalExpenseAdapter
         notifyItemInserted(safePos);
     }
 
-    // ─── RecyclerView.Adapter ─────────────────────────────────────────────────
+    //RecyclerView.Adapter
 
     @NonNull
     @Override
@@ -119,7 +119,7 @@ public class PersonalExpenseAdapter
     @Override
     public int getItemCount() { return items.size(); }
 
-    // ─── ViewHolder ───────────────────────────────────────────────────────────
+    //ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 

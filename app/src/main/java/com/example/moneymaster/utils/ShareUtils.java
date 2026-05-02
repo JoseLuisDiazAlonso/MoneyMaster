@@ -12,22 +12,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * ShareUtils - Utilidades para compartir contenido desde MoneyMaster.
- *
- * Proporciona métodos estáticos para compartir texto, imágenes y archivos
- * (Excel/PDF) a través del sistema de Intents de Android, con soporte
- * específico para WhatsApp.
- *
- * Uso básico:
- *   ShareUtils.shareText(context, "Mi resumen de gastos");
- *   ShareUtils.shareFile(context, archivoExcel, "application/vnd.ms-excel");
- *
- * Requisito: FileProvider configurado en AndroidManifest.xml con la
- * authority "com.example.moneymaster.fileprovider".
- *
- * Card #36 - Sprint 5: Compartir
- */
+
 public class ShareUtils {
 
     // Authority del FileProvider declarado en AndroidManifest.xml
@@ -43,9 +28,9 @@ public class ShareUtils {
     // Evitar instanciación — clase de utilidades pura
     private ShareUtils() {}
 
-    // =========================================================================
+
     // shareText — Compartir texto plano
-    // =========================================================================
+
 
     /**
      * Abre el selector de aplicaciones del sistema para compartir texto plano.
@@ -87,9 +72,9 @@ public class ShareUtils {
         shareText(context, text, null, "Compartir vía");
     }
 
-    // =========================================================================
+
     // shareImage — Compartir una sola imagen
-    // =========================================================================
+
 
     /**
      * Comparte una imagen (foto de recibo, gráfico estadístico) a través del
@@ -141,9 +126,9 @@ public class ShareUtils {
         shareImage(context, imageFile, "image/jpeg", null, "Compartir imagen");
     }
 
-    // =========================================================================
+
     // shareMultipleImages — Compartir varias imágenes
-    // =========================================================================
+
 
     /**
      * Comparte una lista de imágenes en un solo Intent (ACTION_SEND_MULTIPLE).
@@ -204,9 +189,9 @@ public class ShareUtils {
         shareMultipleImages(context, imageFiles, "image/jpeg", "Compartir imágenes");
     }
 
-    // =========================================================================
+
     // shareFile — Compartir archivo (Excel, PDF)
-    // =========================================================================
+
 
     /**
      * Comparte un archivo genérico (Excel .xlsx, PDF, CSV) a través del selector
@@ -264,9 +249,9 @@ public class ShareUtils {
         shareFile(context, file, mimeType, null, null, "Compartir archivo");
     }
 
-    // =========================================================================
+
     // shareViaWhatsApp — Compartir directamente en WhatsApp
-    // =========================================================================
+
 
     /**
      * Intenta compartir texto directamente en WhatsApp, saltándose el selector.
@@ -363,9 +348,9 @@ public class ShareUtils {
         shareImageViaWhatsApp(context, imageFile, null, false);
     }
 
-    // =========================================================================
+
     // Helpers privados
-    // =========================================================================
+
 
     /**
      * Convierte un File en un Uri seguro usando FileProvider.

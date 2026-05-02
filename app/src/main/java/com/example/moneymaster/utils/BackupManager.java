@@ -16,22 +16,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * Gestiona la copia de seguridad y restauración de la base de datos Room.
- *
- * Backup  → copia moneymaster_db a Downloads/MoneyMaster_backup_<timestamp>.db
- * Restore → sobrescribe moneymaster_db con el archivo .db seleccionado por el usuario
- *
- * IMPORTANTE: todas las operaciones deben llamarse desde un hilo de fondo
- * (databaseWriteExecutor o similar). Nunca desde el hilo principal.
- */
+
 public class BackupManager {
 
     private static final String DB_NAME        = "moneymaster_db";
     private static final String BACKUP_PREFIX  = "MoneyMaster_backup_";
     private static final String BACKUP_EXT     = ".db";
 
-    // ── Backup ────────────────────────────────────────────────────────────────
+    //Backup
 
     /**
      * Crea un backup de la base de datos en la carpeta Downloads del dispositivo.
@@ -68,7 +60,7 @@ public class BackupManager {
         }
     }
 
-    // ── Restore ───────────────────────────────────────────────────────────────
+    //Restore
 
     /**
      * Restaura la base de datos desde un Uri elegido por el usuario.
@@ -110,7 +102,7 @@ public class BackupManager {
         }
     }
 
-    // ── Utilidades privadas ───────────────────────────────────────────────────
+    //Utilidades privadas
 
     private static void copyFile(File src, File dst) throws IOException {
         try (FileInputStream in  = new FileInputStream(src);

@@ -19,23 +19,10 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Helper que encapsula TODA la configuración de MPAndroidChart para el PieChart
- * del módulo de Estadísticas (Card #42).
- *
- * Diseñado para separar la lógica del gráfico del Fragment, facilitando el
- * testing y el mantenimiento.
- *
- * Uso básico:
- * <pre>
- *   PieChartHelper helper = new PieChartHelper(context, pieChart);
- *   helper.setOnSliceClickListener((categoria, total) -> filtrarPorCategoria(categoria));
- *   viewModel.gastosPorCategoria.observe(this, helper::actualizarDatos);
- * </pre>
- */
+
 public class PieChartHelper {
 
-    // ─── Colores de fallback cuando una categoría no tiene color definido ─────
+    //Colores de fallback cuando una categoría no tiene color definido
     private static final int[] COLORES_FALLBACK = {
             Color.parseColor("#F44336"), // rojo
             Color.parseColor("#E91E63"), // rosa
@@ -53,7 +40,7 @@ public class PieChartHelper {
     private final PieChart pieChart;
     private OnSliceClickListener sliceClickListener;
 
-    // ─── Interfaz para propagar clicks de sector al Fragment ─────────────────
+    //Interfaz para propagar clicks de sector al Fragment
     public interface OnSliceClickListener {
         /**
          * @param nombreCategoria nombre de la categoría clicada
@@ -62,7 +49,7 @@ public class PieChartHelper {
         void onSliceClick(String nombreCategoria, double total);
     }
 
-    // ─── Constructor ──────────────────────────────────────────────────────────
+    //Constructor
 
     public PieChartHelper(Context context, PieChart pieChart) {
         this.context = context;
@@ -70,7 +57,7 @@ public class PieChartHelper {
         configurarPieChart();
     }
 
-    // ─── Configuración inicial del PieChart ───────────────────────────────────
+    //Configuración inicial del PieChart
 
     /**
      * Aplica todos los ajustes visuales al PieChart.
@@ -146,7 +133,7 @@ public class PieChartHelper {
         legend.setYEntrySpace(6f);
     }
 
-    // ─── Actualización de datos ───────────────────────────────────────────────
+    //Actualización de datos
 
     /**
      * Punto de entrada principal. El Fragment llama este método cada vez que
@@ -236,7 +223,7 @@ public class PieChartHelper {
         dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
     }
 
-    // ─── Estado vacío ─────────────────────────────────────────────────────────
+    //Estado vacío
 
     /**
      * Cuando no hay datos, limpia el gráfico y actualiza el texto central.
@@ -247,7 +234,7 @@ public class PieChartHelper {
         pieChart.invalidate();
     }
 
-    // ─── Texto central dinámico ───────────────────────────────────────────────
+    //Texto central dinámico
 
     /**
      * Actualiza el texto central con el importe total del mes.
@@ -264,7 +251,7 @@ public class PieChartHelper {
         pieChart.invalidate();
     }
 
-    // ─── Setters ──────────────────────────────────────────────────────────────
+    //Setters
 
     public void setOnSliceClickListener(OnSliceClickListener listener) {
         this.sliceClickListener = listener;

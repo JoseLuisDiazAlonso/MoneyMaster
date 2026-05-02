@@ -31,7 +31,7 @@
                 style="@style/Widget.Material3.Button.IconButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:contentDescription="Mes anterior"
+                android:contentDescription="@string/mes_anterior"
                 app:icon="@drawable/ic_chevron_left" />
 
             <TextView
@@ -49,7 +49,7 @@
                 style="@style/Widget.Material3.Button.IconButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:contentDescription="Mes siguiente"
+                android:contentDescription="@string/mes_siguiente"
                 app:icon="@drawable/ic_chevron_right" />
 
         </LinearLayout>
@@ -77,7 +77,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Balance del mes"
+                    android:text="@string/balance_del_mes"
                     android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
                     android:alpha="0.7" />
 
@@ -144,12 +144,12 @@
                                 android:layout_marginEnd="4dp"
                                 android:src="@drawable/ic_arrow_upward"
                                 app:tint="@color/income_green"
-                                android:contentDescription="Ingresos" />
+                                android:contentDescription="@String/Ingresos" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Ingresos"
+                                android:text="@string/ingresos"
                                 android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
                                 android:alpha="0.7" />
                         </LinearLayout>
@@ -189,12 +189,12 @@
                                 android:layout_marginEnd="4dp"
                                 android:src="@drawable/ic_arrow_downward"
                                 app:tint="@color/expense_red"
-                                android:contentDescription="Gastos" />
+                                android:contentDescription="@String/Gastos" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Gastos"
+                                android:text="@string/gastos"
                                 android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
                                 android:alpha="0.7" />
                         </LinearLayout>
@@ -239,7 +239,7 @@
                 style="@style/Widget.Material3.Button.IconButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:contentDescription="Filtros avanzados"
+                android:contentDescription="@string/filtros_avanzados"
                 app:icon="@drawable/ic_filter_list" />
 
         </LinearLayout>
@@ -267,7 +267,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="8dp"
-            android:text="Últimos movimientos"
+            android:text="@string/ltimos_movimientos"
             android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
             android:textStyle="bold" />
 
@@ -290,13 +290,13 @@
                 android:src="@drawable/ic_receipt_long"
                 android:alpha="0.3"
                 app:tint="?attr/colorOnSurface"
-                android:contentDescription="Sin movimientos" />
+                android:contentDescription="@string/sin_movimientos" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Sin movimientos este mes"
+                android:text="@string/sin_movimientos_este_mes"
                 android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                 android:alpha="0.5" />
         </LinearLayout>
@@ -324,7 +324,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="8dp"
-            android:text="Ver todos"
+            android:text="@string/ver_todos"
             android:visibility="gone"
             tools:visibility="visible" />
 

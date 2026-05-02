@@ -36,7 +36,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center"
-                android:contentDescription="Icono de categoría" />
+                android:contentDescription="@string/icono_de_categor_a" />
 
         </FrameLayout>
 
@@ -55,7 +55,7 @@
             android:id="@+id/chipPredefined"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Predefinida"
+            android:text="@string/predefinida"
             android:textSize="10sp"
             app:chipMinHeight="24dp"
             android:clickable="false"
@@ -70,7 +70,7 @@
             style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:contentDescription="Eliminar categoría"
+            android:contentDescription="@string/eliminar_categor_a"
             app:icon="@drawable/ic_delete"
             app:iconTint="?attr/colorError"
             android:visibility="gone" />

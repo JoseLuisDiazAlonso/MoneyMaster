@@ -5,10 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
-/**
- * Card #12 - SecurityUtils
- * Utilidades de seguridad: hash de contraseñas con SHA-256 + salt.
- */
+
 public class SecurityUtils {
 
     private SecurityUtils() {

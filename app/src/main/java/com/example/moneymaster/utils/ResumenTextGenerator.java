@@ -46,9 +46,9 @@ public class ResumenTextGenerator {
 
     private ResumenTextGenerator() {}
 
-    // =========================================================================
+
     // DatosGrupo
-    // =========================================================================
+
 
     public static class DatosGrupo {
         public final Grupo              grupo;
@@ -70,9 +70,9 @@ public class ResumenTextGenerator {
         }
     }
 
-    // =========================================================================
+
     // Método principal
-    // =========================================================================
+
 
     public static String generar(DatosGrupo datos) {
         if (datos == null || datos.grupo == null) {
@@ -88,9 +88,9 @@ public class ResumenTextGenerator {
         return sb.toString().trim();
     }
 
-    // =========================================================================
+
     // Secciones
-    // =========================================================================
+
 
     private static void agregarCabecera(StringBuilder sb, DatosGrupo datos) {
         String fechaHoy = new SimpleDateFormat("d MMM yyyy, HH:mm", LOCALE_ES)
@@ -240,9 +240,9 @@ public class ResumenTextGenerator {
         sb.append(SEPARADOR_PUNTOS).append("\n");
     }
 
-    // =========================================================================
+
     // Variante compacta
-    // =========================================================================
+
 
     public static String generarCompacto(DatosGrupo datos) {
         if (datos == null || datos.grupo == null) return "";
@@ -274,9 +274,9 @@ public class ResumenTextGenerator {
         return sb.toString().trim();
     }
 
-    // =========================================================================
+
     // Portapapeles
-    // =========================================================================
+
 
     public static void copiarAlPortapapeles(Context context, String texto) {
         ClipboardManager clipboard =
@@ -292,9 +292,9 @@ public class ResumenTextGenerator {
                 Toast.LENGTH_SHORT).show();
     }
 
-    // =========================================================================
+
     // Helpers privados
-    // =========================================================================
+
 
     private static double calcularTotalGastado(List<GastoGrupo> gastos) {
         double total = 0;
