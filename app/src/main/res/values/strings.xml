@@ -446,4 +446,9 @@
     <string name="tab_gastos_grupo">Gastos</string>
     <string name="tab_balance_grupo">Balance</string>
     <string name="grupo_default">Grupo</string>
+    <!--Detalles de Gastos-->
+    <string name="detalle_gasto">Detalle del gasto</string>
+    <string name="detalle_ingreso">Detalle del ingreso</string>
+    <string name="ingreso">Ingreso</string>
+    <string name="sin_categoria">Sin categoría</string>
 </resources>

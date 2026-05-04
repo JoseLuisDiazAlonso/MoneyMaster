@@ -80,7 +80,6 @@ public class SearchFilterBottomSheet extends BottomSheetDialogFragment {
     }
 
     // ─── Chips de categorías ──────────────────────────────────────────────────
-
     private void construirChipsCategorias() {
         if (categorias == null || categorias.isEmpty()) return;
 
@@ -88,12 +87,11 @@ public class SearchFilterBottomSheet extends BottomSheetDialogFragment {
 
         for (CategoriaGasto cat : categorias) {
             Chip chip = new Chip(requireContext());
-            chip.setText(cat.nombre);
+            chip.setText(resolverNombreCategoria(cat.nombre));  // ← CAMBIO
             chip.setTag(cat.id);
             chip.setCheckable(true);
             chip.setCheckedIconVisible(true);
 
-            // Pre-seleccionar si coincide con el filtro actual
             if (filtroInicial.categoriaId == cat.id) {
                 chip.setChecked(true);
             }
@@ -101,6 +99,19 @@ public class SearchFilterBottomSheet extends BottomSheetDialogFragment {
             binding.chipGroupCategorias.addView(chip);
         }
     }
+
+    /**
+     * Resuelve la clave de categoría (ej: "cat_alimentacion") al string
+     * traducido según el idioma activo del dispositivo.
+     * Si la clave no existe en strings.xml, devuelve la clave tal cual
+     * (cubre categorías personalizadas del usuario).
+     */
+    private String resolverNombreCategoria(String clave) {
+        if (clave == null || clave.isEmpty()) return "";
+        int resId = getResources().getIdentifier(clave, "string", requireContext().getPackageName());
+        return resId != 0 ? getString(resId) : clave;
+    }
+
 
     // ─── Restaurar estado inicial ─────────────────────────────────────────────
 

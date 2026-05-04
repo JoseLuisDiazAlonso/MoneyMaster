@@ -130,7 +130,9 @@ public class MovimientoAdapter extends ListAdapter<MovimientoReciente, Movimient
             Context ctx = binding.getRoot().getContext();
 
             binding.tvTitulo.setText(item.getDescripcion());
-            binding.tvDescripcion.setText(item.getNombreCategoria());
+            binding.tvDescripcion.setText(
+                    com.example.moneymaster.ui.categories.CategoryAdapter.resolverNombre(
+                            ctx, item.getNombreCategoria()));
 
             boolean esGasto  = item.getTipo() == MovimientoReciente.Tipo.GASTO;
             String  cantidad = (esGasto ? "- " : "+ ") + formatCantidad(item.getImporte());

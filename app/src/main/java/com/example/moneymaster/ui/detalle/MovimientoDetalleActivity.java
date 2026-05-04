@@ -10,8 +10,6 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide;
-
 import com.example.moneymaster.R;
 import com.example.moneymaster.data.database.AppDatabase;
 import com.example.moneymaster.data.model.CategoriaGasto;
@@ -20,6 +18,7 @@ import com.example.moneymaster.data.model.GastoPersonal;
 import com.example.moneymaster.data.model.IngresoPersonal;
 import com.example.moneymaster.data.model.MovimientoReciente;
 import com.example.moneymaster.databinding.ActivityMovimientoDetalleBinding;
+import com.example.moneymaster.ui.categories.CategoryAdapter;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -33,12 +32,10 @@ public class MovimientoDetalleActivity extends AppCompatActivity {
 
     private ActivityMovimientoDetalleBinding binding;
 
-    private final NumberFormat currencyFormat =
-            NumberFormat.getCurrencyInstance(new Locale("es", "ES"));
-    private final SimpleDateFormat dateFormat =
-            new SimpleDateFormat("dd MMM yyyy", new Locale("es", "ES"));
-
-    //Static factory
+    private final NumberFormat     currencyFormat =
+            NumberFormat.getCurrencyInstance(Locale.getDefault());
+    private final SimpleDateFormat dateFormat     =
+            new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
 
     public static void start(Context context, int id, MovimientoReciente.Tipo tipo) {
         Intent intent = new Intent(context, MovimientoDetalleActivity.class);
@@ -46,8 +43,6 @@ public class MovimientoDetalleActivity extends AppCompatActivity {
         intent.putExtra(EXTRA_TIPO, tipo.name());
         context.startActivity(intent);
     }
-
-    //Ciclo de vida
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +82,6 @@ public class MovimientoDetalleActivity extends AppCompatActivity {
         binding = null;
     }
 
-    //Carga de datos
-
     private void cargarDetalle(int id, MovimientoReciente.Tipo tipo) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             if (tipo == MovimientoReciente.Tipo.GASTO) {
@@ -103,18 +96,14 @@ public class MovimientoDetalleActivity extends AppCompatActivity {
         });
     }
 
-    //Mostrar gasto
-
     private void mostrarGasto(GastoPersonal gasto) {
         if (gasto == null) { finish(); return; }
 
-        binding.toolbar.setTitle("Detalle del gasto");
-        binding.toolbar.setBackgroundColor(getColor(R.color.expense_red));
-
+        binding.toolbar.setTitle(getString(R.string.detalle_gasto));
         binding.tvImporte.setText("-" + currencyFormat.format(gasto.monto));
         binding.tvImporte.setTextColor(getColor(R.color.expense_red));
         binding.tvFecha.setText(dateFormat.format(new Date(gasto.fecha)));
-        binding.tvTipo.setText("Gasto");
+        binding.tvTipo.setText(getString(R.string.gasto));
         binding.tvTipo.setTextColor(getColor(R.color.expense_red));
 
         if (gasto.descripcion != null && !gasto.descripcion.isEmpty()) {
@@ -123,21 +112,16 @@ public class MovimientoDetalleActivity extends AppCompatActivity {
         }
 
         cargarCategoriaGasto(gasto.categoria_id);
-
     }
-
-    //Mostrar ingreso
 
     private void mostrarIngreso(IngresoPersonal ingreso) {
         if (ingreso == null) { finish(); return; }
 
-        binding.toolbar.setTitle("Detalle del ingreso");
-        binding.toolbar.setBackgroundColor(getColor(R.color.income_green));
-
+        binding.toolbar.setTitle(getString(R.string.detalle_ingreso));
         binding.tvImporte.setText("+" + currencyFormat.format(ingreso.monto));
         binding.tvImporte.setTextColor(getColor(R.color.income_green));
         binding.tvFecha.setText(dateFormat.format(new Date(ingreso.fecha)));
-        binding.tvTipo.setText("Ingreso");
+        binding.tvTipo.setText(getString(R.string.ingreso));
         binding.tvTipo.setTextColor(getColor(R.color.income_green));
 
         if (ingreso.descripcion != null && !ingreso.descripcion.isEmpty()) {
@@ -146,50 +130,45 @@ public class MovimientoDetalleActivity extends AppCompatActivity {
         }
 
         cargarCategoriaIngreso(ingreso.categoria_id);
-
     }
-
-    //Categoría gasto
 
     private void cargarCategoriaGasto(Integer categoriaId) {
         if (categoriaId == null) {
-            binding.tvCategoria.setText("Sin categoría");
+            binding.tvCategoria.setText(getString(R.string.sin_categoria));
             binding.ivIconoCategoria.setImageResource(R.drawable.ic_category_default);
             return;
         }
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            // FIX: getByIdSync en lugar de getCategoriaByIdSync
             CategoriaGasto cat = AppDatabase.getDatabase(this)
                     .categoriaGastoDao().getByIdSync(categoriaId);
             runOnUiThread(() -> {
                 if (cat == null) return;
-                binding.tvCategoria.setText(cat.nombre);
+                // FIX: resolver clave al nombre traducido
+                binding.tvCategoria.setText(
+                        CategoryAdapter.resolverNombre(this, cat.nombre));
                 aplicarColorIcono(cat.color, cat.icono);
             });
         });
     }
 
-    //Categoría ingreso
-
     private void cargarCategoriaIngreso(Integer categoriaId) {
         if (categoriaId == null) {
-            binding.tvCategoria.setText("Sin categoría");
+            binding.tvCategoria.setText(getString(R.string.sin_categoria));
             binding.ivIconoCategoria.setImageResource(R.drawable.ic_category_default);
             return;
         }
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            // FIX: getByIdSync añadido a CategoriaIngresoDao
             CategoriaIngreso cat = AppDatabase.getDatabase(this)
                     .categoriaIngresoDao().getByIdSync(categoriaId);
             runOnUiThread(() -> {
                 if (cat == null) return;
-                binding.tvCategoria.setText(cat.nombre);
+                // FIX: resolver clave al nombre traducido
+                binding.tvCategoria.setText(
+                        CategoryAdapter.resolverNombre(this, cat.nombre));
                 aplicarColorIcono(cat.color, cat.icono);
             });
         });
     }
-
-    //Helpers
 
     private void aplicarColorIcono(String color, String icono) {
         try {
@@ -209,5 +188,4 @@ public class MovimientoDetalleActivity extends AppCompatActivity {
         binding.ivIconoCategoria.setImageResource(
                 resId != 0 ? resId : R.drawable.ic_category_default);
     }
-
 }

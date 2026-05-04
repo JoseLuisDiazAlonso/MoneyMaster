@@ -72,15 +72,17 @@
                 app:hintTextColor="@color/income_green">
 
                 <!--
-                    AutoCompleteTextView con filter desactivado (NoOpFilter en adapter).
-                    inputType="none" impide que aparezca el teclado al abrir el dropdown.
+                    FIX MIUI/HyperOS: focusable=true para que el OnItemClickListener
+                    se dispare correctamente en dispositivos físicos Xiaomi.
+                    inputType="none" sigue impidiendo el teclado.
+                    cursorVisible=false oculta el cursor.
                 -->
                 <AutoCompleteTextView
                     android:id="@+id/auto_complete_category"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"
-                    android:focusable="false"
+                    android:focusable="true"
                     android:cursorVisible="false" />
 
             </com.google.android.material.textfield.TextInputLayout>

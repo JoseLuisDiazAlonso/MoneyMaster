@@ -11,6 +11,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Selector de mes -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -53,6 +54,7 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Gráfico de tarta: Gastos por categoría -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_pie_chart"
             android:layout_width="match_parent"
@@ -102,6 +104,7 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Gráfico de barras: Gastos vs Ingresos -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_bar_chart"
             android:layout_width="match_parent"
@@ -181,6 +184,7 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Gráfico de línea: Evolución de gastos -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_line_chart"
             android:layout_width="match_parent"
@@ -195,45 +199,12 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="8dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/evoluci_n_de_gastos"
-                        android:textAppearance="?attr/textAppearanceTitleMedium" />
-
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/chip_group_vista"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:singleSelection="true"
-                        app:selectionRequired="true">
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_vista_diaria"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/diario"
-                            android:checked="true"
-                            style="@style/Widget.Material3.Chip.Filter" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_vista_semanal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/semanal"
-                            style="@style/Widget.Material3.Chip.Filter" />
-
-                    </com.google.android.material.chip.ChipGroup>
-
-                </LinearLayout>
+                    android:text="@string/evoluci_n_de_gastos"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:layout_marginBottom="8dp" />
 
                 <TextView
                     android:id="@+id/tv_sin_datos_line"

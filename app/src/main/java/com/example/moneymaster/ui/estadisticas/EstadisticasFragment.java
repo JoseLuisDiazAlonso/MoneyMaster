@@ -16,6 +16,7 @@ import com.example.moneymaster.R;
 import com.example.moneymaster.data.model.ResumenMensual;
 import com.example.moneymaster.data.model.TotalPorCategoria;
 import com.example.moneymaster.ui.ViewModel.EstadisticasViewModel;
+import com.example.moneymaster.ui.categories.CategoryAdapter;
 import com.example.moneymaster.utils.SessionManager;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -55,7 +56,6 @@ public class EstadisticasFragment extends Fragment {
     private LineChart   lineChart;
     private TextView    tvSinDatosLine;
     private ChipGroup   chipGroupRango;
-    private ChipGroup   chipGroupVista;
 
     private int usuarioId;
 
@@ -66,8 +66,6 @@ public class EstadisticasFragment extends Fragment {
             0xFF4CAF50, 0xFF2196F3, 0xFFF44336, 0xFFFF9800, 0xFF9C27B0,
             0xFF00BCD4, 0xFFFFEB3B, 0xFF795548, 0xFF607D8B, 0xFFE91E63
     };
-
-    // Ciclo de vida
 
     @Nullable
     @Override
@@ -80,7 +78,6 @@ public class EstadisticasFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         leerSesion();
         inicializarCalendario();
         enlazarVistas(view);
@@ -90,8 +87,6 @@ public class EstadisticasFragment extends Fragment {
         configurarChips();
         observarDatos();
     }
-
-    // Inicialización
 
     private void leerSesion() {
         usuarioId = new SessionManager(requireContext()).getUserId();
@@ -112,7 +107,6 @@ public class EstadisticasFragment extends Fragment {
         lineChart       = view.findViewById(R.id.line_chart);
         tvSinDatosLine  = view.findViewById(R.id.tv_sin_datos_line);
         chipGroupRango  = view.findViewById(R.id.chip_group_rango);
-        chipGroupVista  = view.findViewById(R.id.chip_group_vista);
     }
 
     private void inicializarViewModel() {
@@ -122,10 +116,7 @@ public class EstadisticasFragment extends Fragment {
         }
     }
 
-    // Configuración inicial de gráficos
-
     private void configurarGraficos() {
-        // FIX: textos "sin datos" desde strings.xml
         pieChart.setUsePercentValues(true);
         pieChart.getDescription().setEnabled(false);
         pieChart.setDrawHoleEnabled(true);
@@ -156,8 +147,6 @@ public class EstadisticasFragment extends Fragment {
         lineChart.setNoDataText(getString(R.string.sin_gastos_este_mes));
     }
 
-    // Selector de mes
-
     private void configurarSelectorMes() {
         actualizarTextMes();
 
@@ -169,10 +158,8 @@ public class EstadisticasFragment extends Fragment {
 
         btnMesSiguiente.setOnClickListener(v -> {
             Calendar ahora = Calendar.getInstance();
-            boolean esAnioAnterior = calendarActual.get(Calendar.YEAR)
-                    < ahora.get(Calendar.YEAR);
-            boolean esMesAnterior  = calendarActual.get(Calendar.YEAR)
-                    == ahora.get(Calendar.YEAR)
+            boolean esAnioAnterior = calendarActual.get(Calendar.YEAR) < ahora.get(Calendar.YEAR);
+            boolean esMesAnterior  = calendarActual.get(Calendar.YEAR) == ahora.get(Calendar.YEAR)
                     && calendarActual.get(Calendar.MONTH) < ahora.get(Calendar.MONTH);
             if (esAnioAnterior || esMesAnterior) {
                 calendarActual.add(Calendar.MONTH, 1);
@@ -182,8 +169,6 @@ public class EstadisticasFragment extends Fragment {
         });
     }
 
-    // Chips de rango y vista
-
     private void configurarChips() {
         chipGroupRango.setOnCheckedStateChangeListener((group, checkedIds) -> {
             if (checkedIds.isEmpty()) return;
@@ -192,16 +177,7 @@ public class EstadisticasFragment extends Fragment {
             else if (id == R.id.chip_6_meses)  viewModel.setMesesHistorial(6);
             else if (id == R.id.chip_12_meses) viewModel.setMesesHistorial(12);
         });
-
-        chipGroupVista.setOnCheckedStateChangeListener((group, checkedIds) -> {
-            if (checkedIds.isEmpty()) return;
-            int id = checkedIds.get(0);
-            boolean semanal = id == R.id.chip_vista_semanal;
-            dibujarLineChart(ultimosGastosMeses, semanal);
-        });
     }
-
-    // Observers LiveData
 
     private void observarDatos() {
         viewModel.gastosPorCategoria.observe(getViewLifecycleOwner(), lista -> {
@@ -218,22 +194,14 @@ public class EstadisticasFragment extends Fragment {
         viewModel.resumenGastosMeses.observe(getViewLifecycleOwner(), gastos -> {
             ultimosGastosMeses = gastos != null ? gastos : new ArrayList<>();
             dibujarBarChart(ultimosGastosMeses, ultimosIngresosMeses);
+            dibujarLineChart(ultimosGastosMeses);
         });
 
         viewModel.resumenIngresosMeses.observe(getViewLifecycleOwner(), ingresos -> {
             ultimosIngresosMeses = ingresos != null ? ingresos : new ArrayList<>();
             dibujarBarChart(ultimosGastosMeses, ultimosIngresosMeses);
         });
-
-        viewModel.resumenGastosMeses.observe(getViewLifecycleOwner(), gastos -> {
-            ultimosGastosMeses = gastos != null ? gastos : new ArrayList<>();
-            boolean semanal = chipGroupVista != null
-                    && chipGroupVista.getCheckedChipId() == R.id.chip_vista_semanal;
-            dibujarLineChart(ultimosGastosMeses, semanal);
-        });
     }
-
-    // Dibujo de gráficos
 
     private void dibujarPieChart(List<TotalPorCategoria> lista) {
         List<PieEntry> entries = new ArrayList<>();
@@ -241,7 +209,9 @@ public class EstadisticasFragment extends Fragment {
             if (item.total > 0) {
                 entries.add(new PieEntry(
                         (float) item.total,
-                        item.nombreCategoria != null ? item.nombreCategoria : getString(R.string.sin_descripcion)));
+                        item.nombreCategoria != null
+                                ? CategoryAdapter.resolverNombre(requireContext(), item.nombreCategoria)
+                                : getString(R.string.sin_descripcion)));
             }
         }
 
@@ -287,7 +257,7 @@ public class EstadisticasFragment extends Fragment {
         List<String>   etiquetas       = new ArrayList<>();
 
         for (int i = 0; i < maxSize; i++) {
-            float g = (gastos   != null && i < gastos.size())
+            float g   = (gastos   != null && i < gastos.size())
                     ? (float) gastos.get(i).total   : 0f;
             float inc = (ingresos != null && i < ingresos.size())
                     ? (float) ingresos.get(i).total : 0f;
@@ -304,7 +274,6 @@ public class EstadisticasFragment extends Fragment {
             etiquetas.add(etiqueta);
         }
 
-        // FIX: leyendas desde strings.xml
         BarDataSet dsGastos   = new BarDataSet(entriesGastos,   getString(R.string.leyenda_gastos));
         BarDataSet dsIngresos = new BarDataSet(entriesIngresos, getString(R.string.leyenda_ingresos));
         dsGastos.setColor(0xFFF44336);
@@ -321,7 +290,7 @@ public class EstadisticasFragment extends Fragment {
         barChart.invalidate();
     }
 
-    private void dibujarLineChart(List<ResumenMensual> datos, boolean semanal) {
+    private void dibujarLineChart(List<ResumenMensual> datos) {
         if (datos == null || datos.isEmpty()) {
             lineChart.setVisibility(View.GONE);
             tvSinDatosLine.setVisibility(View.VISIBLE);
@@ -339,7 +308,6 @@ public class EstadisticasFragment extends Fragment {
             etiquetas.add(mesCorto(datos.get(i).mes, datos.get(i).anio));
         }
 
-        // FIX: leyenda desde strings.xml
         LineDataSet dataSet = new LineDataSet(entries, getString(R.string.leyenda_gastos));
         dataSet.setColor(0xFF2196F3);
         dataSet.setCircleColor(0xFF2196F3);
@@ -356,17 +324,11 @@ public class EstadisticasFragment extends Fragment {
         lineChart.invalidate();
     }
 
-    // Helpers
-
     private void actualizarTextMes() {
         int mes  = calendarActual.get(Calendar.MONTH);
         int anio = calendarActual.get(Calendar.YEAR);
-
-        // FIX: usar DateFormatSymbols con Locale.getDefault()
-        // en lugar del array MESES_ES hardcodeado en español
         String[] meses = new DateFormatSymbols(Locale.getDefault()).getMonths();
         String nombreMes = meses[mes];
-        // Primera letra en mayúscula
         if (nombreMes != null && !nombreMes.isEmpty()) {
             nombreMes = nombreMes.substring(0, 1).toUpperCase(Locale.getDefault())
                     + nombreMes.substring(1);
@@ -381,12 +343,9 @@ public class EstadisticasFragment extends Fragment {
     }
 
     private String mesCorto(int mes, int anio) {
-        // FIX: usar DateFormatSymbols con Locale.getDefault()
-        // en lugar del array mesesCortos hardcodeado en español
         String[] mesesCortos = new DateFormatSymbols(Locale.getDefault()).getShortMonths();
         int idx = Math.max(0, Math.min(mes - 1, 11));
         String nombreCorto = mesesCortos[idx];
-        // Capitalizar primera letra
         if (nombreCorto != null && !nombreCorto.isEmpty()) {
             nombreCorto = nombreCorto.substring(0, 1).toUpperCase(Locale.getDefault())
                     + nombreCorto.substring(1);

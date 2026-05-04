@@ -193,7 +193,9 @@ public class MovimientosAdapter
         public void bind(MovimientoReciente mov) {
 
             // Título
-            binding.tvTitulo.setText(mov.getNombreCategoria());
+            binding.tvTitulo.setText(
+                    com.example.moneymaster.ui.categories.CategoryAdapter.resolverNombre(
+                            context, mov.getNombreCategoria()));
 
             // Descripción
             String desc = mov.getDescripcion();

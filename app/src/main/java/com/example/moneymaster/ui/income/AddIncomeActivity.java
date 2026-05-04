@@ -78,14 +78,29 @@ public class AddIncomeActivity extends AppCompatActivity {
     private void setupCategoryDropdown() {
         categoryAdapter = new IncomeDropdownAdapter(this);
         binding.autoCompleteCategory.setAdapter(categoryAdapter);
+
+        // FIX MIUI/HyperOS: en dispositivos físicos Xiaomi el AutoCompleteTextView
+        // con ExposedDropdownMenu llama convertResultToString() antes del listener
+        // y puede sobreescribir el texto o silenciar el click.
+        // Solución: usar post() para que setText se ejecute DESPUÉS del manejo
+        // interno de MIUI, garantizando que selectedCategory quede asignada.
         binding.autoCompleteCategory.setOnItemClickListener(
                 (parent, view, position, id) -> {
-                    selectedCategory = categoryAdapter.getItem(position);
+                    Object raw = categoryAdapter.getItem(position);
+                    if (raw instanceof CategoriaIngreso) {
+                        selectedCategory = (CategoriaIngreso) raw;
+                    } else {
+                        if (position >= 0 && position < categoryAdapter.getCount()) {
+                            selectedCategory = categoryAdapter.getItem(position);
+                        }
+                    }
+
                     if (selectedCategory != null) {
-                        // FIX: mostrar nombre traducido
-                        binding.autoCompleteCategory.setText(
-                                CategoryAdapter.resolverNombre(this, selectedCategory.nombre),
-                                false);
+                        String nombre = CategoryAdapter.resolverNombre(
+                                AddIncomeActivity.this, selectedCategory.nombre);
+                        // post() evita que MIUI sobreescriba el texto tras el listener
+                        binding.autoCompleteCategory.post(() ->
+                                binding.autoCompleteCategory.setText(nombre, false));
                     }
                     binding.tilCategory.setError(null);
                 });
